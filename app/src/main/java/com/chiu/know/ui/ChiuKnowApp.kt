@@ -1,5 +1,6 @@
 package com.chiu.know.ui
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,17 +18,25 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import com.chiu.know.R
 import com.chiu.know.model.LanguageOption
 import com.chiu.know.model.PlacementQuestion
@@ -35,24 +44,62 @@ import com.chiu.know.model.estimateLevel
 import com.chiu.know.model.starterEnglishPlacementQuestions
 import com.chiu.know.model.supportedInterfaceLanguages
 import com.chiu.know.model.supportedTargetLanguages
+import kotlinx.coroutines.launch
+
+private val Context.languagePreferencesDataStore by preferencesDataStore(name = "language_preferences")
+private val interfaceLanguageCodeKey = stringPreferencesKey("interface_language_code")
+private val targetLanguageCodeKey = stringPreferencesKey("target_language_code")
 
 private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT }
 
 @Composable
 fun ChiuKnowApp() {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val preferences by context.languagePreferencesDataStore.data.collectAsState(initial = emptyPreferences())
+    val persistedInterfaceCode = preferences[interfaceLanguageCodeKey]
+    val persistedTargetCode = preferences[targetLanguageCodeKey]
+
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             var step by remember { mutableStateOf(AppStep.LANGUAGE_SELECTION) }
-            var interfaceLanguage by remember { mutableStateOf(supportedInterfaceLanguages.first()) }
-            var targetLanguage by remember { mutableStateOf(supportedTargetLanguages.first()) }
+            var interfaceLanguage by remember(persistedInterfaceCode) {
+                mutableStateOf(
+                    supportedInterfaceLanguages.firstOrNull { it.code == persistedInterfaceCode }
+                        ?: supportedInterfaceLanguages.first()
+                )
+            }
+            var targetLanguage by remember(persistedTargetCode) {
+                mutableStateOf(
+                    supportedTargetLanguages.firstOrNull { it.code == persistedTargetCode }
+                        ?: supportedTargetLanguages.first()
+                )
+            }
             var questionIndex by remember { mutableIntStateOf(0) }
             var correctAnswers by remember { mutableIntStateOf(0) }
+
+            LaunchedEffect(persistedInterfaceCode) {
+                val code = persistedInterfaceCode ?: return@LaunchedEffect
+                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(code))
+            }
 
             when (step) {
                 AppStep.LANGUAGE_SELECTION -> LanguageOnboardingScreen(interfaceLanguage, targetLanguage, { selected ->
                     interfaceLanguage = selected
-                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(selected.code))
-                }, { targetLanguage = it }) { step = AppStep.PLACEMENT_INTRO }
+                    coroutineScope.launch {
+                        context.languagePreferencesDataStore.edit { storedPreferences ->
+                            storedPreferences[interfaceLanguageCodeKey] = selected.code
+                        }
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(selected.code))
+                    }
+                }, { selected ->
+                    targetLanguage = selected
+                    coroutineScope.launch {
+                        context.languagePreferencesDataStore.edit { storedPreferences ->
+                            storedPreferences[targetLanguageCodeKey] = selected.code
+                        }
+                    }
+                }) { step = AppStep.PLACEMENT_INTRO }
                 AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(targetLanguage, onStart = {
                     questionIndex = 0
                     correctAnswers = 0
