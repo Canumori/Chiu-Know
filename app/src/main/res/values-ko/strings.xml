@@ -4,4 +4,15 @@
     <string name="interface_language">앱 언어</string>
     <string name="target_language">배우고 싶은 언어</string>
     <string name="continue_button">계속</string>
+    <string name="placement_title">현재 수준을 알아볼까요?</string>
+    <string name="placement_description">현재 %1$s 실력을 A1부터 C2까지의 수준으로 추정합니다.</string>
+    <string name="placement_prototype_note">이 첫 로컬 프로토타입은 테스트 흐름을 확인하기 위한 것입니다. 최종 보정 적응형 문제 은행은 언어별로 구성됩니다. 결과는 숙련도 추정치이며 공식 인증서가 아닙니다.</string>
+    <string name="start_level_test">레벨 테스트 시작</string>
+    <string name="back_button">뒤로</string>
+    <string name="question_progress">%2$d문제 중 %1$d번째</string>
+    <string name="estimated_level">예상 수준</string>
+    <string name="correct_answers">이 프로토타입에서 %2$d문제 중 %1$d문제를 맞혔습니다.</string>
+    <string name="prototype_score_note">이 프로토타입 점수는 아직 최종 보정된 CEFR 평가가 아닙니다.</string>
+    <string name="try_again">다시 시도</string>
+    <string name="change_languages">언어 변경</string>
 </resources>
