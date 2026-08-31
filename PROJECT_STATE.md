@@ -1,5 +1,45 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ATUALIZAÇÃO AUTORITATIVA — 2026-08-31 — ESQUELETO ANDROID INICIAL
+
+O projeto Android nativo foi iniciado na `main` sem qualquer escrita no Supabase.
+
+### ESTADO ANDROID
+- Stack: Kotlin + Jetpack Compose.
+- Módulo: `app`.
+- Namespace/applicationId inicial: `com.chiu.know`.
+- `minSdk = 26`, `targetSdk = 35`, `compileSdk = 35`.
+- Versionamento inicial: `versionCode = 1`, `versionName = 0.1.0`.
+- Java/JVM 17.
+- Primeira tela estrutural: seleção independente de idioma da interface e idioma-alvo.
+- Idiomas inicialmente cadastrados na fundação: Português, English, Español e 한국어.
+- Recursos de strings separados já existem para inglês/base, português, espanhol e coreano.
+- Nenhuma arte/mascote foi gerada ou substituída. A `VISUAL_BIBLE.md` continua obrigatória para qualquer trabalho visual.
+- O botão `Continue` ainda não navega nem persiste a escolha; isso foi deixado de propósito para a próxima etapa isolada.
+- Supabase NÃO foi usado nesta etapa.
+
+### ARQUIVOS-BASE CRIADOS
+- `settings.gradle.kts`
+- `build.gradle.kts`
+- `gradle.properties`
+- `app/build.gradle.kts`
+- `app/src/main/AndroidManifest.xml`
+- `app/src/main/java/com/chiu/know/MainActivity.kt`
+- `app/src/main/java/com/chiu/know/model/LanguageOption.kt`
+- `app/src/main/java/com/chiu/know/ui/ChiuKnowApp.kt`
+- `app/src/main/res/values/strings.xml`
+- `app/src/main/res/values-pt/strings.xml`
+- `app/src/main/res/values-es/strings.xml`
+- `app/src/main/res/values-ko/strings.xml`
+- `app/src/main/res/values/themes.xml`
+- `.gitignore`
+
+### PRÓXIMO PASSO SEGURO
+1. Criar CI Android no GitHub e validar que o esqueleto compila.
+2. Se houver falha, corrigir somente o necessário para obter um APK debug compilável.
+3. Depois, adicionar persistência local das escolhas de idioma e navegação para uma tela inicial/placement test, sem conectar Supabase ainda.
+4. Não adicionar imagens por iniciativa própria.
+
 ## REGRA AUTORITATIVA DE ISOLAMENTO DO SUPABASE — 2026-08-31
 
 Esta regra é ABSOLUTA e deve ser conferida antes de qualquer operação de backend.
