@@ -4,4 +4,15 @@
     <string name="interface_language">Idioma de la aplicación</string>
     <string name="target_language">Idioma que quieres aprender</string>
     <string name="continue_button">Continuar</string>
+    <string name="placement_title">Descubramos tu nivel</string>
+    <string name="placement_description">Estimaremos tu nivel actual de %1$s, de A1 a C2.</string>
+    <string name="placement_prototype_note">Este primer prototipo local comprueba el flujo de la prueba. El banco adaptativo final y calibrado será específico para cada idioma. Tu resultado es una estimación del nivel de competencia, no un certificado oficial.</string>
+    <string name="start_level_test">Comenzar prueba de nivel</string>
+    <string name="back_button">Volver</string>
+    <string name="question_progress">Pregunta %1$d de %2$d</string>
+    <string name="estimated_level">Nivel estimado</string>
+    <string name="correct_answers">%1$d de %2$d respuestas correctas en este prototipo.</string>
+    <string name="prototype_score_note">La puntuación de este prototipo aún no es la evaluación CEFR calibrada final.</string>
+    <string name="try_again">Intentar de nuevo</string>
+    <string name="change_languages">Cambiar idiomas</string>
 </resources>
