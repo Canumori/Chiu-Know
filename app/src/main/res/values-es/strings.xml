@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Chiu Know?</string>
+    <string name="welcome_title">Elige tus idiomas</string>
+    <string name="interface_language">Idioma de la aplicación</string>
+    <string name="target_language">Idioma que quieres aprender</string>
+    <string name="continue_button">Continuar</string>
+</resources>
