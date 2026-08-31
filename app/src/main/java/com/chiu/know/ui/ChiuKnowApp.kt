@@ -41,7 +41,7 @@ import com.chiu.know.R
 import com.chiu.know.model.LanguageOption
 import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.estimateLevel
-import com.chiu.know.model.starterEnglishPlacementQuestions
+import com.chiu.know.model.starterPlacementQuestionsFor
 import com.chiu.know.model.supportedInterfaceLanguages
 import com.chiu.know.model.supportedTargetLanguages
 import kotlinx.coroutines.launch
@@ -77,6 +77,7 @@ fun ChiuKnowApp() {
             }
             var questionIndex by remember { mutableIntStateOf(0) }
             var correctAnswers by remember { mutableIntStateOf(0) }
+            val placementQuestions = starterPlacementQuestionsFor(targetLanguage.code)
 
             LaunchedEffect(persistedInterfaceCode) {
                 val code = persistedInterfaceCode ?: return@LaunchedEffect
@@ -106,17 +107,17 @@ fun ChiuKnowApp() {
                     step = AppStep.PLACEMENT_TEST
                 }, onBack = { step = AppStep.LANGUAGE_SELECTION })
                 AppStep.PLACEMENT_TEST -> PlacementQuestionScreen(
-                    question = starterEnglishPlacementQuestions[questionIndex],
+                    question = placementQuestions[questionIndex],
                     number = questionIndex + 1,
-                    total = starterEnglishPlacementQuestions.size,
+                    total = placementQuestions.size,
                     onAnswer = { selected ->
-                        if (selected == starterEnglishPlacementQuestions[questionIndex].correctIndex) correctAnswers++
-                        if (questionIndex == starterEnglishPlacementQuestions.lastIndex) step = AppStep.PLACEMENT_RESULT else questionIndex++
+                        if (selected == placementQuestions[questionIndex].correctIndex) correctAnswers++
+                        if (questionIndex == placementQuestions.lastIndex) step = AppStep.PLACEMENT_RESULT else questionIndex++
                     }
                 )
                 AppStep.PLACEMENT_RESULT -> PlacementResultScreen(
                     correctAnswers = correctAnswers,
-                    total = starterEnglishPlacementQuestions.size,
+                    total = placementQuestions.size,
                     onRestart = { step = AppStep.PLACEMENT_INTRO },
                     onChangeLanguage = { step = AppStep.LANGUAGE_SELECTION }
                 )
