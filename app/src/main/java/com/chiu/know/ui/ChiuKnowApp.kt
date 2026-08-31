@@ -92,18 +92,18 @@ private fun LanguageOnboardingScreen(interfaceLanguage: LanguageOption, targetLa
 @Composable
 private fun PlacementTestIntroScreen(targetLanguage: LanguageOption, onStart: () -> Unit, onBack: () -> Unit) {
     CenteredColumn {
-        Text("Let's find your level", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(16.dp))
-        Text("We'll estimate your current ${targetLanguage.label} level from A1 to C2.", style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(12.dp))
-        Text("This first local prototype checks the test flow. The final calibrated adaptive bank will be language-specific. Your result is an estimated proficiency level, not an official certificate.", style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(32.dp))
-        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStart) { Text("Start level test") }; Spacer(Modifier.height(12.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text("Back") }
+        Text(stringResource(R.string.placement_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(16.dp))
+        Text(stringResource(R.string.placement_description, targetLanguage.label), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(12.dp))
+        Text(stringResource(R.string.placement_prototype_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(32.dp))
+        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStart) { Text(stringResource(R.string.start_level_test)) }; Spacer(Modifier.height(12.dp))
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) }
     }
 }
 
 @Composable
 private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, total: Int, onAnswer: (Int) -> Unit) {
     CenteredColumn {
-        Text("Question $number of $total", style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(12.dp))
+        Text(stringResource(R.string.question_progress, number, total), style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(12.dp))
         Text(question.level.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(20.dp))
         Text(question.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(28.dp))
         question.options.forEachIndexed { index, option ->
@@ -117,12 +117,12 @@ private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, to
 private fun PlacementResultScreen(correctAnswers: Int, total: Int, onRestart: () -> Unit, onChangeLanguage: () -> Unit) {
     val level = estimateLevel(correctAnswers, total)
     CenteredColumn {
-        Text("Estimated level", style = MaterialTheme.typography.titleLarge); Spacer(Modifier.height(12.dp))
+        Text(stringResource(R.string.estimated_level), style = MaterialTheme.typography.titleLarge); Spacer(Modifier.height(12.dp))
         Text(level.name, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp))
-        Text("$correctAnswers of $total answers correct in this prototype."); Spacer(Modifier.height(8.dp))
-        Text("This prototype score is not yet the final calibrated CEFR assessment.", style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(28.dp))
-        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onRestart) { Text("Try again") }; Spacer(Modifier.height(12.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onChangeLanguage) { Text("Change languages") }
+        Text(stringResource(R.string.correct_answers, correctAnswers, total)); Spacer(Modifier.height(8.dp))
+        Text(stringResource(R.string.prototype_score_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(28.dp))
+        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onRestart) { Text(stringResource(R.string.try_again)) }; Spacer(Modifier.height(12.dp))
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onChangeLanguage) { Text(stringResource(R.string.change_languages)) }
     }
 }
 
