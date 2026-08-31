@@ -1,5 +1,6 @@
 package com.chiu.know.ui
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,8 +24,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
+import com.chiu.know.R
 import com.chiu.know.model.LanguageOption
 import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.estimateLevel
@@ -45,7 +49,10 @@ fun ChiuKnowApp() {
             var correctAnswers by remember { mutableIntStateOf(0) }
 
             when (step) {
-                AppStep.LANGUAGE_SELECTION -> LanguageOnboardingScreen(interfaceLanguage, targetLanguage, { interfaceLanguage = it }, { targetLanguage = it }) { step = AppStep.PLACEMENT_INTRO }
+                AppStep.LANGUAGE_SELECTION -> LanguageOnboardingScreen(interfaceLanguage, targetLanguage, { selected ->
+                    interfaceLanguage = selected
+                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(selected.code))
+                }, { targetLanguage = it }) { step = AppStep.PLACEMENT_INTRO }
                 AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(targetLanguage, onStart = {
                     questionIndex = 0
                     correctAnswers = 0
@@ -74,11 +81,11 @@ fun ChiuKnowApp() {
 @Composable
 private fun LanguageOnboardingScreen(interfaceLanguage: LanguageOption, targetLanguage: LanguageOption, onInterfaceLanguageSelected: (LanguageOption) -> Unit, onTargetLanguageSelected: (LanguageOption) -> Unit, onContinue: () -> Unit) {
     CenteredColumn {
-        Text("Chiu Know?", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(12.dp)); Text("Choose your languages", style = MaterialTheme.typography.titleMedium); Spacer(Modifier.height(32.dp))
-        LanguageSelector("App language", interfaceLanguage, supportedInterfaceLanguages, onInterfaceLanguageSelected); Spacer(Modifier.height(20.dp))
-        LanguageSelector("Language you want to learn", targetLanguage, supportedTargetLanguages, onTargetLanguageSelected); Spacer(Modifier.height(32.dp))
-        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onContinue) { Text("Continue") }
+        Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.welcome_title), style = MaterialTheme.typography.titleMedium); Spacer(Modifier.height(32.dp))
+        LanguageSelector(stringResource(R.string.interface_language), interfaceLanguage, supportedInterfaceLanguages, onInterfaceLanguageSelected); Spacer(Modifier.height(20.dp))
+        LanguageSelector(stringResource(R.string.target_language), targetLanguage, supportedTargetLanguages, onTargetLanguageSelected); Spacer(Modifier.height(32.dp))
+        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onContinue) { Text(stringResource(R.string.continue_button)) }
     }
 }
 
