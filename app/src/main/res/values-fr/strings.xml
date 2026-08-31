@@ -4,4 +4,15 @@
     <string name="interface_language">Langue de l’application</string>
     <string name="target_language">Langue que vous voulez apprendre</string>
     <string name="continue_button">Continuer</string>
+    <string name="placement_title">Découvrons votre niveau</string>
+    <string name="placement_description">Nous allons estimer votre niveau actuel en %1$s, de A1 à C2.</string>
+    <string name="placement_prototype_note">Ce premier prototype local vérifie le déroulement du test. La banque adaptative finale et calibrée sera spécifique à chaque langue. Votre résultat est une estimation du niveau de compétence, et non un certificat officiel.</string>
+    <string name="start_level_test">Commencer le test de niveau</string>
+    <string name="back_button">Retour</string>
+    <string name="question_progress">Question %1$d sur %2$d</string>
+    <string name="estimated_level">Niveau estimé</string>
+    <string name="correct_answers">%1$d réponses correctes sur %2$d dans ce prototype.</string>
+    <string name="prototype_score_note">Le score de ce prototype n’est pas encore l’évaluation CECR calibrée finale.</string>
+    <string name="try_again">Réessayer</string>
+    <string name="change_languages">Changer de langues</string>
 </resources>
