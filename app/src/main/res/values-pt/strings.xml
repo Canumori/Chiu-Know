@@ -15,4 +15,12 @@
     <string name="prototype_score_note">A pontuação deste protótipo ainda não é a avaliação CEFR calibrada final.</string>
     <string name="try_again">Tentar novamente</string>
     <string name="change_languages">Alterar idiomas</string>
+    <string name="continue_to_path">Continuar para minha trilha</string>
+    <string name="learning_path_title">Sua trilha CEFR</string>
+    <string name="learning_path_description">Seu nível estimado define o ponto de partida. Os níveis seguintes serão liberados conforme o progresso real de aprendizagem for implementado.</string>
+    <string name="trail_completed">Alcançado</string>
+    <string name="trail_current">Atual</string>
+    <string name="trail_locked">Bloqueado</string>
+    <string name="trail_foundation_note">Esta é a primeira fundação da trilha de aprendizagem. Lições, atividades e regras de progresso vêm a seguir.</string>
+    <string name="back_to_result">Voltar ao resultado</string>
 </resources>
