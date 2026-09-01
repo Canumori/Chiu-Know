@@ -1,8 +1,54 @@
 # CHIU KNOW? — PROJECT STATE
 
-## ATUALIZAÇÃO AUTORITATIVA — 2026-09-01 — TODOS OS 5 BANCOS EXPANDIDOS E VALIDADOS
+## ATUALIZAÇÃO AUTORITATIVA — 2026-09-01 — PLACEMENT EXPANDIDO; CONTINUIDADE DEVE SEGUIR O PLANO DO PRODUTO
 
-Este arquivo é a fonte autoritativa de continuidade do Chiu Know?, mas o estado real do GitHub e do Supabase sempre vence informação desatualizada. Antes de qualquer alteração, reler este arquivo e conferir o estado real do GitHub.
+Este arquivo é a fonte autoritativa de continuidade operacional do Chiu Know?, mas NÃO é o único documento de planejamento. Antes de qualquer nova frente, o próximo chat deve ler em conjunto, obrigatoriamente:
+1. `PROJECT_STATE.md` — estado técnico real e continuidade;
+2. `PRODUCT_SPEC.md` — visão, objetivos e roadmap funcional do produto;
+3. `RESEARCH.md` — decisões/referências técnicas e de arquitetura;
+4. `VISUAL_BIBLE.md` — identidade, personagens e regras de produção visual quando a frente envolver UI, histórias, atividades ou personagens.
+
+O estado real do GitHub e, quando aplicável, do Supabase sempre vence documentação desatualizada.
+
+## REGRA DE CONTINUIDADE — NÃO DECLARAR QUE “NÃO HÁ PLANEJAMENTO”
+O encerramento de uma etapa no `PROJECT_STATE.md` NÃO significa que o projeto ficou sem próximos objetivos. O roadmap maior já está definido no `PRODUCT_SPEC.md` e deve orientar a sequência de desenvolvimento. Quando uma etapa terminar, consultar o plano do produto antes de pedir à usuária que reinvente o próximo objetivo.
+
+## ROADMAP DE PRODUTO JÁ DEFINIDO
+O Chiu Know? é um aplicativo Android multilíngue de aprendizagem de idiomas, CEFR A1–C2, com:
+- idioma da interface e idioma-alvo independentes;
+- placement adaptativo inicial e reteste;
+- resultado geral e por habilidade: gramática, vocabulário, listening, reading, writing e speaking;
+- trilha CEFR A1 → A2 → B1 → B2 → C1 → C2;
+- ensino/progresso adaptativo;
+- revisão inteligente/espaçada baseada em FSRS ou equivalente permissivo;
+- XP, streak, meta diária, progresso e conquistas;
+- histórias interativas com personagens recorrentes e decisões do aluno;
+- tutor por IA para explicações, diálogos e conteúdo dinâmico;
+- fala/áudio como módulos próprios, sem confundir transcrição com avaliação de pronúncia.
+
+O placement atual é apenas uma parte desse roadmap. O próximo chat deve comparar o que já existe com `PRODUCT_SPEC.md` e continuar pela próxima lacuna lógica, em etapas pequenas e testáveis, sem apagar ou reescrever o que já está verde.
+
+## QUANDO ENTRAM OS PERSONAGENS
+Os personagens NÃO são um detalhe opcional nem devem ser esquecidos até o fim. Eles fazem parte do produto planejado, especialmente em:
+- cards/contextos de atividades (exercícios, listening, speaking, reading, testes, conquistas etc.);
+- trilha e apresentação pedagógica quando a UI dessa frente for construída;
+- histórias interativas, onde são personagens recorrentes e parte central da experiência;
+- diálogos/tutor/conteúdo contextual quando isso for implementado de forma compatível com o roadmap.
+
+A introdução visual efetiva deve ocorrer quando a respectiva frente de UI/atividade/história for implementada, e não como uma troca decorativa prematura no placement já validado. Antes de qualquer uso visual, reler `VISUAL_BIBLE.md`, verificar/reutilizar assets-mestre aprovados e pedir autorização para qualquer nova arte/pose que precise ser criada. Não gerar nem substituir personagens por iniciativa própria.
+
+### Elenco canônico registrado em `VISUAL_BIBLE.md`
+- Chiu — Chihuahua amarelo cartunesco, maluco/curioso; personagem do universo.
+- Mia — gata fashion/dramática, fofoqueira, odeia segunda-feira e ama café.
+- Zé Pernilongo — mosquito falante, inquieto, atrapalhado/esquecido, coração e apetite enormes.
+- Barto — morcego noturno filosófico; gosta de terror e tem medo de altura apesar de voar.
+- Lara — arara barulhenta/opinativa; repete tudo e não tem filtro.
+- Caca — capivara zen até ficar estressada; gosta de água morna/chá e evita responsabilidades.
+- Onça — forte e decidida, mas insegura por dentro; odeia perder.
+- Perry — ornitorrinco brilhante/esquisito; inventa coisas inúteis que às vezes funcionam.
+- Lena — preguiça muito lenta; dormir, comer e procrastinar.
+
+REGRA ABSOLUTA: Chiu do logo/ícone e Chiu personagem são identidades visuais diferentes. Logo/ícone usa somente o Chihuahua branco fotorrealista aprovado com cabelo castanho. Histórias, cards, exercícios e universo usam o Chihuahua amarelo cartunesco aprovado. Nunca misturar.
 
 ## ESTADO ATUAL DO ANDROID
 - Repositório: `Canumori/Chiu-Know`; branch `main`.
@@ -34,92 +80,73 @@ O placement usa núcleo adaptativo local:
 - Android CI run #33 / `33459131956`: SUCCESS.
 
 ## TODOS OS BANCOS DE PLACEMENT — VALIDADOS
-Cada idioma possui agora exatamente 12 perguntas: 2 em cada nível A1, A2, B1, B2, C1 e C2. Cada banco possui teste próprio exigindo pelo menos 2 perguntas por nível e IDs únicos.
+Cada idioma possui exatamente 12 perguntas: 2 em cada nível A1, A2, B1, B2, C1 e C2. Cada banco possui teste próprio exigindo pelo menos 2 perguntas por nível e IDs únicos.
 
 ### English (`en`)
 - 12 perguntas, 2 por nível A1–C2.
-- Commit de conteúdo: `3a04be3ec4e4ce33ce7f71285b18a0bb276f92b6`.
-- Commit do teste `EnglishPlacementBankTest.kt`: `50a53e55a0e44c98015ee851c19ec0af0c46adfd`.
-- Android CI run #36 / `33513922534`: SUCCESS; testes unitários + build debug APK + upload do artifact passaram.
+- Conteúdo: `3a04be3ec4e4ce33ce7f71285b18a0bb276f92b6`.
+- Teste: `50a53e55a0e44c98015ee851c19ec0af0c46adfd`.
+- CI #36 / `33513922534`: SUCCESS.
 
 ### Português (`pt`)
 - 12 perguntas, 2 por nível A1–C2.
-- Commit de conteúdo: `f8c8ab9c78ab9ad8577222bd2eabba98ab7e517d`.
-- Commit do teste `PortuguesePlacementBankTest.kt`: `a2ecbbfee847f92105f3ef2cfef6a16cb1fb0460`.
-- Android CI run #39 / `33514174976`: SUCCESS.
-- Job `99876893217`: unit tests, build debug APK e upload debug APK em SUCCESS.
+- Conteúdo: `f8c8ab9c78ab9ad8577222bd2eabba98ab7e517d`.
+- Teste: `a2ecbbfee847f92105f3ef2cfef6a16cb1fb0460`.
+- CI #39 / `33514174976`: SUCCESS.
 
 ### Español (`es`)
 - 12 perguntas, 2 por nível A1–C2.
-- Todas as perguntas espanholas anteriores foram preservadas e foi adicionada uma segunda pergunta por nível.
-- Commit de conteúdo: `39b4fc0579ad3d693675e6934c63cfac958f0047`.
-- Commit do teste `SpanishPlacementBankTest.kt`: `d34c65b4ed96e758796ed16d921117bff566989d`.
-- Android CI run #42 / `33516140417`: SUCCESS.
-- Job `99883520518`: unit tests, build debug APK e upload debug APK em SUCCESS.
-- Artifact validado: `chiu-know-debug`, artifact ID `9803688376`.
+- Conteúdo: `39b4fc0579ad3d693675e6934c63cfac958f0047`.
+- Teste: `d34c65b4ed96e758796ed16d921117bff566989d`.
+- CI #42 / `33516140417`: SUCCESS.
+- Artifact `chiu-know-debug`, ID `9803688376`.
 
 ### Français (`fr`)
 - 12 perguntas, 2 por nível A1–C2.
-- Todas as perguntas francesas anteriores foram preservadas e foi adicionada uma segunda pergunta por nível.
-- Commit de conteúdo: `89dd0d837c4648e3f6f8ec20d268beeedad4ea6e`.
-- Commit do teste `FrenchPlacementBankTest.kt`: `46160ec64ae4d6b097a5954c00696b4693b9358e`.
-- Android CI run #44 / `33516828777`: SUCCESS.
-- Job `99885846553`: unit tests, build debug APK e upload debug APK em SUCCESS.
-- Artifact validado: `chiu-know-debug`, artifact ID `9803982887`.
+- Conteúdo: `89dd0d837c4648e3f6f8ec20d268beeedad4ea6e`.
+- Teste: `46160ec64ae4d6b097a5954c00696b4693b9358e`.
+- CI #44 / `33516828777`: SUCCESS.
+- Artifact `chiu-know-debug`, ID `9803982887`.
 
 ### 한국어 (`ko`)
 - 12 perguntas, 2 por nível A1–C2.
-- Todas as perguntas coreanas anteriores foram preservadas e foi adicionada uma segunda pergunta por nível.
-- Commit de conteúdo: `4f3abea74ce111ecf21fe94a4df02ce372688865`.
-- Commit do teste `KoreanPlacementBankTest.kt`: `0ada06db14757c3a9983c0eac025d1ada37224fa`.
-- Android CI run #46 / `33517863466`: SUCCESS.
-- Job `99889347099`: unit tests, build debug APK e upload debug APK em SUCCESS.
-- Artifact validado: `chiu-know-debug`, artifact ID `9804381192`, digest `sha256:937f0f1408b112eb0aa53f91796c61d2540fcc7ad41a636849302c92dd7baa77`.
+- Conteúdo: `4f3abea74ce111ecf21fe94a4df02ce372688865`.
+- Teste: `0ada06db14757c3a9983c0eac025d1ada37224fa`.
+- CI #46 / `33517863466`: SUCCESS.
+- Artifact `chiu-know-debug`, ID `9804381192`.
 
-## CONCLUSÃO DA EXPANSÃO POR LÍNGUA
-- English: CONCLUÍDO E VALIDADO.
-- Português: CONCLUÍDO E VALIDADO.
-- Español: CONCLUÍDO E VALIDADO.
-- Français: CONCLUÍDO E VALIDADO.
-- 한국어: CONCLUÍDO E VALIDADO.
-- Total atual do placement: 60 perguntas, sendo 12 por idioma e 2 por nível CEFR em cada idioma.
-- A expansão de conteúdo está encerrada neste marco.
-- Não alterar o motor adaptativo como consequência desta expansão; variedade de perguntas não equivale a calibração psicométrica CEFR.
+## MARCO DE VALIDAÇÃO FINAL
+- Total atual: 60 perguntas, 12 por idioma, 2 por nível CEFR em cada idioma.
+- A expansão de conteúdo do placement está encerrada.
+- Android CI #47 / run `33518166184`, head `38f80015bc6c809974ed15e66215da53a75ee034`: COMPLETED / SUCCESS.
+- Não alterar o motor adaptativo como consequência desta expansão.
 
-## HISTÓRICO VALIDADO RELEVANTE
-- Run #18: bancos iniciais por idioma — SUCCESS.
-- Run #19: banco selecionado pelo idioma-alvo — SUCCESS.
-- Run #22: núcleo adaptativo corrigido — SUCCESS.
-- Run #26: CI executando testes antes do APK — SUCCESS.
-- Run #29 / `33458895765`: adaptativo ligado à UI — SUCCESS.
-- Run #33 / `33459131956`: seletor multipergunta seguro — SUCCESS.
-- Run #36 / `33513922534`: inglês com 2 perguntas por nível + testes — SUCCESS.
-- Run #39 / `33514174976`: português com 2 perguntas por nível + testes — SUCCESS.
-- Run #42 / `33516140417`: espanhol com 2 perguntas por nível + testes — SUCCESS.
-- Run #44 / `33516828777`: francês com 2 perguntas por nível + testes — SUCCESS.
-- Run #46 / `33517863466`: coreano com 2 perguntas por nível + testes — SUCCESS.
-
-## PRÓXIMO PASSO
-- Não há mais idioma pendente nesta rodada de expansão dos bancos de placement.
-- Antes de iniciar nova frente funcional, revisar o objetivo específico e preservar todos os cinco bancos e seus testes.
-- Se futuramente forem adicionadas mais perguntas, fazê-lo de forma isolada, com IDs únicos e validação em CI.
+## PRÓXIMO PASSO DE CONTINUIDADE
+1. Não continuar adicionando perguntas apenas por continuar a rodada anterior.
+2. Reler `PRODUCT_SPEC.md` e comparar roadmap versus funcionalidades já implementadas.
+3. Escolher a próxima lacuna lógica do roadmap e implementá-la em fatia pequena, testável e reversível.
+4. Preservar placement, cinco bancos, testes, DataStore e fluxo atual.
+5. Quando a próxima frente envolver cards/atividades/trilha/histórias, incorporar o elenco canônico conforme `VISUAL_BIBLE.md`, reutilizando assets aprovados; novas artes somente com autorização.
+6. Não pular diretamente para uma implementação grande de IA, áudio, backend ou histórias sem construir e validar as fundações anteriores necessárias.
 
 ## PROTEÇÕES CONTRA REGRESSÃO
 - Mudanças pequenas, isoladas e reversíveis.
 - Nunca substituir/reconstruir o projeto inteiro por conveniência.
 - Não remover testes verdes existentes.
 - Não alterar o algoritmo adaptativo durante expansão de conteúdo.
-- Não mudar fluxo de telas durante expansão de conteúdo.
+- Não mudar fluxo de telas sem relação com a frente atual.
 - Não introduzir dependências desnecessárias.
 - Não mandar Camila editar código, usar terminal, resolver conflito ou abrir ZIP.
-- Conferir sempre código real, commits e Actions antes de concluir sucesso/falha.
-- Um workflow antigo falho não invalida um run atual verde; usar sempre o run correspondente ao head relevante.
+- Conferir código real, commits e Actions antes de concluir sucesso/falha.
+- Um workflow antigo falho não invalida um run atual verde; usar o run correspondente ao head relevante.
 
 ## ARTE / IDENTIDADE VISUAL
+- `VISUAL_BIBLE.md` é autoritativo para personagens e identidade.
 - Nenhuma arte ou mascote deve ser gerada/redesenhada/substituída por iniciativa do assistente.
-- Ler `VISUAL_BIBLE.md` antes de qualquer trabalho visual.
 - Chiu do logo = Chihuahua branco fotorealista aprovado com cabelo castanho; reutilizar master aprovado.
-- Chiu personagem do universo = cachorro cartoon amarelo/esquisito aprovado; nunca misturar os dois.
+- Chiu personagem = cachorro cartoon amarelo/esquisito aprovado; nunca misturar os dois.
+- Identidade dos demais personagens também é canônica; objetos, pose, expressão, roupa e situação podem variar, mas a identidade não.
+- Para identidade exata, reutilizar assets-mestre. Para novas poses, criar biblioteca canônica controlada somente após autorização/aprovação.
 
 # ISOLAMENTO ABSOLUTO DO SUPABASE
 ## CHIU KNOW? — ÚNICO SUPABASE PERMITIDO
@@ -135,13 +162,8 @@ Cada idioma possui agora exatamente 12 perguntas: 2 em cada nível A1, A2, B1, B
 ## PROTOCOLO FUTURO DE SUPABASE
 Antes de qualquer escrita futura no Supabase para Chiu Know?, ler a skill Supabase e verificar por leitura organização e projeto reais. Somente `uskxabsodcnzlovuaurp` é permitido. Se aparecer `hpcbkvbrlwjnwlikmbfb`, parar imediatamente.
 
-## CHIU PLAYER — ESTADO QUE NÃO DEVE SER CONFUNDIDO COM ESTA FRENTE
-- Chiu Player é projeto separado em `Canumori/Chiu-player`.
-- Não usar código, branches, Supabase, versões, APKs ou decisões do Player no Chiu Know?.
-
 ## PRINCÍPIO FINAL
-- PROJECT_STATE é a fonte de continuidade; estado real GitHub/Supabase vence documentação desatualizada.
-- Antes de escrever: ler PROJECT_STATE + conferir estado real.
-- Não usar Supabase se o passo puder ser local.
+- `PROJECT_STATE.md` = estado/continuidade; `PRODUCT_SPEC.md` = roadmap/objetivos; `RESEARCH.md` = arquitetura/referências; `VISUAL_BIBLE.md` = personagens/identidade.
+- O próximo chat deve ler esses documentos em conjunto conforme a frente, e nunca concluir que o fim de uma tarefa significa fim do planejamento.
+- Antes de escrever: conferir estado real do GitHub; usar Supabase apenas quando necessário e somente o projeto do Chiu Know?.
 - Preservar tudo que já está verde.
-- Camila não deve receber tarefas técnicas manuais.
