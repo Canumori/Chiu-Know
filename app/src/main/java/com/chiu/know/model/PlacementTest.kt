@@ -63,6 +63,21 @@ fun starterPlacementQuestionsFor(languageCode: String): List<PlacementQuestion> 
     else -> starterEnglishPlacementQuestions
 }
 
+fun placementQuestionsForLevel(
+    questions: List<PlacementQuestion>,
+    level: CefrLevel
+): List<PlacementQuestion> = questions.filter { it.level == level }
+
+fun placementQuestionForLevel(
+    questions: List<PlacementQuestion>,
+    level: CefrLevel,
+    attemptIndex: Int = 0
+): PlacementQuestion {
+    val candidates = placementQuestionsForLevel(questions, level)
+    require(candidates.isNotEmpty()) { "No placement questions available for level $level" }
+    return candidates[Math.floorMod(attemptIndex, candidates.size)]
+}
+
 fun estimateLevel(correctAnswers: Int, totalQuestions: Int): CefrLevel {
     if (totalQuestions <= 0) return CefrLevel.A1
     val ratio = correctAnswers.toDouble() / totalQuestions
