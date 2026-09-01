@@ -12,11 +12,17 @@ data class PlacementQuestion(
 
 val starterEnglishPlacementQuestions = listOf(
     PlacementQuestion("en-a1-001", CefrLevel.A1, "Choose the correct sentence.", listOf("She are happy.", "She is happy.", "She be happy.", "She am happy."), 1),
+    PlacementQuestion("en-a1-002", CefrLevel.A1, "Choose the correct option: They ___ from Brazil.", listOf("is", "are", "am", "be"), 1),
     PlacementQuestion("en-a2-001", CefrLevel.A2, "I ___ here since 2024.", listOf("live", "lived", "have lived", "am living yesterday"), 2),
+    PlacementQuestion("en-a2-002", CefrLevel.A2, "We ___ dinner when she called.", listOf("had", "were having", "have", "are having"), 1),
     PlacementQuestion("en-b1-001", CefrLevel.B1, "If it rains tomorrow, we ___ at home.", listOf("stay", "stayed", "will stay", "would have stayed"), 2),
+    PlacementQuestion("en-b1-002", CefrLevel.B1, "I wish I ___ more time to study this week.", listOf("have", "had", "will have", "would have had"), 1),
     PlacementQuestion("en-b2-001", CefrLevel.B2, "By the time we arrived, the film ___.", listOf("already started", "had already started", "has already started", "would already start"), 1),
+    PlacementQuestion("en-b2-002", CefrLevel.B2, "If I had known about the delay, I ___ earlier.", listOf("would leave", "would have left", "left", "had left"), 1),
     PlacementQuestion("en-c1-001", CefrLevel.C1, "The evidence is consistent with the hypothesis, but it does not necessarily ___ it.", listOf("prove", "proving", "proved", "to prove"), 0),
-    PlacementQuestion("en-c2-001", CefrLevel.C2, "Choose the most natural option: His apology did little to ___ the concerns raised by the report.", listOf("allay", "evade", "repeal", "dissolve"), 0)
+    PlacementQuestion("en-c1-002", CefrLevel.C1, "The findings are promising; ___, further research is needed before firm conclusions can be drawn.", listOf("nevertheless", "therefore", "similarly", "otherwise"), 0),
+    PlacementQuestion("en-c2-001", CefrLevel.C2, "Choose the most natural option: His apology did little to ___ the concerns raised by the report.", listOf("allay", "evade", "repeal", "dissolve"), 0),
+    PlacementQuestion("en-c2-002", CefrLevel.C2, "Choose the most precise option: The committee's wording was deliberately ___, allowing several interpretations.", listOf("equivocal", "obsolete", "mandatory", "sporadic"), 0)
 )
 
 val starterPortuguesePlacementQuestions = listOf(
