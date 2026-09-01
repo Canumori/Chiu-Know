@@ -38,9 +38,12 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.chiu.know.R
+import com.chiu.know.model.AdaptivePlacementState
+import com.chiu.know.model.CefrLevel
 import com.chiu.know.model.LanguageOption
 import com.chiu.know.model.PlacementQuestion
-import com.chiu.know.model.estimateLevel
+import com.chiu.know.model.advanceAdaptivePlacement
+import com.chiu.know.model.startAdaptivePlacement
 import com.chiu.know.model.starterPlacementQuestionsFor
 import com.chiu.know.model.supportedInterfaceLanguages
 import com.chiu.know.model.supportedTargetLanguages
@@ -64,20 +67,16 @@ fun ChiuKnowApp() {
         Surface(modifier = Modifier.fillMaxSize()) {
             var step by remember { mutableStateOf(AppStep.LANGUAGE_SELECTION) }
             var interfaceLanguage by remember(persistedInterfaceCode) {
-                mutableStateOf(
-                    supportedInterfaceLanguages.firstOrNull { it.code == persistedInterfaceCode }
-                        ?: supportedInterfaceLanguages.first()
-                )
+                mutableStateOf(supportedInterfaceLanguages.firstOrNull { it.code == persistedInterfaceCode } ?: supportedInterfaceLanguages.first())
             }
             var targetLanguage by remember(persistedTargetCode) {
-                mutableStateOf(
-                    supportedTargetLanguages.firstOrNull { it.code == persistedTargetCode }
-                        ?: supportedTargetLanguages.first()
-                )
+                mutableStateOf(supportedTargetLanguages.firstOrNull { it.code == persistedTargetCode } ?: supportedTargetLanguages.first())
             }
-            var questionIndex by remember { mutableIntStateOf(0) }
+            var adaptiveState by remember { mutableStateOf(startAdaptivePlacement()) }
+            var estimatedLevel by remember { mutableStateOf(CefrLevel.A1) }
             var correctAnswers by remember { mutableIntStateOf(0) }
             val placementQuestions = starterPlacementQuestionsFor(targetLanguage.code)
+            val currentQuestion = placementQuestions.first { it.level == adaptiveState.currentLevel }
 
             LaunchedEffect(persistedInterfaceCode) {
                 val code = persistedInterfaceCode ?: return@LaunchedEffect
@@ -88,36 +87,39 @@ fun ChiuKnowApp() {
                 AppStep.LANGUAGE_SELECTION -> LanguageOnboardingScreen(interfaceLanguage, targetLanguage, { selected ->
                     interfaceLanguage = selected
                     coroutineScope.launch {
-                        context.languagePreferencesDataStore.edit { storedPreferences ->
-                            storedPreferences[interfaceLanguageCodeKey] = selected.code
-                        }
+                        context.languagePreferencesDataStore.edit { it[interfaceLanguageCodeKey] = selected.code }
                         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(selected.code))
                     }
                 }, { selected ->
                     targetLanguage = selected
-                    coroutineScope.launch {
-                        context.languagePreferencesDataStore.edit { storedPreferences ->
-                            storedPreferences[targetLanguageCodeKey] = selected.code
-                        }
-                    }
+                    coroutineScope.launch { context.languagePreferencesDataStore.edit { it[targetLanguageCodeKey] = selected.code } }
                 }) { step = AppStep.PLACEMENT_INTRO }
+
                 AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(targetLanguage, onStart = {
-                    questionIndex = 0
+                    adaptiveState = startAdaptivePlacement()
+                    estimatedLevel = CefrLevel.A1
                     correctAnswers = 0
                     step = AppStep.PLACEMENT_TEST
                 }, onBack = { step = AppStep.LANGUAGE_SELECTION })
+
                 AppStep.PLACEMENT_TEST -> PlacementQuestionScreen(
-                    question = placementQuestions[questionIndex],
-                    number = questionIndex + 1,
+                    question = currentQuestion,
+                    number = adaptiveState.answeredQuestions + 1,
                     total = placementQuestions.size,
                     onAnswer = { selected ->
-                        if (selected == placementQuestions[questionIndex].correctIndex) correctAnswers++
-                        if (questionIndex == placementQuestions.lastIndex) step = AppStep.PLACEMENT_RESULT else questionIndex++
+                        val answeredCorrectly = selected == currentQuestion.correctIndex
+                        if (answeredCorrectly) correctAnswers++
+                        val result = advanceAdaptivePlacement(adaptiveState, answeredCorrectly)
+                        adaptiveState = result.state
+                        estimatedLevel = result.estimatedLevel
+                        if (result.finished) step = AppStep.PLACEMENT_RESULT
                     }
                 )
+
                 AppStep.PLACEMENT_RESULT -> PlacementResultScreen(
+                    level = estimatedLevel,
                     correctAnswers = correctAnswers,
-                    total = placementQuestions.size,
+                    total = adaptiveState.answeredQuestions,
                     onRestart = { step = AppStep.PLACEMENT_INTRO },
                     onChangeLanguage = { step = AppStep.LANGUAGE_SELECTION }
                 )
@@ -162,8 +164,7 @@ private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, to
 }
 
 @Composable
-private fun PlacementResultScreen(correctAnswers: Int, total: Int, onRestart: () -> Unit, onChangeLanguage: () -> Unit) {
-    val level = estimateLevel(correctAnswers, total)
+private fun PlacementResultScreen(level: CefrLevel, correctAnswers: Int, total: Int, onRestart: () -> Unit, onChangeLanguage: () -> Unit) {
     CenteredColumn {
         Text(stringResource(R.string.estimated_level), style = MaterialTheme.typography.titleLarge); Spacer(Modifier.height(12.dp))
         Text(level.name, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp))
