@@ -38,11 +38,11 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.chiu.know.R
-import com.chiu.know.model.AdaptivePlacementState
 import com.chiu.know.model.CefrLevel
 import com.chiu.know.model.LanguageOption
 import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.advanceAdaptivePlacement
+import com.chiu.know.model.placementQuestionForLevel
 import com.chiu.know.model.startAdaptivePlacement
 import com.chiu.know.model.starterPlacementQuestionsFor
 import com.chiu.know.model.supportedInterfaceLanguages
@@ -76,7 +76,11 @@ fun ChiuKnowApp() {
             var estimatedLevel by remember { mutableStateOf(CefrLevel.A1) }
             var correctAnswers by remember { mutableIntStateOf(0) }
             val placementQuestions = starterPlacementQuestionsFor(targetLanguage.code)
-            val currentQuestion = placementQuestions.first { it.level == adaptiveState.currentLevel }
+            val currentQuestion = placementQuestionForLevel(
+                questions = placementQuestions,
+                level = adaptiveState.currentLevel,
+                attemptIndex = adaptiveState.answeredQuestions
+            )
 
             LaunchedEffect(persistedInterfaceCode) {
                 val code = persistedInterfaceCode ?: return@LaunchedEffect
