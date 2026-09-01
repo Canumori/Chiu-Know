@@ -1,6 +1,6 @@
 # CHIU KNOW? — PROJECT STATE
 
-## ATUALIZAÇÃO AUTORITATIVA — 2026-09-01 — ANDROID, IDIOMAS E PERSISTÊNCIA
+## ATUALIZAÇÃO AUTORITATIVA — 2026-09-01 — ANDROID, IDIOMAS, PERSISTÊNCIA E PLACEMENT POR IDIOMA
 
 Este arquivo é a fonte autoritativa de continuidade do Chiu Know?, mas o estado real do GitHub e do Supabase sempre vence qualquer informação que tenha ficado desatualizada.
 
@@ -14,28 +14,29 @@ Este arquivo é a fonte autoritativa de continuidade do Chiu Know?, mas o estado
 - `versionCode = 1`, `versionName = 0.1.0`.
 - Java/JVM 17.
 - Compose BOM `2024.12.01`.
-- AppCompat `1.7.0` foi adicionado para suporte ao idioma do aplicativo.
-- DataStore Preferences `1.1.7` foi adicionado no commit `84809ae59c90ef1cdef51815208d0442f99f254d`; antes de implementar leitura/gravação, conferir o CI desse commit.
+- AppCompat `1.7.0` para suporte ao idioma do aplicativo.
+- DataStore Preferences `1.1.7` para persistência local das escolhas de idioma.
 
 ### FLUXO IMPLEMENTADO
-O aplicativo já possui o fluxo local:
+O aplicativo possui o fluxo local:
 1. `LANGUAGE_SELECTION`
 2. `PLACEMENT_INTRO`
 3. `PLACEMENT_TEST`
 4. `PLACEMENT_RESULT`
 
-O botão Continue JÁ navega para o placement test. A afirmação antiga de que ele não navegava está revogada.
+O botão Continue navega para o placement test.
 
 O placement test atual:
-- possui 6 perguntas locais, uma por faixa A1–C2;
-- usa atualmente um banco inicial em inglês independentemente do idioma-alvo;
+- possui bancos-protótipo separados para Português, English, Español, Français e 한국어;
+- cada banco tem 6 perguntas locais, uma por faixa A1–C2;
+- escolhe o banco correspondente ao idioma-alvo selecionado;
 - conta respostas corretas e chama `estimateLevel(correctAnswers, total)`;
 - apresenta explicitamente o resultado como nível estimado/protótipo, não certificação oficial CEFR;
 - permite tentar novamente e voltar para alterar idiomas;
 - ainda NÃO é o banco adaptativo/calibrado final.
 
 ### IDIOMAS
-Idiomas de interface e idiomas-alvo atualmente cadastrados:
+Idiomas de interface e idiomas-alvo cadastrados:
 - Português (`pt`)
 - English (`en`)
 - Español (`es`)
@@ -49,26 +50,39 @@ Recursos de interface existem em:
 - `app/src/main/res/values-fr/strings.xml`
 - `app/src/main/res/values-ko/strings.xml`
 
-O fluxo de placement já usa recursos traduzidos para textos de interface. As perguntas/opções continuam sendo conteúdo do idioma-alvo e NÃO devem ser tratadas como simples strings de interface.
+O fluxo de placement usa recursos traduzidos para textos de interface. As perguntas/opções são conteúdo do idioma-alvo e NÃO devem ser tratadas como simples strings de interface.
 
-A seleção do idioma da interface já chama `AppCompatDelegate.setApplicationLocales(...)`.
+A seleção do idioma da interface chama `AppCompatDelegate.setApplicationLocales(...)`.
+
+### PERSISTÊNCIA LOCAL VALIDADA
+- Commit `84809ae59c90ef1cdef51815208d0442f99f254d` adicionou DataStore Preferences `1.1.7`.
+- Android CI run #15 / `33446164837`: **SUCCESS**.
+- Commit `ae5ce19dc25bf56979a04b9beb4a720963f90f57` implementou persistência local de `interface_language_code` e `target_language_code` em DataStore.
+- Android CI run #17: etapa validada com sucesso antes do avanço para os bancos por idioma.
+- A persistência é LOCAL e não usa Supabase.
+
+### BANCOS DE PLACEMENT POR IDIOMA — VALIDADO
+- Commit `1428ccbbafbb4ed3cdf44bc3c6c745e960f4c82b`: `feat: add starter placement banks per language`.
+- Android CI run #18 / `33449564848`: **SUCCESS**.
+- Commit `49f7310001933445000dd08b0fa03796680a4205`: `feat: use placement bank for selected language`.
+- Android CI run #19 / `33449597226`: **SUCCESS**.
+- O arquivo `PlacementTest.kt` contém bancos iniciais distintos para `pt`, `en`, `es`, `fr` e `ko`.
+- `ChiuKnowApp.kt` usa `starterPlacementQuestionsFor(targetLanguage.code)` para selecionar o banco correto.
 
 ### CI CONFIRMADO
 - Run #5 / `33441495451`: sucesso no primeiro fluxo local de placement.
 - Run #8 / `33444348819`, SHA `da923930e55d7d0f3736ade3f194b6230cd737eb`: sucesso na aplicação do idioma selecionado à interface.
 - Run #14 / `33445288797`, SHA `81f972998f662535f30dd7e7c4bac29daeaaf7a3`: sucesso na integração do fluxo de placement com os recursos multilíngues.
+- Run #15 / `33446164837`: sucesso após adicionar DataStore.
+- Run #18 / `33449564848`: sucesso nos bancos-protótipo separados por idioma.
+- Run #19 / `33449597226`: sucesso na seleção do banco conforme idioma-alvo.
 
-### ÚLTIMA ALTERAÇÃO / PRÓXIMO PASSO EXATO
-Último commit conhecido nesta continuidade: `84809ae59c90ef1cdef51815208d0442f99f254d` — `feat: add DataStore preferences dependency`.
-
-PRÓXIMO PASSO OBRIGATÓRIO:
-1. Conferir no GitHub Actions o CI do commit `84809ae5...` antes de acrescentar outra mudança.
-2. Se falhar, investigar job/log e corrigir somente a causa dessa etapa.
-3. Se passar, implementar de forma pequena a persistência LOCAL das escolhas de idioma da interface e idioma-alvo usando DataStore.
-4. Validar novamente no CI.
-5. Só depois avançar para bancos de placement específicos por idioma e evolução do mecanismo adaptativo.
-
-Não conectar Supabase para realizar essa persistência: ela é local.
+### PRÓXIMO PASSO EXATO
+1. Não mexer no Supabase nesta etapa.
+2. Evoluir o placement em incrementos pequenos e verificáveis, sem chamar o protótipo atual de teste CEFR validado.
+3. Próxima mudança de código deve introduzir somente a BASE do mecanismo adaptativo/local, preservando os cinco bancos já funcionais e a possibilidade de voltar/tentar novamente.
+4. Validar cada mudança no Android CI antes de ampliar banco, dificuldade ou lógica.
+5. Só depois aumentar a quantidade/calibração das perguntas por idioma.
 
 ## ARTE / IDENTIDADE VISUAL
 - Nenhuma arte ou mascote deve ser gerada, redesenhada ou substituída por iniciativa do assistente.
@@ -88,7 +102,7 @@ Não conectar Supabase para realizar essa persistência: ela é local.
 - Região: `sa-east-1` (São Paulo).
 - Host conhecido: `db.uskxabsodcnzlovuaurp.supabase.co`.
 - Esta conta/organização é SEPARADA da usada pelo Chiu Player.
-- Até o estado registrado aqui, o desenvolvimento Android atual NÃO precisa de Supabase e nenhuma escrita de backend é necessária para o próximo passo.
+- O desenvolvimento Android atual NÃO precisa de Supabase e nenhuma escrita de backend é necessária para o próximo passo.
 
 ## CHIU PLAYER — PROIBIDO DURANTE TRABALHOS DO CHIU KNOW?
 - Organização do Chiu Player: `Chiu`.
@@ -102,8 +116,7 @@ Não conectar Supabase para realizar essa persistência: ela é local.
 Esta informação serve apenas para impedir interpretações erradas entre os projetos:
 - No Chiu Player, o aplicativo gera atividade real no Supabase principalmente pela comunicação com o backend do próprio Chiu Player.
 - No estado conhecido do Chiu Player, há chamadas à Edge Function `chiu-panel`; operações como `sync`, sincronização aparelho/listas, verificações de autorização e outras informações dependentes do painel podem gerar requisições reais ao Supabase do CHIU PLAYER.
-- O Chiu Player também possui o workflow `supabase-health.yml`, configurado para realizar uma chamada automática duas vezes por dia para atividade/health check periódico.
-- Portanto, não é necessário abrir manualmente o Chiu Player apenas para tentar gerar atividade periódica no Supabase do Chiu Player.
+- O Chiu Player possui health checks automáticos no GitHub; isso não autoriza usar o backend do Player no Chiu Know?.
 - NADA desta nota autoriza usar `hpcbkvbrlwjnwlikmbfb` no Chiu Know?. São backends totalmente separados.
 
 # PROTOCOLO OBRIGATÓRIO ANTES DE QUALQUER ESCRITA NO SUPABASE
