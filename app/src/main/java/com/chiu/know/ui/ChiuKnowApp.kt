@@ -54,6 +54,7 @@ import kotlinx.coroutines.launch
 private val Context.languagePreferencesDataStore by preferencesDataStore(name = "language_preferences")
 private val interfaceLanguageCodeKey = stringPreferencesKey("interface_language_code")
 private val targetLanguageCodeKey = stringPreferencesKey("target_language_code")
+private fun estimatedLevelKey(languageCode: String) = stringPreferencesKey("estimated_level_$languageCode")
 
 private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, LEARNING_TRAIL }
 
@@ -74,9 +75,12 @@ fun ChiuKnowApp() {
             var targetLanguage by remember(persistedTargetCode) {
                 mutableStateOf(supportedTargetLanguages.firstOrNull { it.code == persistedTargetCode } ?: supportedTargetLanguages.first())
             }
+            val persistedEstimatedLevel = preferences[estimatedLevelKey(targetLanguage.code)]
+                ?.let { stored -> CefrLevel.entries.firstOrNull { it.name == stored } }
             var adaptiveState by remember { mutableStateOf(startAdaptivePlacement()) }
-            var estimatedLevel by remember { mutableStateOf(CefrLevel.A1) }
+            var estimatedLevel by remember(persistedEstimatedLevel) { mutableStateOf(persistedEstimatedLevel ?: CefrLevel.A1) }
             var correctAnswers by remember { mutableIntStateOf(0) }
+            var trailOpenedFromResult by remember { mutableStateOf(false) }
             val placementQuestions = starterPlacementQuestionsFor(targetLanguage.code)
             val currentQuestion = placementQuestionForLevel(
                 questions = placementQuestions,
@@ -101,12 +105,22 @@ fun ChiuKnowApp() {
                     coroutineScope.launch { context.languagePreferencesDataStore.edit { it[targetLanguageCodeKey] = selected.code } }
                 }) { step = AppStep.PLACEMENT_INTRO }
 
-                AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(targetLanguage, onStart = {
-                    adaptiveState = startAdaptivePlacement()
-                    estimatedLevel = CefrLevel.A1
-                    correctAnswers = 0
-                    step = AppStep.PLACEMENT_TEST
-                }, onBack = { step = AppStep.LANGUAGE_SELECTION })
+                AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(
+                    targetLanguage = targetLanguage,
+                    previousLevel = persistedEstimatedLevel,
+                    onContinueLearning = { level ->
+                        estimatedLevel = level
+                        trailOpenedFromResult = false
+                        step = AppStep.LEARNING_TRAIL
+                    },
+                    onStart = {
+                        adaptiveState = startAdaptivePlacement()
+                        estimatedLevel = CefrLevel.A1
+                        correctAnswers = 0
+                        step = AppStep.PLACEMENT_TEST
+                    },
+                    onBack = { step = AppStep.LANGUAGE_SELECTION }
+                )
 
                 AppStep.PLACEMENT_TEST -> PlacementQuestionScreen(
                     question = currentQuestion,
@@ -118,7 +132,14 @@ fun ChiuKnowApp() {
                         val result = advanceAdaptivePlacement(adaptiveState, answeredCorrectly)
                         adaptiveState = result.state
                         estimatedLevel = result.estimatedLevel
-                        if (result.finished) step = AppStep.PLACEMENT_RESULT
+                        if (result.finished) {
+                            coroutineScope.launch {
+                                context.languagePreferencesDataStore.edit {
+                                    it[estimatedLevelKey(targetLanguage.code)] = result.estimatedLevel.name
+                                }
+                            }
+                            step = AppStep.PLACEMENT_RESULT
+                        }
                     }
                 )
 
@@ -126,14 +147,19 @@ fun ChiuKnowApp() {
                     level = estimatedLevel,
                     correctAnswers = correctAnswers,
                     total = adaptiveState.answeredQuestions,
-                    onContinue = { step = AppStep.LEARNING_TRAIL },
+                    onContinue = {
+                        trailOpenedFromResult = true
+                        step = AppStep.LEARNING_TRAIL
+                    },
                     onRestart = { step = AppStep.PLACEMENT_INTRO },
                     onChangeLanguage = { step = AppStep.LANGUAGE_SELECTION }
                 )
 
                 AppStep.LEARNING_TRAIL -> LearningTrailScreen(
                     estimatedLevel = estimatedLevel,
-                    onBack = { step = AppStep.PLACEMENT_RESULT }
+                    onBack = {
+                        step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO
+                    }
                 )
             }
         }
@@ -152,11 +178,25 @@ private fun LanguageOnboardingScreen(interfaceLanguage: LanguageOption, targetLa
 }
 
 @Composable
-private fun PlacementTestIntroScreen(targetLanguage: LanguageOption, onStart: () -> Unit, onBack: () -> Unit) {
+private fun PlacementTestIntroScreen(
+    targetLanguage: LanguageOption,
+    previousLevel: CefrLevel?,
+    onContinueLearning: (CefrLevel) -> Unit,
+    onStart: () -> Unit,
+    onBack: () -> Unit
+) {
     CenteredColumn {
         Text(stringResource(R.string.placement_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(16.dp))
         Text(stringResource(R.string.placement_description, targetLanguage.label), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.placement_prototype_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(32.dp))
+        Text(stringResource(R.string.placement_prototype_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(24.dp))
+        if (previousLevel != null) {
+            Text("${stringResource(R.string.estimated_level)}: ${previousLevel.name}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(12.dp))
+            Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = { onContinueLearning(previousLevel) }) {
+                Text(stringResource(R.string.continue_to_path))
+            }
+            Spacer(Modifier.height(12.dp))
+        }
         Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStart) { Text(stringResource(R.string.start_level_test)) }; Spacer(Modifier.height(12.dp))
         OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) }
     }
