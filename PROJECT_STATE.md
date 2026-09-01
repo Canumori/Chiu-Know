@@ -1,6 +1,6 @@
 # CHIU KNOW? — PROJECT STATE
 
-## ATUALIZAÇÃO AUTORITATIVA — 2026-09-01 — PLACEMENT ADAPTATIVO + SELETOR MULTIPERGUNTA VALIDADO
+## ATUALIZAÇÃO AUTORITATIVA — 2026-09-01 — PLACEMENT ADAPTATIVO + BANCO INGLÊS EXPANDIDO E VALIDADO
 
 Este arquivo é a fonte autoritativa de continuidade do Chiu Know?, mas o estado real do GitHub e do Supabase sempre vence informação desatualizada.
 
@@ -23,32 +23,41 @@ O placement usa o núcleo adaptativo local na interface:
 - mantém tentar novamente, alterar idiomas, DataStore e aviso explícito de protótipo/estimativa;
 - NÃO é teste CEFR calibrado nem certificação oficial.
 
-## INFRAESTRUTURA PARA MÚLTIPLAS PERGUNTAS POR NÍVEL — VALIDADA
-- `PlacementTest.kt` possui `placementQuestionsForLevel(...)` para obter todas as perguntas de um nível.
-- Possui `placementQuestionForLevel(...)`, que seleciona de forma cíclica entre múltiplas perguntas e falha explicitamente se o nível estiver sem conteúdo.
-- A UI usa esse seletor em vez de `first { level == ... }`.
-- Teste `PlacementQuestionSelectionTest.kt` cobre: filtro por nível, rotação entre múltiplas perguntas e erro explícito para banco vazio.
-- Commits da infraestrutura: `2e611fcea5be22f6d10ada096633f60b6d439230`, `2532900844919885b14adf57bb689e3d910c30f9` e `24e3d54fb2d3c494acdb98acffd53146a06d1e70`.
-- Android CI run #33 / `33459131956`: **SUCCESS**, concluída em 2026-09-01T01:33:38Z.
+## INFRAESTRUTURA MULTIPERGUNTA — VALIDADA
+- `placementQuestionsForLevel(...)` obtém todas as perguntas de um nível.
+- `placementQuestionForLevel(...)` seleciona ciclicamente entre múltiplas perguntas e falha explicitamente se o nível estiver vazio.
+- A UI usa esse seletor.
+- `PlacementQuestionSelectionTest.kt` cobre filtro, rotação e banco vazio.
+- Android CI run #33 / `33459131956`: SUCCESS.
+
+## BANCO INGLÊS — PRIMEIRA EXPANSÃO CONTROLADA VALIDADA
+- English (`en`) agora possui exatamente 2 perguntas em cada nível A1, A2, B1, B2, C1 e C2 (12 perguntas no total).
+- A segunda pergunta de cada nível foi adicionada sem alterar motor adaptativo, UI, bancos dos outros quatro idiomas ou Supabase.
+- Commit de conteúdo: `3a04be3ec4e4ce33ce7f71285b18a0bb276f92b6`.
+- Teste `EnglishPlacementBankTest.kt` exige pelo menos 2 perguntas em cada nível e IDs únicos.
+- Commit do teste: `50a53e55a0e44c98015ee851c19ec0af0c46adfd`.
+- Android CI run #36 / `33513922534`: **SUCCESS**, concluída em 2026-09-01T13:33:08Z. Portanto testes + build do APK passaram com a expansão inglesa.
+- Esta expansão melhora variedade do protótipo, mas ainda NÃO representa calibração psicométrica CEFR.
 
 ## HISTÓRICO VALIDADO RELEVANTE
-- `1428ccbbafbb4ed3cdf44bc3c6c745e960f4c82b`: bancos iniciais por idioma; run #18 SUCCESS.
-- `49f7310001933445000dd08b0fa03796680a4205`: banco pelo idioma-alvo; run #19 SUCCESS.
-- `d6153bdfe929690266fd65a2bc6af08b4f6d727c`: núcleo adaptativo corrigido; run #22 SUCCESS.
-- `517d7975da49f96c4970cddf49ba28a5e994b7ea`: CI executa testes antes do APK; run #26 SUCCESS.
-- `982572b4389651191e504ed01aef82b41376d13a`: adaptativo ligado à UI; run #29 SUCCESS.
-- `24e3d54fb2d3c494acdb98acffd53146a06d1e70`: UI passa a usar seletor seguro multipergunta; run #33 SUCCESS.
+- Run #18: bancos iniciais por idioma — SUCCESS.
+- Run #19: banco pelo idioma-alvo — SUCCESS.
+- Run #22: núcleo adaptativo corrigido — SUCCESS.
+- Run #26: CI com testes antes do APK — SUCCESS.
+- Run #29: adaptativo ligado à UI — SUCCESS.
+- Run #33: seletor multipergunta seguro — SUCCESS.
+- Run #36 / `33513922534`: banco inglês com 2 perguntas por nível + testes — SUCCESS.
 
 ## PRÓXIMO PASSO EXATO
 1. NÃO mexer no Supabase.
 2. Não fazer redesign nem gerar arte.
-3. Preservar o run #33 como baseline da infraestrutura multipergunta.
-4. Expandir conteúdo em ETAPAS, uma língua por vez, começando por English (`en`).
-5. Nesta primeira expansão, adicionar somente uma segunda pergunta por nível A1–C2 no banco inglês, sem alterar o motor adaptativo.
-6. Adicionar teste que confirme cobertura mínima de duas perguntas por nível no banco inglês.
-7. Validar testes + APK no CI antes de tocar em Português, Español, Français ou 한국어.
-8. Não ampliar todos os idiomas de uma vez.
-9. Continuar chamando o resultado de estimativa/protótipo até validação adequada.
+3. Preservar run #36 como baseline validada da expansão inglesa.
+4. Continuar expansão uma língua por vez.
+5. Próxima língua: Português (`pt`). Adicionar somente uma segunda pergunta por nível A1–C2, sem alterar English, Español, Français, 한국어, motor adaptativo ou UI.
+6. Adicionar teste equivalente que exija pelo menos 2 perguntas por nível e IDs únicos no banco português.
+7. Validar testes + APK no CI antes de tocar em Español.
+8. Não ampliar várias línguas na mesma etapa.
+9. Continuar chamando resultado de estimativa/protótipo até validação adequada.
 
 ## ARTE / IDENTIDADE VISUAL
 - Nenhuma arte ou mascote deve ser gerada/redesenhada por iniciativa do assistente.
