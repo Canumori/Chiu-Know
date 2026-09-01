@@ -23,8 +23,8 @@ enum class ResponseType {
 /**
  * Pedagogical contract for every real learning activity.
  *
- * The model intentionally stores learning purpose separately from UI so that
- * future progress/review logic can use evidence rather than XP or screen visits.
+ * Learning purpose, expected evidence and future review identity live in the
+ * model instead of being inferred from UI visits or XP.
  */
 data class LearningActivity(
     val id: String,
@@ -35,7 +35,8 @@ data class LearningActivity(
     val responseType: ResponseType,
     val prompt: String,
     val feedback: String,
-    val reviewKey: String
+    val reviewKey: String,
+    val acceptedAnswers: List<String>
 ) {
     init {
         require(id.isNotBlank()) { "Activity id must not be blank" }
@@ -44,5 +45,18 @@ data class LearningActivity(
         require(prompt.isNotBlank()) { "Prompt must not be blank" }
         require(feedback.isNotBlank()) { "Feedback must not be blank" }
         require(reviewKey.isNotBlank()) { "Review key must not be blank" }
+        require(acceptedAnswers.isNotEmpty()) { "Activity must define accepted answers" }
+        require(acceptedAnswers.none { it.isBlank() }) { "Accepted answers must not be blank" }
     }
+}
+
+/**
+ * Conservative deterministic evaluator for the first text-retrieval activities.
+ * It ignores surrounding whitespace and letter case, but intentionally does not
+ * erase accents or rewrite learner input. More complex response types will use
+ * dedicated evaluators rather than weakening this rule globally.
+ */
+fun isLearningAnswerCorrect(activity: LearningActivity, learnerAnswer: String): Boolean {
+    val normalized = learnerAnswer.trim().lowercase()
+    return activity.acceptedAnswers.any { it.trim().lowercase() == normalized }
 }
