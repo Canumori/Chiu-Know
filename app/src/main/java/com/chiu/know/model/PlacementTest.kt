@@ -38,11 +38,17 @@ val starterFrenchPlacementQuestions = listOf(
 )
 val starterKoreanPlacementQuestions = listOf(
     PlacementQuestion("ko-a1-001", CefrLevel.A1, "저는 학생___.", listOf("입니다", "있습니다", "합니다", "갑니다"), 0),
+    PlacementQuestion("ko-a1-002", CefrLevel.A1, "저는 브라질 사람___.", listOf("입니다", "있어요", "가요", "먹어요"), 0),
     PlacementQuestion("ko-a2-001", CefrLevel.A2, "어제 친구를 ___.", listOf("만나요", "만났어요", "만날 거예요", "만나고 있어요"), 1),
+    PlacementQuestion("ko-a2-002", CefrLevel.A2, "지금 비가 오니까 우산을 ___.", listOf("가져가세요", "가져갔어요", "가져갈까요 어제", "가져왔었어요"), 0),
     PlacementQuestion("ko-b1-001", CefrLevel.B1, "시간이 있으면 같이 영화를 ___.", listOf("봤어요", "봐요", "봤었어요", "보지 않았어요"), 1),
+    PlacementQuestion("ko-b1-002", CefrLevel.B1, "한국에 가게 되면 한복을 꼭 ___.", listOf("입어 보고 싶어요", "입었어요", "입지 않았어요", "입고 있었어요 어제"), 0),
     PlacementQuestion("ko-b2-001", CefrLevel.B2, "집에 도착했을 때 동생은 이미 ___.", listOf("자요", "잠들어 있었어요", "잘 거예요", "자고 싶어요"), 1),
+    PlacementQuestion("ko-b2-002", CefrLevel.B2, "미리 알았더라면 그렇게 늦게 ___.", listOf("오지 않았을 거예요", "오지 않아요", "오지 않을 거예요", "오지 않았어요 내일"), 0),
     PlacementQuestion("ko-c1-001", CefrLevel.C1, "비가 많이 ___ 경기는 계속되었다.", listOf("왔지만", "오면", "와서", "오려고"), 0),
-    PlacementQuestion("ko-c2-001", CefrLevel.C2, "그의 설명은 보고서가 제기한 의혹을 완전히 ___ 못했다.", listOf("해소하지", "폐지하지", "회피하지", "분산하지"), 0)
+    PlacementQuestion("ko-c1-002", CefrLevel.C1, "결과는 긍정적이다. ___ 추가적인 검토가 필요하다.", listOf("그럼에도 불구하고", "따라서", "마찬가지로", "덕분에"), 0),
+    PlacementQuestion("ko-c2-001", CefrLevel.C2, "그의 설명은 보고서가 제기한 의혹을 완전히 ___ 못했다.", listOf("해소하지", "폐지하지", "회피하지", "분산하지"), 0),
+    PlacementQuestion("ko-c2-002", CefrLevel.C2, "그 표현은 여러 해석의 여지를 남기도록 의도적으로 ___ 작성되었다.", listOf("모호하게", "의무적으로", "간헐적으로", "낡게"), 0)
 )
 fun starterPlacementQuestionsFor(languageCode: String): List<PlacementQuestion> = when (languageCode) { "pt" -> starterPortuguesePlacementQuestions; "es" -> starterSpanishPlacementQuestions; "fr" -> starterFrenchPlacementQuestions; "ko" -> starterKoreanPlacementQuestions; else -> starterEnglishPlacementQuestions }
 fun placementQuestionsForLevel(questions: List<PlacementQuestion>, level: CefrLevel): List<PlacementQuestion> = questions.filter { it.level == level }
