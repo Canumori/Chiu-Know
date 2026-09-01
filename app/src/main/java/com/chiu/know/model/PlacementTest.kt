@@ -42,11 +42,17 @@ val starterPortuguesePlacementQuestions = listOf(
 
 val starterSpanishPlacementQuestions = listOf(
     PlacementQuestion("es-a1-001", CefrLevel.A1, "Yo ___ estudiante.", listOf("soy", "eres", "somos", "ser"), 0),
+    PlacementQuestion("es-a1-002", CefrLevel.A1, "Nosotros ___ de Brasil.", listOf("soy", "eres", "somos", "es"), 2),
     PlacementQuestion("es-a2-001", CefrLevel.A2, "Ayer nosotros ___ al cine.", listOf("vamos", "fuimos", "iremos", "iríamos"), 1),
+    PlacementQuestion("es-a2-002", CefrLevel.A2, "Mientras yo cocinaba, ella ___ la televisión.", listOf("veía", "verá", "vio mañana", "habría visto"), 0),
     PlacementQuestion("es-b1-001", CefrLevel.B1, "Si tengo tiempo, ___ contigo mañana.", listOf("hablé", "hablaré", "hablaba", "habría hablado"), 1),
+    PlacementQuestion("es-b1-002", CefrLevel.B1, "Me gustaría que tú ___ más temprano mañana.", listOf("llegas", "llegaras", "llegarás", "llegaste"), 1),
     PlacementQuestion("es-b2-001", CefrLevel.B2, "Cuando llegué, ellos ya ___.", listOf("salen", "salieron", "habían salido", "saldrán"), 2),
+    PlacementQuestion("es-b2-002", CefrLevel.B2, "Si hubiera sabido lo del retraso, ___ más tarde.", listOf("habría llegado", "llegaré", "llegaba", "he llegado"), 0),
     PlacementQuestion("es-c1-001", CefrLevel.C1, "Aunque estaba cansado, ___ trabajando.", listOf("siguió", "seguirá", "seguiría", "haya seguido"), 0),
-    PlacementQuestion("es-c2-001", CefrLevel.C2, "La medida se adoptó para ___ los efectos de la crisis.", listOf("mitigar", "derogar", "eludir", "prescindir"), 0)
+    PlacementQuestion("es-c1-002", CefrLevel.C1, "Los resultados son prometedores; ___, todavía se necesitan más análisis.", listOf("sin embargo", "por lo tanto", "asimismo", "por eso"), 0),
+    PlacementQuestion("es-c2-001", CefrLevel.C2, "La medida se adoptó para ___ los efectos de la crisis.", listOf("mitigar", "derogar", "eludir", "prescindir"), 0),
+    PlacementQuestion("es-c2-002", CefrLevel.C2, "La redacción del informe fue deliberadamente ___, lo que permitió interpretaciones distintas.", listOf("ambigua", "obsoleta", "obligatoria", "esporádica"), 0)
 )
 
 val starterFrenchPlacementQuestions = listOf(
