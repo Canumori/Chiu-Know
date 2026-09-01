@@ -15,4 +15,12 @@
     <string name="prototype_score_note">Le score de ce prototype n’est pas encore l’évaluation CECR calibrée finale.</string>
     <string name="try_again">Réessayer</string>
     <string name="change_languages">Changer de langues</string>
+    <string name="continue_to_path">Continuer vers mon parcours</string>
+    <string name="learning_path_title">Votre parcours CECR</string>
+    <string name="learning_path_description">Votre niveau estimé définit le point de départ. Les niveaux supérieurs seront débloqués lorsque les vraies règles de progression seront ajoutées.</string>
+    <string name="trail_completed">Atteint</string>
+    <string name="trail_current">Actuel</string>
+    <string name="trail_locked">Verrouillé</string>
+    <string name="trail_foundation_note">Ceci est la première base du parcours d’apprentissage. Les leçons, activités et règles de progression viennent ensuite.</string>
+    <string name="back_to_result">Retour au résultat</string>
 </resources>
