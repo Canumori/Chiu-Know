@@ -1,6 +1,6 @@
 # CHIU KNOW? — PROJECT STATE
 
-## ATUALIZAÇÃO AUTORITATIVA — 2026-09-01 — PLACEMENT ADAPTATIVO + INGLÊS E PORTUGUÊS EXPANDIDOS E VALIDADOS
+## ATUALIZAÇÃO AUTORITATIVA — 2026-09-01 — TODOS OS 5 BANCOS EXPANDIDOS E VALIDADOS
 
 Este arquivo é a fonte autoritativa de continuidade do Chiu Know?, mas o estado real do GitHub e do Supabase sempre vence informação desatualizada. Antes de qualquer alteração, reler este arquivo e conferir o estado real do GitHub.
 
@@ -33,26 +33,58 @@ O placement usa núcleo adaptativo local:
 - Commit da UI usando seletor seguro: `24e3d54fb2d3c494acdb98acffd53146a06d1e70`.
 - Android CI run #33 / `33459131956`: SUCCESS.
 
-## BANCO INGLÊS — VALIDADO
-- English (`en`) possui 2 perguntas em cada nível A1, A2, B1, B2, C1 e C2: 12 perguntas no total.
+## TODOS OS BANCOS DE PLACEMENT — VALIDADOS
+Cada idioma possui agora exatamente 12 perguntas: 2 em cada nível A1, A2, B1, B2, C1 e C2. Cada banco possui teste próprio exigindo pelo menos 2 perguntas por nível e IDs únicos.
+
+### English (`en`)
+- 12 perguntas, 2 por nível A1–C2.
 - Commit de conteúdo: `3a04be3ec4e4ce33ce7f71285b18a0bb276f92b6`.
-- `EnglishPlacementBankTest.kt` exige pelo menos 2 perguntas por nível e IDs únicos.
-- Commit do teste: `50a53e55a0e44c98015ee851c19ec0af0c46adfd`.
+- Commit do teste `EnglishPlacementBankTest.kt`: `50a53e55a0e44c98015ee851c19ec0af0c46adfd`.
 - Android CI run #36 / `33513922534`: SUCCESS; testes unitários + build debug APK + upload do artifact passaram.
 
-## BANCO PORTUGUÊS — VALIDADO
-- Português (`pt`) possui 2 perguntas em cada nível A1, A2, B1, B2, C1 e C2: 12 perguntas no total.
-- Commit de conteúdo: `f8c8ab9c78ab9ad8577222bd2eabba98ab7e517d` (`feat: expand Portuguese placement bank`).
-- Teste equivalente exige pelo menos 2 perguntas por nível e IDs únicos.
-- Commit do teste: `a2ecbbfee847f92105f3ef2cfef6a16cb1fb0460` (`test: require two Portuguese questions per level`).
-- Android CI run #39 / `33514174976`: SUCCESS. Job `99876893217` completou com sucesso: unit tests, build debug APK e upload debug APK.
-- A expansão portuguesa não alterou English, Español, Français, 한국어, motor adaptativo, UI ou Supabase.
+### Português (`pt`)
+- 12 perguntas, 2 por nível A1–C2.
+- Commit de conteúdo: `f8c8ab9c78ab9ad8577222bd2eabba98ab7e517d`.
+- Commit do teste `PortuguesePlacementBankTest.kt`: `a2ecbbfee847f92105f3ef2cfef6a16cb1fb0460`.
+- Android CI run #39 / `33514174976`: SUCCESS.
+- Job `99876893217`: unit tests, build debug APK e upload debug APK em SUCCESS.
 
-## BANCOS AINDA NÃO EXPANDIDOS
-- Español (`es`): ainda 1 pergunta por nível A1–C2.
-- Français (`fr`): ainda 1 pergunta por nível A1–C2.
-- 한국어 (`ko`): ainda 1 pergunta por nível A1–C2.
-- NÃO expandir vários idiomas de uma vez.
+### Español (`es`)
+- 12 perguntas, 2 por nível A1–C2.
+- Todas as perguntas espanholas anteriores foram preservadas e foi adicionada uma segunda pergunta por nível.
+- Commit de conteúdo: `39b4fc0579ad3d693675e6934c63cfac958f0047`.
+- Commit do teste `SpanishPlacementBankTest.kt`: `d34c65b4ed96e758796ed16d921117bff566989d`.
+- Android CI run #42 / `33516140417`: SUCCESS.
+- Job `99883520518`: unit tests, build debug APK e upload debug APK em SUCCESS.
+- Artifact validado: `chiu-know-debug`, artifact ID `9803688376`.
+
+### Français (`fr`)
+- 12 perguntas, 2 por nível A1–C2.
+- Todas as perguntas francesas anteriores foram preservadas e foi adicionada uma segunda pergunta por nível.
+- Commit de conteúdo: `89dd0d837c4648e3f6f8ec20d268beeedad4ea6e`.
+- Commit do teste `FrenchPlacementBankTest.kt`: `46160ec64ae4d6b097a5954c00696b4693b9358e`.
+- Android CI run #44 / `33516828777`: SUCCESS.
+- Job `99885846553`: unit tests, build debug APK e upload debug APK em SUCCESS.
+- Artifact validado: `chiu-know-debug`, artifact ID `9803982887`.
+
+### 한국어 (`ko`)
+- 12 perguntas, 2 por nível A1–C2.
+- Todas as perguntas coreanas anteriores foram preservadas e foi adicionada uma segunda pergunta por nível.
+- Commit de conteúdo: `4f3abea74ce111ecf21fe94a4df02ce372688865`.
+- Commit do teste `KoreanPlacementBankTest.kt`: `0ada06db14757c3a9983c0eac025d1ada37224fa`.
+- Android CI run #46 / `33517863466`: SUCCESS.
+- Job `99889347099`: unit tests, build debug APK e upload debug APK em SUCCESS.
+- Artifact validado: `chiu-know-debug`, artifact ID `9804381192`, digest `sha256:937f0f1408b112eb0aa53f91796c61d2540fcc7ad41a636849302c92dd7baa77`.
+
+## CONCLUSÃO DA EXPANSÃO POR LÍNGUA
+- English: CONCLUÍDO E VALIDADO.
+- Português: CONCLUÍDO E VALIDADO.
+- Español: CONCLUÍDO E VALIDADO.
+- Français: CONCLUÍDO E VALIDADO.
+- 한국어: CONCLUÍDO E VALIDADO.
+- Total atual do placement: 60 perguntas, sendo 12 por idioma e 2 por nível CEFR em cada idioma.
+- A expansão de conteúdo está encerrada neste marco.
+- Não alterar o motor adaptativo como consequência desta expansão; variedade de perguntas não equivale a calibração psicométrica CEFR.
 
 ## HISTÓRICO VALIDADO RELEVANTE
 - Run #18: bancos iniciais por idioma — SUCCESS.
@@ -63,21 +95,14 @@ O placement usa núcleo adaptativo local:
 - Run #33 / `33459131956`: seletor multipergunta seguro — SUCCESS.
 - Run #36 / `33513922534`: inglês com 2 perguntas por nível + testes — SUCCESS.
 - Run #39 / `33514174976`: português com 2 perguntas por nível + testes — SUCCESS.
+- Run #42 / `33516140417`: espanhol com 2 perguntas por nível + testes — SUCCESS.
+- Run #44 / `33516828777`: francês com 2 perguntas por nível + testes — SUCCESS.
+- Run #46 / `33517863466`: coreano com 2 perguntas por nível + testes — SUCCESS.
 
-## PRÓXIMO PASSO EXATO
-1. NÃO mexer no Supabase.
-2. NÃO mexer no Chiu Player.
-3. Não fazer redesign nem gerar/substituir arte.
-4. Preservar run #39 como baseline validada atual.
-5. Próxima língua: Español (`es`).
-6. Adicionar SOMENTE uma segunda pergunta por nível A1–C2 ao banco espanhol, mantendo as perguntas existentes.
-7. Não alterar English, Português, Français, 한국어, motor adaptativo, UI, DataStore ou dependências.
-8. Criar teste equivalente ao inglês/português exigindo pelo menos 2 perguntas em cada nível espanhol e IDs únicos.
-9. Rodar/aguardar o Android CI e verificar efetivamente unit tests + build debug APK + upload do artifact.
-10. Se CI falhar, investigar o run/job/log atual e corrigir somente a causa exata; não fazer rollback amplo nem mudanças por suposição.
-11. Só após CI verde do espanhol atualizar este PROJECT_STATE e então considerar Français como etapa seguinte.
-12. Não tocar em Français e 한국어 antes da validação do Español.
-13. Continuar chamando o resultado de estimativa/protótipo; variedade de perguntas NÃO equivale a calibração psicométrica CEFR.
+## PRÓXIMO PASSO
+- Não há mais idioma pendente nesta rodada de expansão dos bancos de placement.
+- Antes de iniciar nova frente funcional, revisar o objetivo específico e preservar todos os cinco bancos e seus testes.
+- Se futuramente forem adicionadas mais perguntas, fazê-lo de forma isolada, com IDs únicos e validação em CI.
 
 ## PROTEÇÕES CONTRA REGRESSÃO
 - Mudanças pequenas, isoladas e reversíveis.
@@ -88,7 +113,7 @@ O placement usa núcleo adaptativo local:
 - Não introduzir dependências desnecessárias.
 - Não mandar Camila editar código, usar terminal, resolver conflito ou abrir ZIP.
 - Conferir sempre código real, commits e Actions antes de concluir sucesso/falha.
-- Um workflow antigo falho não invalida um run atual verde; usar sempre o run correspondente ao head atual.
+- Um workflow antigo falho não invalida um run atual verde; usar sempre o run correspondente ao head relevante.
 
 ## ARTE / IDENTIDADE VISUAL
 - Nenhuma arte ou mascote deve ser gerada/redesenhada/substituída por iniciativa do assistente.
@@ -112,7 +137,6 @@ Antes de qualquer escrita futura no Supabase para Chiu Know?, ler a skill Supaba
 
 ## CHIU PLAYER — ESTADO QUE NÃO DEVE SER CONFUNDIDO COM ESTA FRENTE
 - Chiu Player é projeto separado em `Canumori/Chiu-player`.
-- A manutenção recente do health check do Player foi separada e não faz parte do desenvolvimento Android do Chiu Know?.
 - Não usar código, branches, Supabase, versões, APKs ou decisões do Player no Chiu Know?.
 
 ## PRINCÍPIO FINAL
