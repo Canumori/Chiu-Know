@@ -15,4 +15,12 @@
     <string name="prototype_score_note">This prototype score is not yet the final calibrated CEFR assessment.</string>
     <string name="try_again">Try again</string>
     <string name="change_languages">Change languages</string>
+    <string name="continue_to_path">Continue to my path</string>
+    <string name="learning_path_title">Your CEFR path</string>
+    <string name="learning_path_description">Your estimated level sets the starting point. Higher levels will unlock as real learning progress is added.</string>
+    <string name="trail_completed">Reached</string>
+    <string name="trail_current">Current</string>
+    <string name="trail_locked">Locked</string>
+    <string name="trail_foundation_note">This is the first foundation of the learning path. Lessons, activities and progress rules come next.</string>
+    <string name="back_to_result">Back to result</string>
 </resources>
