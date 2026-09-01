@@ -1,6 +1,6 @@
 # CHIU KNOW? — PROJECT STATE
 
-## ATUALIZAÇÃO AUTORITATIVA — 2026-09-01 — ANDROID, IDIOMAS, PERSISTÊNCIA E PLACEMENT POR IDIOMA
+## ATUALIZAÇÃO AUTORITATIVA — 2026-09-01 — ANDROID, IDIOMAS, PERSISTÊNCIA, PLACEMENT POR IDIOMA E NÚCLEO ADAPTATIVO
 
 Este arquivo é a fonte autoritativa de continuidade do Chiu Know?, mas o estado real do GitHub e do Supabase sempre vence qualquer informação que tenha ficado desatualizada.
 
@@ -33,7 +33,7 @@ O placement test atual:
 - conta respostas corretas e chama `estimateLevel(correctAnswers, total)`;
 - apresenta explicitamente o resultado como nível estimado/protótipo, não certificação oficial CEFR;
 - permite tentar novamente e voltar para alterar idiomas;
-- ainda NÃO é o banco adaptativo/calibrado final.
+- ainda NÃO usa o novo núcleo adaptativo na interface e NÃO é um teste CEFR calibrado/validado.
 
 ### IDIOMAS
 Idiomas de interface e idiomas-alvo cadastrados:
@@ -69,6 +69,17 @@ A seleção do idioma da interface chama `AppCompatDelegate.setApplicationLocale
 - O arquivo `PlacementTest.kt` contém bancos iniciais distintos para `pt`, `en`, `es`, `fr` e `ko`.
 - `ChiuKnowApp.kt` usa `starterPlacementQuestionsFor(targetLanguage.code)` para selecionar o banco correto.
 
+### NÚCLEO ADAPTATIVO LOCAL — BASE VALIDADA, AINDA NÃO LIGADA À UI
+- Commit `2539ef3bf6fdbe8a532df8d26ccefa18b3e3b3cf`: `feat: add local adaptive placement engine`.
+- Arquivo novo: `app/src/main/java/com/chiu/know/model/AdaptivePlacement.kt`.
+- A implementação é deliberadamente local e isolada da interface existente.
+- Ela mantém limites de nível A1–C2, inicia em B1 e estreita o intervalo conforme resposta correta/incorreta.
+- Ela NÃO constitui modelo psicométrico calibrado e NÃO autoriza chamar o resultado de certificação CEFR.
+- Android CI run #21 / `33457791947`: **FAILURE** somente em compilação por referência Kotlin inexistente `firstIndex` na linha 46.
+- Commit de correção `d6153bdfe929690266fd65a2bc6af08b4f6d727c`: `fix: compile adaptive placement engine`; única correção funcional foi trocar `CEFR_LEVELS.firstIndex` por `CEFR_LEVELS.indices.first`.
+- Android CI run #22 / `33458221953`: **SUCCESS**, incluindo build do APK e upload do artifact.
+- O fluxo visual de placement de 6 perguntas permaneceu inalterado durante essa etapa.
+
 ### CI CONFIRMADO
 - Run #5 / `33441495451`: sucesso no primeiro fluxo local de placement.
 - Run #8 / `33444348819`, SHA `da923930e55d7d0f3736ade3f194b6230cd737eb`: sucesso na aplicação do idioma selecionado à interface.
@@ -76,13 +87,17 @@ A seleção do idioma da interface chama `AppCompatDelegate.setApplicationLocale
 - Run #15 / `33446164837`: sucesso após adicionar DataStore.
 - Run #18 / `33449564848`: sucesso nos bancos-protótipo separados por idioma.
 - Run #19 / `33449597226`: sucesso na seleção do banco conforme idioma-alvo.
+- Run #21 / `33457791947`: falha localizada de compilação no novo núcleo adaptativo; não avançar a partir desse commit isoladamente.
+- Run #22 / `33458221953`, SHA `d6153bdfe929690266fd65a2bc6af08b4f6d727c`: **SUCCESS** após a correção mínima.
 
 ### PRÓXIMO PASSO EXATO
 1. Não mexer no Supabase nesta etapa.
-2. Evoluir o placement em incrementos pequenos e verificáveis, sem chamar o protótipo atual de teste CEFR validado.
-3. Próxima mudança de código deve introduzir somente a BASE do mecanismo adaptativo/local, preservando os cinco bancos já funcionais e a possibilidade de voltar/tentar novamente.
-4. Validar cada mudança no Android CI antes de ampliar banco, dificuldade ou lógica.
-5. Só depois aumentar a quantidade/calibração das perguntas por idioma.
+2. Preservar o fluxo visual atual enquanto o núcleo adaptativo é validado separadamente.
+3. Próxima mudança pequena deve adicionar validação/testes locais do comportamento do `AdaptivePlacement.kt` (caminhos de respostas corretas/incorretas e limites A1/C2) antes de conectá-lo à UI.
+4. Validar essa mudança no Android CI antes de integrar o adaptativo ao fluxo real.
+5. Somente depois integrar o mecanismo adaptativo à interface, em mudança isolada e reversível.
+6. Só depois ampliar/calibrar os bancos de perguntas por idioma.
+7. Continuar descrevendo todo placement como protótipo/estimativa até existir validação adequada.
 
 ## ARTE / IDENTIDADE VISUAL
 - Nenhuma arte ou mascote deve ser gerada, redesenhada ou substituída por iniciativa do assistente.
