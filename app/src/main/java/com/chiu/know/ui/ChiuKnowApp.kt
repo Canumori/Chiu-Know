@@ -39,9 +39,11 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.chiu.know.R
 import com.chiu.know.model.CefrLevel
+import com.chiu.know.model.CefrTrailStatus
 import com.chiu.know.model.LanguageOption
 import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.advanceAdaptivePlacement
+import com.chiu.know.model.buildCefrTrail
 import com.chiu.know.model.placementQuestionForLevel
 import com.chiu.know.model.startAdaptivePlacement
 import com.chiu.know.model.starterPlacementQuestionsFor
@@ -53,7 +55,7 @@ private val Context.languagePreferencesDataStore by preferencesDataStore(name = 
 private val interfaceLanguageCodeKey = stringPreferencesKey("interface_language_code")
 private val targetLanguageCodeKey = stringPreferencesKey("target_language_code")
 
-private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT }
+private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, LEARNING_TRAIL }
 
 @Composable
 fun ChiuKnowApp() {
@@ -124,8 +126,14 @@ fun ChiuKnowApp() {
                     level = estimatedLevel,
                     correctAnswers = correctAnswers,
                     total = adaptiveState.answeredQuestions,
+                    onContinue = { step = AppStep.LEARNING_TRAIL },
                     onRestart = { step = AppStep.PLACEMENT_INTRO },
                     onChangeLanguage = { step = AppStep.LANGUAGE_SELECTION }
+                )
+
+                AppStep.LEARNING_TRAIL -> LearningTrailScreen(
+                    estimatedLevel = estimatedLevel,
+                    onBack = { step = AppStep.PLACEMENT_RESULT }
                 )
             }
         }
@@ -168,14 +176,50 @@ private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, to
 }
 
 @Composable
-private fun PlacementResultScreen(level: CefrLevel, correctAnswers: Int, total: Int, onRestart: () -> Unit, onChangeLanguage: () -> Unit) {
+private fun PlacementResultScreen(level: CefrLevel, correctAnswers: Int, total: Int, onContinue: () -> Unit, onRestart: () -> Unit, onChangeLanguage: () -> Unit) {
     CenteredColumn {
         Text(stringResource(R.string.estimated_level), style = MaterialTheme.typography.titleLarge); Spacer(Modifier.height(12.dp))
         Text(level.name, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp))
         Text(stringResource(R.string.correct_answers, correctAnswers, total)); Spacer(Modifier.height(8.dp))
         Text(stringResource(R.string.prototype_score_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(28.dp))
-        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onRestart) { Text(stringResource(R.string.try_again)) }; Spacer(Modifier.height(12.dp))
+        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onContinue) { Text(stringResource(R.string.continue_to_path)) }; Spacer(Modifier.height(12.dp))
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onRestart) { Text(stringResource(R.string.try_again)) }; Spacer(Modifier.height(12.dp))
         OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onChangeLanguage) { Text(stringResource(R.string.change_languages)) }
+    }
+}
+
+@Composable
+private fun LearningTrailScreen(estimatedLevel: CefrLevel, onBack: () -> Unit) {
+    val trail = remember(estimatedLevel) { buildCefrTrail(estimatedLevel) }
+    CenteredColumn {
+        Text(stringResource(R.string.learning_path_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(12.dp))
+        Text(stringResource(R.string.learning_path_description), style = MaterialTheme.typography.bodyLarge)
+        Spacer(Modifier.height(20.dp))
+        trail.forEach { item ->
+            val statusLabel = when (item.status) {
+                CefrTrailStatus.COMPLETED -> stringResource(R.string.trail_completed)
+                CefrTrailStatus.CURRENT -> stringResource(R.string.trail_current)
+                CefrTrailStatus.LOCKED -> stringResource(R.string.trail_locked)
+            }
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                tonalElevation = if (item.status == CefrTrailStatus.CURRENT) 6.dp else 1.dp
+            ) {
+                Text(
+                    text = "${item.level.name} · $statusLabel",
+                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = if (item.status == CefrTrailStatus.CURRENT) FontWeight.Bold else FontWeight.Normal
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+        }
+        Spacer(Modifier.height(12.dp))
+        Text(stringResource(R.string.trail_foundation_note), style = MaterialTheme.typography.bodyMedium)
+        Spacer(Modifier.height(16.dp))
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_result)) }
     }
 }
 
