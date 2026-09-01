@@ -43,7 +43,7 @@ private val CEFR_LEVELS = CefrLevel.entries
 fun startAdaptivePlacement(): AdaptivePlacementState {
     val startIndex = CEFR_LEVELS.indexOf(CefrLevel.B1)
     return AdaptivePlacementState(
-        lowerBoundIndex = CEFR_LEVELS.firstIndex,
+        lowerBoundIndex = CEFR_LEVELS.indices.first,
         upperBoundIndex = CEFR_LEVELS.lastIndex,
         currentLevelIndex = startIndex
     )
