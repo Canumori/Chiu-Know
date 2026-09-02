@@ -31,3 +31,13 @@ Não copiar/incorporar código AGPL em um aplicativo proprietário sem decisão 
 
 ## BACKEND
 Supabase foi mantido por oferecer banco, Auth, Storage, Functions e Realtime em um conjunto administrável diretamente pelo ChatGPT. Chiu Know? usa conta/organização/projeto completamente separados do Chiu Player. Ver `PROJECT_STATE.md` para IDs e protocolo de segurança.
+
+
+## FSRS / LICENÇAS — VERIFICAÇÃO 2026-09-02
+- `open-spaced-repetition/android-fsrs`: MIT, mas último push de código em 2023, estrutura de aplicativo de exemplo e não uma dependência publicada pronta; não incorporado.
+- `TheRockYT/FsrsKt`: FSRS-6 Kotlin Multiplatform publicado, porém GPL-3.0; não incorporado porque restringiria a liberdade futura do Chiu Know?.
+- Decisão da usuária: preservar liberdade do projeto e desenvolver solução própria; não usar dependência GPL.
+- Fórmula autoritativa consultada: wiki atual `open-spaced-repetition/awesome-fsrs/The-Algorithm`, FSRS-6 com 21 parâmetros.
+- Implementação interna usa somente observações honestas existentes: incorreto→Again, correto→Good. Não fabrica ratings Hard/Easy.
+- O repositório Chiu Know? continua público para minutos ilimitados do GitHub Actions. Não há arquivo `LICENSE`; publicidade do repositório e licença de reutilização são conceitos diferentes.
+- Não adicionar licença, mudar visibilidade ou incorporar código de terceiros por suposição.

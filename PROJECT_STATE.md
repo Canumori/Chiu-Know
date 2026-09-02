@@ -1,6 +1,6 @@
 # CHIU KNOW? — PROJECT STATE
 
-## ESTADO AUTORITATIVO — 2026-09-02 15:53 BRT — MULTIPLE_CHOICE + EVIDÊNCIA POR REVIEWKEY VALIDADOS ATÉ CI #124
+## ESTADO AUTORITATIVO — 2026-09-02 16:12 BRT — NÚCLEO PRIVADO FSRS-6 + PERSISTÊNCIA + FILA VALIDADOS ATÉ CI #131
 
 Este arquivo é o handoff operacional autoritativo. Em qualquer novo chat: NÃO recomeçar, NÃO inferir estado apenas pela memória e NÃO alterar antes de conferir GitHub real. O estado real do GitHub vence documentação desatualizada.
 
@@ -8,6 +8,7 @@ LEITURA OBRIGATÓRIA: `PROJECT_STATE.md` + `PRODUCT_SPEC.md` JUNTOS antes de qua
 
 ## 1. IDENTIDADE TÉCNICA E SEPARAÇÃO ABSOLUTA
 - Repo: `Canumori/Chiu-Know`; branch: `main`; Android Kotlin + Jetpack Compose; uso inicialmente privado/restrito ~100 usuários.
+- O repositório está PUBLICAMENTE visível para usar minutos ilimitados do GitHub Actions; não mudar a visibilidade por suposição. Não existe arquivo `LICENSE` neste estado: visibilidade pública não torna automaticamente o código GPL ou permissivamente licenciado.
 - Supabase EXCLUSIVO Chiu Know?: `uskxabsodcnzlovuaurp`, org `Chiu Know` / `aeerqbmrwulxsawhjyvm`, região `sa-east-1`.
 - Supabase Chiu Player PROIBIDO: `hpcbkvbrlwjnwlikmbfb`, org `Chiu` / `nnrwosbnvdvzaoflwxlo`. Se aparecer numa operação desta frente, PARAR e não escrever.
 - Não misturar Player: código, branches, APKs, workflows, backend, OTA ou decisões.
@@ -59,7 +60,14 @@ CI #120 / run `33660512925`: **COMPLETED / SUCCESS** em 2026-09-02.
 O teste prova a rotação do alvo grammar `FILL_IN 1 → FILL_IN 2 → REORDER → ciclo`, e prova que erro conta como tentativa/exposição sem virar mastery. Esse é o último HEAD funcional explicitamente validado antes deste commit documental.
 
 ## 9. EVIDÊNCIA LOCAL
-`LearningEvidence`: activityId, reviewKey, level, primarySkill, correct, timestamp. DataStore por idioma. Codec: `timestamp|activityId|reviewKey|level|primarySkill|correct`; não guarda resposta bruta; malformed ignorado. `LearningEvidenceSummary` descreve uma atividade. `ReviewEvidenceSummary` agrega por nível + reviewKey através de variantes, mantendo tentativas, acertos/erros, diversidade de atividades e primeiro/último timestamp como fatos separados. Nenhum dos dois declara mastery ou agenda revisão. Fundação por reviewKey: commit `e0351805eca7ff35400cbeb76f50171f40850ab1`; CI #124 run `33663675090` SUCCESS. Commits anteriores: `83a2d6b...`, `b3d1371...`, `1a7c82a...`, `f7ecf3a...`, `2d003e8...`, `31f1289...`, `cacbe5a...`.
+`LearningEvidence`: activityId, reviewKey, level, primarySkill, correct, timestamp. DataStore por idioma. Codec: `timestamp|activityId|reviewKey|level|primarySkill|correct`; não guarda resposta bruta; malformed ignorado. `LearningEvidenceSummary` descreve uma atividade. `ReviewEvidenceSummary` agrega por nível + reviewKey através de variantes, mantendo fatos separados; commit `e0351805...`, CI #124 SUCCESS.
+
+Infraestrutura de revisão própria, sem dependência GPL:
+- `ReviewScheduleState`/`ReviewScheduler`: fronteira persistível versionada, separada de UI/evidência/mastery; `824ecdd...`, CI #126 SUCCESS.
+- `PrivateFsrsScheduler`: núcleo FSRS-6 implementado internamente a partir das fórmulas públicas atuais; o app mapeia honestamente incorreto→Again e correto→Good, sem inventar Hard/Easy. Primeira tentativa `5b6b1eba...` teve somente erro de compilação no teste (#127); correção estreita `01a6b79...`, CI #128 SUCCESS.
+- `ReviewScheduleCodec`: round-trip versionado, malformed/versão desconhecida ignorados, mantém estado mais novo por reviewKey; `9829a95...`, CI #129 SUCCESS.
+- Persistência DataStore junto da evidência, ainda sem mudar seleção visível; `dfd7c7a...`, CI #130 SUCCESS.
+- `StarterReviewQueue`: distingue DUE_REVIEW, NEW_TARGET, NONE_DUE e NO_CONTENT; prioriza vencido, depois conhecimento sem estado; `a6c0b1a...`, CI #131 SUCCESS. A fila ainda NÃO está conectada à UI.
 
 ## 10. VISUAL — ABSOLUTO
 Ler `VISUAL_BIBLE.md` antes de arte.
@@ -79,23 +87,28 @@ UI de atividade localizada default/pt/es/fr/ko; commits `15ead396...`, `a1f4caf.
 - Sempre validar CI do HEAD novo; não massificar conteúdo antes da infraestrutura.
 
 ## 13. NÃO EXISTE AINDA — NÃO INVENTAR
-Mastery real; FSRS/scheduler completo; desbloqueio por retenção; FREE_TEXT apropriado; listening/áudio real; speaking/ASR/pronúncia; writing real; histórias funcionais; tutor IA; gamificação completa; seis scores válidos no placement; integração binária final dos personagens; conteúdo A1–C2 completo.
+Mastery real; scheduler ativo na UI/seleção; otimização personalizada dos parâmetros FSRS; desbloqueio por retenção; FREE_TEXT apropriado; listening/áudio real; speaking/ASR/pronúncia; writing real; histórias funcionais; tutor IA; gamificação completa; seis scores válidos no placement; integração binária final dos personagens; conteúdo A1–C2 completo.
 
 ## 14. PRÓXIMO PASSO EXATO
-Último HEAD funcional validado antes deste commit documental: `e0351805eca7ff35400cbeb76f50171f40850ab1`, CI #124 / run `33663675090` SUCCESS.
+Último HEAD funcional validado antes deste commit documental: `a6c0b1ad996524efd3bd9a334fdb86302fb48c7a`, CI #131 / run `33665698425` SUCCESS.
 
-Próxima frente segura:
-1. verificar no código-fonte real uma implementação FSRS Android/Kotlin permissiva, incluindo licença, versão, API e compatibilidade;
-2. não incorporar dependência AGPL nem assumir que referência antiga continua compatível;
-3. definir uma fronteira pequena entre fatos observados (`LearningEvidence`/`ReviewEvidenceSummary`) e estado calculado de agendamento;
-4. não chamar estado de scheduler de nível CEFR ou mastery;
-5. preservar o seletor starter atual até existir agendamento explícito, testado e migrável;
-6. começar com testes puros/determinísticos antes de ligar scheduler à UI/DataStore;
-7. não alterar desbloqueio/trilha com base nessa fundação;
-8. CI verde antes de persistência ou navegação;
-9. depois continuar infraestrutura difícil: revisão/retenção, persistência/migração, áudio/listening, speaking tecnicamente honesto, assets e estrutura escalável de conteúdo.
+Decisão de produto necessária antes de conectar a fila à UI:
+- quando todos os conhecimentos conhecidos estiverem agendados para o futuro e não houver revisão vencida, definir se o aluno:
+  1. vê uma pausa pedagógica com o próximo horário e pode fazer prática opcional;
+  2. fica bloqueado até o próximo horário;
+  3. continua recebendo prática livre sem alterar o scheduler.
 
-A decisão de usar biblioteca externa ou implementação interna só pode ser tomada após verificar licença/API/manutenção e custo de migração. Nenhum scheduler está integrado neste estado.
+Recomendação: opção 1. Ela respeita espaçamento sem impedir quem quiser estudar mais. Prática opcional deve ser registrada separadamente ou, inicialmente, não alterar o estado FSRS para não distorcer intervalos.
+
+Depois da decisão:
+1. criar estado/tela localizados para NONE_DUE;
+2. conectar `StarterReviewQueue` à UI sem alterar placement/trilha/desbloqueio;
+3. preservar feedback congelado;
+4. testar DUE/NEW/NONE/NO_CONTENT;
+5. CI verde;
+6. só depois avaliar prática opcional, migração e parâmetros personalizados.
+
+Repositório permanece público para CI ilimitado; uso do app permanece restrito; não adicionar GPL nem arquivo LICENSE sem autorização explícita.
 
 ## 15. PRAZO
 Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta cada vez mais utilizável, infraestrutura difícil e documentação para continuidade posterior. Não sacrificar pedagogia para fingir A1–C2 completo. Continuidade deve depender do GitHub, não memória do chat.
@@ -119,7 +132,7 @@ Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta ca
 16. Atualizar este arquivo ao fim de frente relevante com HEAD/CI/próximo passo.
 
 ## 17. ARQUIVOS-CHAVE
-`PROJECT_STATE.md`, `PRODUCT_SPEC.md`, `VISUAL_BIBLE.md`, `RESEARCH.md`, `.github/workflows/android-ci.yml`, `ChiuKnowApp.kt`, `LearningActivity.kt`, `StarterLearningActivities.kt`, `A1IntegratedLearningActivities.kt`, `A1ReadingActivities.kt`, `A1ReorderActivities.kt`, `A1MultipleChoiceActivities.kt`, `StarterReviewSelection.kt`, `LearningEvidence.kt`, `LearningEvidenceCodec.kt`, `LearningEvidenceSummary.kt`, `ReviewEvidenceSummary.kt`; testes especialmente `StarterReviewSelectionTest.kt`, `StarterLearningActivitiesIntegrationTest.kt`, `LearningActivityTest.kt`, `A1ReorderActivitiesTest.kt`.
+`PROJECT_STATE.md`, `PRODUCT_SPEC.md`, `VISUAL_BIBLE.md`, `RESEARCH.md`, `.github/workflows/android-ci.yml`, `ChiuKnowApp.kt`, `LearningActivity.kt`, `StarterLearningActivities.kt`, `A1IntegratedLearningActivities.kt`, `A1ReadingActivities.kt`, `A1ReorderActivities.kt`, `A1MultipleChoiceActivities.kt`, `StarterReviewSelection.kt`, `LearningEvidence.kt`, `LearningEvidenceCodec.kt`, `LearningEvidenceSummary.kt`, `ReviewEvidenceSummary.kt`, `ReviewScheduleState.kt`, `PrivateFsrsScheduler.kt`, `ReviewScheduleCodec.kt`, `ReviewSchedulePersistence.kt`, `StarterReviewQueue.kt`; testes especialmente `StarterReviewSelectionTest.kt`, `StarterLearningActivitiesIntegrationTest.kt`, `LearningActivityTest.kt`, `A1ReorderActivitiesTest.kt`.
 
 ## 18. MARCOS FINAIS DESTE HANDOFF
 - `b85e6c3...`: 7 atividades starter/idioma; CI #118 SUCCESS.
@@ -128,4 +141,10 @@ Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta ca
 - `a407785b503c46e5c3d2fa017b65248e9e8b693b`: UI MULTIPLE_CHOICE dedicada; CI #122 / run `33662794556` SUCCESS.
 - `c386afff4d99fa9a3a08022ac1c60e7c0a6d06b9`: fatia A1 MULTIPLE_CHOICE nos cinco idiomas e testes; CI #123 / run `33663382962` SUCCESS.
 - `e0351805eca7ff35400cbeb76f50171f40850ab1`: evidência agregada por reviewKey sem mastery; CI #124 / run `33663675090` SUCCESS.
+- `824ecdd0c3b679277dc18e401474ef0657205ccc`: fronteira própria do scheduler; CI #126 SUCCESS.
+- `5b6b1eba9735aa11c3dba95049f8595999982678`: núcleo FSRS-6; CI #127 falhou por assinatura de assert no teste, sem regressão de produção.
+- `01a6b79ba85ed4376303a0595c2dd23428aeffe7`: correção estreita do teste; CI #128 SUCCESS.
+- `9829a95e4d42cfab51c9ae7c76954e306a85075e`: codec versionado; CI #129 SUCCESS.
+- `dfd7c7a54c02ade892a266e2bdbf9b096c8ea5a5`: persistência junto da evidência; CI #130 SUCCESS.
+- `a6c0b1ad996524efd3bd9a334fdb86302fb48c7a`: fila conservadora; CI #131 / run `33665698425` SUCCESS.
 - O commit que grava este documento passa a ser o novo HEAD documental; conferir seu CI antes de prosseguir.
