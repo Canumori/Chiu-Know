@@ -21,3 +21,25 @@ fun updateReviewScheduleStateSet(
         .map(::encodeReviewScheduleState)
         .toSet()
 }
+
+
+/**
+ * Replays historical evidence into scheduler state for installations that
+ * recorded attempts before review schedules existed.
+ *
+ * Raw evidence remains authoritative. Replay is chronological and combines
+ * activity variants through their shared reviewKey.
+ */
+fun rebuildReviewScheduleStates(
+    evidence: List<LearningEvidence>,
+    scheduler: ReviewScheduler = PrivateFsrsScheduler()
+): List<ReviewScheduleState> {
+    val states = mutableMapOf<String, ReviewScheduleState>()
+
+    evidence.sortedBy { it.attemptedAtEpochMillis }.forEach { attempt ->
+        val observation = reviewObservationFor(attempt)
+        states[attempt.reviewKey] = scheduler.next(states[attempt.reviewKey], observation)
+    }
+
+    return states.values.sortedBy { it.reviewKey }
+}

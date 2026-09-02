@@ -59,6 +59,7 @@ import com.chiu.know.model.encodeLearningEvidence
 import com.chiu.know.model.updateReviewScheduleStateSet
 import com.chiu.know.model.isLearningAnswerCorrect
 import com.chiu.know.model.learningEvidenceFor
+import com.chiu.know.model.rebuildReviewScheduleStates
 import com.chiu.know.model.placementQuestionForLevel
 import com.chiu.know.model.startAdaptivePlacement
 import com.chiu.know.model.starterLearningActivityFor
@@ -95,7 +96,11 @@ fun ChiuKnowApp() {
             var targetLanguage by remember(persistedTargetCode) { mutableStateOf(supportedTargetLanguages.firstOrNull { it.code == persistedTargetCode } ?: supportedTargetLanguages.first()) }
             val persistedEstimatedLevel = preferences[estimatedLevelKey(targetLanguage.code)]?.let { stored -> CefrLevel.entries.firstOrNull { it.name == stored } }
             val persistedLearningEvidence = remember(preferences, targetLanguage.code) { decodeLearningEvidenceSet(preferences[learningEvidenceKey(targetLanguage.code)].orEmpty()) }
-            val persistedReviewSchedules = remember(preferences, targetLanguage.code) { decodeReviewScheduleStateSet(preferences[reviewScheduleKey(targetLanguage.code)].orEmpty()) }
+            val persistedReviewSchedules = remember(preferences, targetLanguage.code) {
+                val stored = decodeReviewScheduleStateSet(preferences[reviewScheduleKey(targetLanguage.code)].orEmpty())
+                if (stored.isNotEmpty() || persistedLearningEvidence.isEmpty()) stored
+                else rebuildReviewScheduleStates(persistedLearningEvidence)
+            }
             var adaptiveState by remember { mutableStateOf(startAdaptivePlacement()) }
             var estimatedLevel by remember(persistedEstimatedLevel) { mutableStateOf(persistedEstimatedLevel ?: CefrLevel.A1) }
             var correctAnswers by remember { mutableIntStateOf(0) }

@@ -45,6 +45,29 @@ class ReviewSchedulePersistenceTest {
         assertEquals(1, decodeReviewScheduleStateSet(updated).size)
     }
 
+    @Test
+    fun rebuildsHistoricalEvidenceChronologicallyAcrossActivityVariants() {
+        val history = listOf(
+            evidence("choice", "en:a1:reading:introduction-name", true, 300L),
+            evidence("fill-1", "en:a1:reading:introduction-name", false, 100L),
+            evidence("grammar", "en:a1:grammar:copula:first-person", true, 150L),
+            evidence("fill-2", "en:a1:reading:introduction-name", true, 200L)
+        )
+
+        val states = rebuildReviewScheduleStates(history)
+        val reading = states.first { it.reviewKey == "en:a1:reading:introduction-name" }
+
+        assertEquals(2, states.size)
+        assertEquals(3, reading.reviewCount)
+        assertEquals(1, reading.lapseCount)
+        assertEquals(300L, reading.lastReviewAtEpochMillis)
+    }
+
+    @Test
+    fun rebuildingEmptyHistoryCreatesNoArtificialSchedule() {
+        assertEquals(emptyList<ReviewScheduleState>(), rebuildReviewScheduleStates(emptyList()))
+    }
+
     private fun evidence(
         activityId: String,
         reviewKey: String,
