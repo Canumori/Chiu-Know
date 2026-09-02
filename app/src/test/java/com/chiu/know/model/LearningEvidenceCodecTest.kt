@@ -22,6 +22,25 @@ class LearningEvidenceCodecTest {
     }
 
     @Test
+    fun encodingRoundTripsWithoutRawLearnerAnswer() {
+        val evidence = LearningEvidence(
+            activityId = "en-a1-greeting-002",
+            reviewKey = "en:a1:greeting:hello",
+            level = CefrLevel.A1,
+            primarySkill = LearningSkill.VOCABULARY,
+            correct = false,
+            attemptedAtEpochMillis = 5678L
+        )
+
+        val encoded = encodeLearningEvidence(evidence)
+        assertEquals(
+            "5678|en-a1-greeting-002|en:a1:greeting:hello|A1|VOCABULARY|false",
+            encoded
+        )
+        assertEquals(evidence, decodeLearningEvidence(encoded))
+    }
+
+    @Test
     fun ignoresMalformedEvidence() {
         assertNull(decodeLearningEvidence("broken"))
         assertNull(decodeLearningEvidence("123|id|key|Z9|VOCABULARY|true"))
