@@ -28,6 +28,7 @@ class LearningActivityTest {
         assertEquals(LearningSkill.VOCABULARY, activity.primarySkill)
         assertEquals(ResponseType.FILL_IN, activity.responseType)
         assertEquals("en:a1:greeting:hello", activity.reviewKey)
+        assertTrue(activity.responseOptions.isEmpty())
     }
 
     @Test
@@ -36,6 +37,34 @@ class LearningActivityTest {
 
         assertTrue(isLearningAnswerCorrect(activity, "  HeLLo  "))
         assertFalse(isLearningAnswerCorrect(activity, "hi"))
+    }
+
+    @Test
+    fun reorderActivityKeepsExplicitTokensSeparateFromAcceptedAnswer() {
+        val activity = sampleActivity().copy(
+            id = "en-a1-reorder-001",
+            responseType = ResponseType.REORDER,
+            prompt = "Put the words in order.",
+            acceptedAnswers = listOf("I am Mia"),
+            responseOptions = listOf("Mia", "am", "I")
+        )
+
+        assertEquals(listOf("Mia", "am", "I"), activity.responseOptions)
+        assertTrue(isLearningAnswerCorrect(activity, "I am Mia"))
+        assertFalse(isLearningAnswerCorrect(activity, "Mia I am"))
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun structuredResponseRejectsMissingOptions() {
+        sampleActivity().copy(responseType = ResponseType.REORDER)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun structuredResponseRejectsBlankOption() {
+        sampleActivity().copy(
+            responseType = ResponseType.MULTIPLE_CHOICE,
+            responseOptions = listOf("hello", "")
+        )
     }
 
     @Test(expected = IllegalArgumentException::class)
