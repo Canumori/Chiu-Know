@@ -1,6 +1,6 @@
 # CHIU KNOW? — PROJECT STATE
 
-## ATUALIZAÇÃO AUTORITATIVA — 2026-09-02 — A1 MULTIHABILIDADE EM EXPANSÃO CONTROLADA
+## ATUALIZAÇÃO AUTORITATIVA — 2026-09-02 — READING A1 + SELEÇÃO BALANCEADA POR EVIDÊNCIA
 
 Este bloco é o estado autoritativo mais recente. Em caso de conflito com histórico antigo, este bloco vence. Antes de continuar, ler junto com `PRODUCT_SPEC.md`, `RESEARCH.md` e `VISUAL_BIBLE.md`. O estado real do GitHub sempre vence documentação desatualizada.
 
@@ -10,7 +10,7 @@ Este bloco é o estado autoritativo mais recente. Em caso de conflito com histó
 - Chiu Know? Supabase permitido: `uskxabsodcnzlovuaurp`.
 - Chiu Player Supabase PROIBIDO nesta frente: `hpcbkvbrlwjnwlikmbfb`.
 - Não misturar código, backend, versões, branches, APKs ou decisões do Chiu Player com Chiu Know?.
-- A frente recente de placement, trilha, atividades, evidência e arte não usou Supabase.
+- A frente recente de placement, trilha, atividades, evidência, Reading e seleção balanceada NÃO usou Supabase.
 
 ### ESTADO ANDROID REAL
 Fluxo atual:
@@ -26,35 +26,57 @@ Placement:
 - resultado é estimativa/protótipo, não certificação CEFR oficial;
 - não voltar ao cálculo antigo fixo por proporção de acertos.
 
-### APRENDIZAGEM A1 — ESTADO ATUAL
+### APRENDIZAGEM A1 — ESTADO ATUAL VALIDADO
 `LearningActivity.kt` declara habilidade, objetivo, CEFR, alvo de conhecimento, tipo de resposta, prompt, feedback, `reviewKey` e respostas aceitas.
 
-A primeira fatia A1 de VOCABULÁRIO existe nos cinco idiomas e trabalha uma saudação básica. Cada idioma possui duas variantes contextuais do mesmo conhecimento, compartilhando `reviewKey`, para recuperação/transferência em vez de mera repetição da mesma pergunta.
+A fundação A1 agora cobre três habilidades reais nos cinco idiomas:
+- VOCABULARY: 2 variantes contextuais por idioma para a mesma saudação básica;
+- GRAMMAR: 2 variantes contextuais por idioma para apresentação básica em primeira pessoa;
+- READING: 2 variantes contextuais por idioma para localizar um nome explicitamente informado em uma apresentação curta.
 
-Commit `d6297259adfd91bf14ba90a791c41463615bddde` adicionou as variantes contextuais. Commit `bdf9c7d0adb3d7174972cac72ce771faf2a5f88f` conectou a seleção ao histórico real de evidências locais. CI #90: SUCCESS.
+Cada par compartilha seu `reviewKey`, de forma que o mesmo conhecimento possa reaparecer em contexto diferente sem duplicar artificialmente o alvo pedagógico. Hoje existem exatamente 6 atividades A1 candidatas por idioma: 2 Vocabulary + 2 Grammar + 2 Reading. Não existe conteúdo artificial de níveis superiores para preencher trilha.
 
-A segunda fatia A1, agora de GRAMÁTICA, foi adicionada nos cinco idiomas. Ela trabalha apresentação básica em primeira pessoa e também possui duas variantes contextuais por idioma, com personagens canônicos em contexto textual e sem depender de novos assets binários.
+Commits da expansão Reading:
+- `8e50f38ecde412122c2ade5e6aeff3042cc97bab` — primeira fatia A1 de Reading determinística;
+- `e883d91cd3ebaf1db0a3cd49957f518f34ec6e33` — integra Reading ao starter bank;
+- `592b1871e9439eb75c513a1329775e2ceab50258` — testes específicos iniciais de Reading;
+- `e33b256a6fdc14e3f3ed634d9f5cd3d04467d891` — atualiza teste integrado antigo para aceitar Reading; Android CI #103 / run `33653824194`: SUCCESS;
+- `622054a72adb5335861023932d11c41eef124b45` — adiciona segundo contexto de Reading por idioma;
+- `19d3a31aba62b9d65b2b5e96ecd9c81026f60edd` — protege transferência contextual de Reading;
+- `8560f386327305cc957ddb34f7d50b88116a73da` — protege rotação de 6 atividades; Android CI #106 / run `33654295692`: SUCCESS.
 
-Commits relevantes da expansão:
-- `4bd64129dfccb31eea134035d95434d45824aa9b` — adiciona a fatia A1 de gramática;
-- `8243623946038e8e2fc4f16a5e43c5faf0d23c56` — integra vocabulário + gramática à rotação A1;
-- `497dd6250d85915eb226704bc681ddea539c877d` — testes específicos da gramática;
-- `26c798d68f8a2ca138982dedaa43cba389d60b45` — testes da rotação integrada;
-- `153c9bc1c48076b207804bda65e09e22bf6af173` — substitui expectativa antiga de apenas duas atividades.
-Android CI #98 / run `33652898608`: COMPLETED / SUCCESS.
+A correção continua determinística por `isLearningAnswerCorrect(...)`. Não substituir por julgamento subjetivo de IA.
 
-A correção continua determinística por `isLearningAnswerCorrect(...)`. Não substituir por julgamento subjetivo de IA. Não existe conteúdo falso de níveis superiores apenas para preencher a trilha.
+### SELEÇÃO A1 BASEADA EM EVIDÊNCIA OBSERVADA
+Foi criada uma camada pura de seleção em `StarterReviewSelection.kt`:
+- commit `571b1dab6f2260922c52a744089ec60a7a75e243` — `starterLearningActivityForEvidence(...)`;
+- escolhe primeiro o `reviewKey` com menos tentativas observadas;
+- em empate mantém ordem estável do currículo;
+- dentro do alvo escolhido alterna as variantes contextuais;
+- filtra evidência pelo nível e pelos `reviewKey` realmente candidatos;
+- NÃO usa acerto para declarar domínio;
+- NÃO é FSRS, mastery, XP, streak, desbloqueio ou progressão CEFR.
+
+Commit `7a5130c090c38c9e5373ca6f8b1566d0f4d8d9cd` adicionou testes dessa seleção. Android CI #108 / run `33654755461`: SUCCESS.
+
+A UI real foi então conectada a essa seleção em `ChiuKnowApp.kt`:
+- commit `150fbff9624a648e668f2812c4842aaaa5b03517` — troca a escolha antiga por contagem total pelo seletor balanceado;
+- esse commit removeu acidentalmente uma chave de fechamento de `PlacementResultScreen`, causando CI #109 FAILURE ainda na etapa de testes/compilação;
+- commit `aae3d7276ac401056f68f931a2d2cb7c207c9465` restaurou somente essa fronteira sintática;
+- Android CI #110 / run `33655546522`: COMPLETED / SUCCESS.
+
+A ligação UI ↔ evidência ↔ seletor está, portanto, validada no HEAD `aae3d7276ac401056f68f931a2d2cb7c207c9465`.
 
 ### EVIDÊNCIA LOCAL — PRESERVAR SEM CONFUNDIR COM DOMÍNIO
 Cada tentativa gera `LearningEvidence` com activityId, reviewKey, nível, habilidade, correto/incorreto e timestamp. Evidência é tentativa observada; NÃO é mastery, XP, streak, desbloqueio, CEFR ou FSRS.
 
 Persistência local por idioma em DataStore. Resposta textual bruta do aluno não é salva. Há decoder tolerante a entradas malformadas e agregação factual por atividade/reviewKey.
 
-O débito técnico do encoder inline foi resolvido:
+Infra já validada:
 - `2d003e830695b3c96a1801f9c5c29c0fc66f2958` — `encodeLearningEvidence(...)` centralizado;
 - `31f1289d9115d5cc206470b1eea2a660e697dc08` — teste de roundtrip;
-- `cacbe5a9ad40bee062769331053d16b90b803f70` — UI passa a usar o encoder centralizado;
-- Android CI #93 / run `33652350240`: COMPLETED / SUCCESS.
+- `cacbe5a9ad40bee062769331053d16b90b803f70` — UI usa o encoder centralizado;
+- Android CI #93 / run `33652350240`: SUCCESS.
 
 DataStore string-set continua sendo fundação pequena, não armazenamento definitivo para histórico ilimitado.
 
@@ -64,7 +86,7 @@ Commit `2121e7ca3a16811e5046f71d7b331bde26568dc3` mantém `LearningTrailScreen` 
 ### PRINCÍPIO PEDAGÓGICO AUTORITATIVO
 O objetivo é competência real, retenção e uso do idioma fora do app, não maximizar cliques/XP. Antes de produzir atividades em massa, validar pequenas fatias ponta a ponta. Evoluir para gramática, vocabulário, listening, reading, writing e speaking. C1/C2 exigem tarefas qualitativamente avançadas. Não fabricar scores por habilidade sem evidência suficiente.
 
-A rotação atual ainda é uma fundação simples. Ela alterna atividades A1 disponíveis com base no histórico, mas isso NÃO é um algoritmo de mastery nem revisão espaçada completa. Não chamar de FSRS.
+A seleção atual apenas equilibra exposição/repetição observada entre alvos disponíveis. Ela NÃO mede retenção ao longo do tempo, dificuldade, estabilidade de memória ou domínio. Não chamar de revisão espaçada completa nem FSRS.
 
 ### PERSONAGENS E VISUAL — PRESERVAÇÃO OBRIGATÓRIA
 Nome canônico do mosquito/pernilongo: **Jurandir**. O nome antigo está aposentado e só pode aparecer como proveniência histórica na Bíblia Visual.
@@ -76,22 +98,21 @@ REGRA ABSOLUTA DOS DOIS CHIUS:
 - universo, cards, exercícios, histórias e atividades: somente Chihuahua amarelo cartunesco aprovado;
 - nunca misturar os dois.
 
-`VISUAL_BIBLE.md` foi endurecido no commit `73d96780a5af5d4d0b65289d27c5c4069bf413f3` com registro das quatro pranchas e protocolo obrigatório: master aprovado é imutável; reutilizar arquivo em vez de recriar; nova pose é candidata e precisa ser mostrada/aprovada; não deformar/recolorir/trocar estilo; usar masters individuais transparentes de alta resolução quando disponíveis; manter registro de aprovação.
+`VISUAL_BIBLE.md` registra quatro pranchas e protocolo obrigatório: master aprovado é imutável; reutilizar arquivo em vez de recriar; nova pose é candidata e precisa ser mostrada/aprovada; não deformar/recolorir/trocar estilo; usar masters individuais transparentes de alta resolução quando disponíveis; manter registro de aprovação.
 
 As pranchas visuais B/C/D foram aprovadas como direção. A prancha C/master sheet transparente foi gerada na conversa, mas o binário aprovado ainda NÃO está incorporado ao repositório/APK. Ausência do binário no GitHub não autoriza inventar substituto nem regenerar silenciosamente.
 
-A usuária autorizou criar novas poses necessárias, mas toda pose nova continua `sample-first`: mostrar e obter aprovação explícita antes de integrar no APK.
-
 ### PRÓXIMA FRENTE EXATA
 1. Confirmar HEAD e CI reais antes de escrever.
-2. Continuar a expansão A1 em fatias pequenas, priorizando diversidade real de habilidade/tipo de resposta, não volume de perguntas equivalentes.
-3. Próxima candidata segura: uma pequena fatia de READING A1 com compreensão curta e avaliação determinística, sem áudio/IA/backend e sem exigir nova arte.
-4. Depois, validar recorrência do conhecimento entre vocabulário/gramática/reading sem inferir mastery.
-5. Listening, speaking e escrita livre exigem mecanismos/evaluadores próprios e devem entrar somente em fatias controladas; não fingir que FILL_IN cobre essas habilidades.
-6. Não pular prematuramente para FSRS completo, XP/streak, desbloqueio automático, IA, backend ou histórias completas.
-7. Resultado por seis habilidades continua obrigação do roadmap; não fabricar seis scores com o placement atual.
-8. Se uma frente exigir nova pose/asset, parar antes da integração e mostrar amostra à usuária.
-9. Fora de decisão real de produto/arte, continuar etapas seguras sem pedir microdecisões.
+2. A fundação A1 de Vocabulary + Grammar + Reading já está ponta a ponta e com seleção balanceada por evidência observada.
+3. Próximo passo seguro: revisar o modelo atual de `ResponseType` e a UI para identificar qual nova habilidade/tipo de resposta pode entrar sem fingir capacidade inexistente.
+4. Priorizar diversidade real de resposta em vez de apenas produzir mais FILL_IN. Uma candidata possível é REORDER/transformação se a UI atual puder suportar de modo determinístico; verificar código antes de decidir.
+5. Listening e Speaking exigem áudio/ASR/TTS ou mecanismos próprios e podem exigir decisão de produto/arquitetura. Não fingir implementação por meio de texto.
+6. Escrita livre exige avaliador próprio; não usar correspondência exata simples como se fosse avaliação de escrita.
+7. Não pular prematuramente para FSRS completo, XP/streak, desbloqueio automático, IA, backend ou histórias completas.
+8. Resultado por seis habilidades continua obrigação do roadmap; não fabricar seis scores com o placement atual.
+9. Se uma frente exigir nova pose/asset, parar antes da integração e mostrar amostra à usuária.
+10. Fora de decisão real de produto/arte, continuar etapas seguras sem pedir microdecisões.
 
 ### REGRA DE CONTINUIDADE
 A usuária não é programadora. Não pedir edição de código, terminal, conflitos ou ZIP. Usar ferramentas conectadas. Preservar o que funciona, fazer mudanças pequenas/reversíveis e validar CI.
