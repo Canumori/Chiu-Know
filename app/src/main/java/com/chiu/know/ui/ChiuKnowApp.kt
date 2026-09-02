@@ -116,10 +116,10 @@ fun ChiuKnowApp() {
                     }
                 }
                 AppStep.PLACEMENT_RESULT -> PlacementResultScreen(estimatedLevel, correctAnswers, adaptiveState.answeredQuestions, { trailOpenedFromResult = true; step = AppStep.LEARNING_TRAIL }, { step = AppStep.PLACEMENT_INTRO }, { step = AppStep.LANGUAGE_SELECTION })
-                AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, CefrLevel.A1) != null, { step = AppStep.LEARNING_ACTIVITY }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
+                AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
                 AppStep.LEARNING_ACTIVITY -> {
-                    val activity = starterLearningActivityFor(targetLanguage.code, CefrLevel.A1)
-                    if (activity == null) LaunchedEffect(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
+                    val activity = starterLearningActivityFor(targetLanguage.code, estimatedLevel)
+                    if (activity == null) LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
                     else LearningActivityScreen(activity, onAttempt = { learnerAnswer ->
                         val correct = isLearningAnswerCorrect(activity, learnerAnswer)
                         val evidence = learningEvidenceFor(activity, correct, System.currentTimeMillis())
