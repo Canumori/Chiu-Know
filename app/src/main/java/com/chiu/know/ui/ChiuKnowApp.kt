@@ -87,9 +87,7 @@ fun ChiuKnowApp() {
             var interfaceLanguage by remember(persistedInterfaceCode) { mutableStateOf(supportedInterfaceLanguages.firstOrNull { it.code == persistedInterfaceCode } ?: supportedInterfaceLanguages.first()) }
             var targetLanguage by remember(persistedTargetCode) { mutableStateOf(supportedTargetLanguages.firstOrNull { it.code == persistedTargetCode } ?: supportedTargetLanguages.first()) }
             val persistedEstimatedLevel = preferences[estimatedLevelKey(targetLanguage.code)]?.let { stored -> CefrLevel.entries.firstOrNull { it.name == stored } }
-            val persistedLearningEvidence = remember(preferences, targetLanguage.code) {
-                decodeLearningEvidenceSet(preferences[learningEvidenceKey(targetLanguage.code)].orEmpty())
-            }
+            val persistedLearningEvidence = remember(preferences, targetLanguage.code) { decodeLearningEvidenceSet(preferences[learningEvidenceKey(targetLanguage.code)].orEmpty()) }
             var adaptiveState by remember { mutableStateOf(startAdaptivePlacement()) }
             var estimatedLevel by remember(persistedEstimatedLevel) { mutableStateOf(persistedEstimatedLevel ?: CefrLevel.A1) }
             var correctAnswers by remember { mutableIntStateOf(0) }
@@ -127,9 +125,7 @@ fun ChiuKnowApp() {
                 AppStep.PLACEMENT_RESULT -> PlacementResultScreen(estimatedLevel, correctAnswers, adaptiveState.answeredQuestions, { trailOpenedFromResult = true; step = AppStep.LEARNING_TRAIL }, { step = AppStep.PLACEMENT_INTRO }, { step = AppStep.LANGUAGE_SELECTION })
                 AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
                 AppStep.LEARNING_ACTIVITY -> {
-                    val activity = remember(targetLanguage.code, estimatedLevel) {
-                        starterLearningActivityForEvidence(targetLanguage.code, estimatedLevel, persistedLearningEvidence)
-                    }
+                    val activity = remember(targetLanguage.code, estimatedLevel) { starterLearningActivityForEvidence(targetLanguage.code, estimatedLevel, persistedLearningEvidence) }
                     if (activity == null) LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
                     else LearningActivityScreen(activity, onAttempt = { learnerAnswer ->
                         val correct = isLearningAnswerCorrect(activity, learnerAnswer)
@@ -172,13 +168,7 @@ private fun PlacementResultScreen(level: CefrLevel, correctAnswers: Int, total: 
 private fun LearningTrailScreen(estimatedLevel: CefrLevel, hasFoundationActivity: Boolean, onStartFoundationActivity: () -> Unit, onBack: () -> Unit) {
     val trail = remember(estimatedLevel) { buildCefrTrail(estimatedLevel) }
     val scrollState = rememberScrollState()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(horizontal = 24.dp, vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(horizontal = 24.dp, vertical = 32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(stringResource(R.string.learning_path_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.learning_path_description), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(20.dp)); trail.forEach { item -> val statusLabel = when (item.status) { CefrTrailStatus.COMPLETED -> stringResource(R.string.trail_completed); CefrTrailStatus.CURRENT -> stringResource(R.string.trail_current); CefrTrailStatus.LOCKED -> stringResource(R.string.trail_locked) }; Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = if (item.status == CefrTrailStatus.CURRENT) 6.dp else 1.dp) { Text("${item.level.name} · $statusLabel", modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = if (item.status == CefrTrailStatus.CURRENT) FontWeight.Bold else FontWeight.Normal) }; Spacer(Modifier.height(8.dp)) }; if (hasFoundationActivity) { Spacer(Modifier.height(8.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStartFoundationActivity) { Text(stringResource(R.string.start_foundation_activity)) } }; Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.trail_foundation_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(16.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) }
     }
 }
@@ -188,11 +178,7 @@ private fun LearningActivityScreen(activity: LearningActivity, onAttempt: (Strin
     var answer by remember(activity.id) { mutableStateOf("") }
     var selectedTokenIndices by remember(activity.id) { mutableStateOf(emptyList<Int>()) }
     var checked by remember(activity.id) { mutableStateOf(false) }
-    val effectiveAnswer = if (activity.responseType == ResponseType.REORDER) {
-        selectedTokenIndices.joinToString(" ") { activity.responseOptions[it] }
-    } else {
-        answer
-    }
+    val effectiveAnswer = if (activity.responseType == ResponseType.REORDER) selectedTokenIndices.joinToString(" ") { activity.responseOptions[it] } else answer
     val correct = checked && isLearningAnswerCorrect(activity, effectiveAnswer)
 
     CenteredColumn {
@@ -203,57 +189,39 @@ private fun LearningActivityScreen(activity: LearningActivity, onAttempt: (Strin
         Text(activity.prompt, style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.height(20.dp))
 
-        if (activity.responseType == ResponseType.REORDER) {
-            Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) {
-                Text(
-                    text = if (effectiveAnswer.isBlank()) "…" else effectiveAnswer,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-            Spacer(Modifier.height(12.dp))
-            activity.responseOptions.forEachIndexed { index, token ->
-                if (index !in selectedTokenIndices) {
-                    OutlinedButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        onClick = {
-                            selectedTokenIndices = selectedTokenIndices + index
-                            checked = false
-                        }
-                    ) { Text(token) }
+        when (activity.responseType) {
+            ResponseType.REORDER -> {
+                Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) { Text(text = if (effectiveAnswer.isBlank()) "…" else effectiveAnswer, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium) }
+                Spacer(Modifier.height(12.dp))
+                activity.responseOptions.forEachIndexed { index, token ->
+                    if (index !in selectedTokenIndices) {
+                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { selectedTokenIndices = selectedTokenIndices + index; checked = false }) { Text(token) }
+                        Spacer(Modifier.height(8.dp))
+                    }
+                }
+                if (selectedTokenIndices.isNotEmpty()) {
+                    OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { selectedTokenIndices = selectedTokenIndices.dropLast(1); checked = false }) { Text("↶") }
                     Spacer(Modifier.height(8.dp))
                 }
             }
-            if (selectedTokenIndices.isNotEmpty()) {
-                OutlinedButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    onClick = {
-                        selectedTokenIndices = selectedTokenIndices.dropLast(1)
-                        checked = false
+            ResponseType.MULTIPLE_CHOICE -> {
+                activity.responseOptions.forEach { option ->
+                    val selected = answer == option
+                    if (selected) {
+                        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { answer = option; checked = false }) { Text(option) }
+                    } else {
+                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { answer = option; checked = false }) { Text(option) }
                     }
-                ) { Text("↶") }
-                Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(8.dp))
+                }
             }
-        } else {
-            OutlinedTextField(
-                value = answer,
-                onValueChange = { answer = it; checked = false },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(stringResource(R.string.activity_answer_hint)) },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
-            )
+            else -> {
+                OutlinedTextField(value = answer, onValueChange = { answer = it; checked = false }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.activity_answer_hint)) }, singleLine = true, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done))
+            }
         }
 
         Spacer(Modifier.height(16.dp))
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp),
-            enabled = effectiveAnswer.isNotBlank(),
-            onClick = { checked = true; onAttempt(effectiveAnswer) }
-        ) { Text(stringResource(R.string.check_answer)) }
+        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = effectiveAnswer.isNotBlank(), onClick = { checked = true; onAttempt(effectiveAnswer) }) { Text(stringResource(R.string.check_answer)) }
         if (checked) {
             Spacer(Modifier.height(20.dp))
             Text(if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
