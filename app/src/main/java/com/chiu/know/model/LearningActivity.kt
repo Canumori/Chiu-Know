@@ -42,7 +42,8 @@ data class LearningActivity(
     val feedback: String,
     val reviewKey: String,
     val acceptedAnswers: List<String>,
-    val responseOptions: List<String> = emptyList()
+    val responseOptions: List<String> = emptyList(),
+    val audioPromptId: String? = null
 ) {
     init {
         require(id.isNotBlank()) { "Activity id must not be blank" }
@@ -54,6 +55,10 @@ data class LearningActivity(
         require(acceptedAnswers.isNotEmpty()) { "Activity must define accepted answers" }
         require(acceptedAnswers.none { it.isBlank() }) { "Accepted answers must not be blank" }
         require(responseOptions.none { it.isBlank() }) { "Response options must not be blank" }
+        require(audioPromptId == null || audioPromptId.isNotBlank()) { "Audio prompt id must not be blank" }
+        if (responseType == ResponseType.LISTEN_AND_RESPOND) {
+            require(audioPromptId != null) { "LISTEN_AND_RESPOND activity must reference an audio prompt" }
+        }
         if (responseType == ResponseType.MULTIPLE_CHOICE || responseType == ResponseType.REORDER) {
             require(responseOptions.size >= 2) {
                 "$responseType activity must define at least two structured response options"

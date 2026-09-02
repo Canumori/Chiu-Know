@@ -82,6 +82,24 @@ class LearningActivityTest {
         )
     }
 
+    @Test
+    fun listenAndRespondKeepsAudioReferenceSeparateFromAnswer() {
+        val activity = sampleActivity().copy(
+            id = "en-a1-listening-001",
+            primarySkill = LearningSkill.LISTENING,
+            responseType = ResponseType.LISTEN_AND_RESPOND,
+            audioPromptId = "audio:en:a1:introduction:001"
+        )
+
+        assertEquals("audio:en:a1:introduction:001", activity.audioPromptId)
+        assertTrue(activity.responseOptions.isEmpty())
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun listenAndRespondRejectsMissingAudioPrompt() {
+        sampleActivity().copy(responseType = ResponseType.LISTEN_AND_RESPOND)
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun activityRejectsMissingLearningObjective() {
         sampleActivity().copy(learningObjective = "")
