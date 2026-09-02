@@ -1,6 +1,6 @@
 # CHIU KNOW? — PROJECT STATE
 
-## ESTADO AUTORITATIVO — 2026-09-02 14:31 BRT — A1 MULTIHABILIDADE + EVIDÊNCIA + REORDER VALIDADO ATÉ CI #120
+## ESTADO AUTORITATIVO — 2026-09-02 15:53 BRT — MULTIPLE_CHOICE + EVIDÊNCIA POR REVIEWKEY VALIDADOS ATÉ CI #124
 
 Este arquivo é o handoff operacional autoritativo. Em qualquer novo chat: NÃO recomeçar, NÃO inferir estado apenas pela memória e NÃO alterar antes de conferir GitHub real. O estado real do GitHub vence documentação desatualizada.
 
@@ -35,16 +35,18 @@ Skills: GRAMMAR/VOCABULARY/LISTENING/READING/WRITING/SPEAKING. ResponseTypes: MU
 `b6cdaf285...` adicionou opções estruturadas; `74e460db...` testes; CI #113 SUCCESS.
 
 ## 7. STARTER A1 VALIDADO
-Exatamente 7 atividades/idioma = 35 total:
+Exatamente 8 atividades/idioma = 40 total:
 - 2 VOCABULARY FILL_IN;
 - 2 GRAMMAR FILL_IN;
 - 2 READING FILL_IN;
-- 1 GRAMMAR REORDER.
-REORDER compartilha reviewKey com grammar FILL_IN por ser transferência do mesmo conhecimento. Continuam 3 reviewKeys/idioma. Não há B1/C2 artificial.
-Arquivos: `StarterLearningActivities.kt`, `A1IntegratedLearningActivities.kt`, `A1ReadingActivities.kt`, `A1ReorderActivities.kt`.
+- 1 GRAMMAR REORDER;
+- 1 READING MULTIPLE_CHOICE.
+REORDER compartilha reviewKey com grammar FILL_IN. MULTIPLE_CHOICE compartilha reviewKey com reading FILL_IN. Formato diferente não cria artificialmente conhecimento/mastery novo. Continuam 3 reviewKeys/idioma. Não há B1/C2 artificial.
+Arquivos: `StarterLearningActivities.kt`, `A1IntegratedLearningActivities.kt`, `A1ReadingActivities.kt`, `A1ReorderActivities.kt`, `A1MultipleChoiceActivities.kt`.
 
 REORDER UI: commit `1cfdbf3aa6418eba221a15a781e569fb8e3fe1b2`; tokens por `responseOptions`, seleção por índice, usados somem, desfazer, montagem com espaços, check determinístico; FILL_IN preservado. CI #114 run `33658745087` SUCCESS.
-Conteúdo/integracão/testes: `bb14c01e...`, `8d448129...`, `2dfa9721...`, `b85e6c3ce...`; CI #118 run `33659507938` SUCCESS.
+MULTIPLE_CHOICE UI dedicada: commit `a407785b503c46e5c3d2fa017b65248e9e8b693b`; opções em botões, seleção visível, resposta determinística; FILL_IN/REORDER preservados. CI #122 run `33662794556` SUCCESS.
+Fatia controlada nos cinco idiomas + testes de contrato/integração/rotação: commit `c386afff4d99fa9a3a08022ac1c60e7c0a6d06b9`; CI #123 run `33663382962` SUCCESS. MULTIPLE_CHOICE permanece reconhecimento minoritário, não formato dominante.
 
 ## 8. SELETOR POR EVIDÊNCIA
 `starterLearningActivityForEvidence`: agrupa candidatos por reviewKey em ordem estável; escolhe alvo com menos tentativas; empate pela ordem curricular; variante = tentativas daquele reviewKey módulo nº variantes. NÃO é mastery/FSRS/progresso CEFR. Acerto/erro não declara domínio.
@@ -57,7 +59,7 @@ CI #120 / run `33660512925`: **COMPLETED / SUCCESS** em 2026-09-02.
 O teste prova a rotação do alvo grammar `FILL_IN 1 → FILL_IN 2 → REORDER → ciclo`, e prova que erro conta como tentativa/exposição sem virar mastery. Esse é o último HEAD funcional explicitamente validado antes deste commit documental.
 
 ## 9. EVIDÊNCIA LOCAL
-`LearningEvidence`: activityId, reviewKey, level, primarySkill, correct, timestamp. DataStore por idioma. Codec: `timestamp|activityId|reviewKey|level|primarySkill|correct`; não guarda resposta bruta; malformed ignorado. Summary registra fatos, não mastery. Commits relevantes: `83a2d6b...`, `b3d1371...`, `1a7c82a...`, `f7ecf3a...`, `2d003e8...`, `31f1289...`, `cacbe5a...`.
+`LearningEvidence`: activityId, reviewKey, level, primarySkill, correct, timestamp. DataStore por idioma. Codec: `timestamp|activityId|reviewKey|level|primarySkill|correct`; não guarda resposta bruta; malformed ignorado. `LearningEvidenceSummary` descreve uma atividade. `ReviewEvidenceSummary` agrega por nível + reviewKey através de variantes, mantendo tentativas, acertos/erros, diversidade de atividades e primeiro/último timestamp como fatos separados. Nenhum dos dois declara mastery ou agenda revisão. Fundação por reviewKey: commit `e0351805eca7ff35400cbeb76f50171f40850ab1`; CI #124 run `33663675090` SUCCESS. Commits anteriores: `83a2d6b...`, `b3d1371...`, `1a7c82a...`, `f7ecf3a...`, `2d003e8...`, `31f1289...`, `cacbe5a...`.
 
 ## 10. VISUAL — ABSOLUTO
 Ler `VISUAL_BIBLE.md` antes de arte.
@@ -77,20 +79,23 @@ UI de atividade localizada default/pt/es/fr/ko; commits `15ead396...`, `a1f4caf.
 - Sempre validar CI do HEAD novo; não massificar conteúdo antes da infraestrutura.
 
 ## 13. NÃO EXISTE AINDA — NÃO INVENTAR
-Mastery real; FSRS/scheduler completo; desbloqueio por retenção; UI dedicada MULTIPLE_CHOICE no learning flow; FREE_TEXT apropriado; listening/áudio real; speaking/ASR/pronúncia; writing real; histórias funcionais; tutor IA; gamificação completa; seis scores válidos no placement; integração binária final dos personagens; conteúdo A1–C2 completo.
+Mastery real; FSRS/scheduler completo; desbloqueio por retenção; FREE_TEXT apropriado; listening/áudio real; speaking/ASR/pronúncia; writing real; histórias funcionais; tutor IA; gamificação completa; seis scores válidos no placement; integração binária final dos personagens; conteúdo A1–C2 completo.
 
 ## 14. PRÓXIMO PASSO EXATO
-Último HEAD funcional validado: `73b734950aa2498e53a83bf71c2683a01bc9bb1b`, CI #120 verde. Este commit documental deve ter seu CI conferido primeiro no próximo chat.
-Depois:
-1. inspecionar `LearningActivityScreen` e contrato MULTIPLE_CHOICE;
-2. criar UI determinística dedicada MULTIPLE_CHOICE, pequena/isolada, sem conteúdo em massa;
-3. preservar FILL_IN/REORDER;
-4. testar sem infraestrutura pesada desnecessária;
-5. só então pequena fatia A1 MULTIPLE_CHOICE nos 5 idiomas se houver função pedagógica clara;
-6. atualizar integração/seletor conforme reviewKeys/variantes reais;
-7. CI verde antes de avançar;
-8. continuar priorizando infraestrutura difícil (response types, revisão/retenção, áudio apropriado, persistência/navegação, assets, estrutura de conteúdo) antes de massificar A1–C2.
-MULTIPLE_CHOICE é reconhecimento e não deve dominar o app. ReviewKey representa conhecimento, não formato.
+Último HEAD funcional validado antes deste commit documental: `e0351805eca7ff35400cbeb76f50171f40850ab1`, CI #124 / run `33663675090` SUCCESS.
+
+Próxima frente segura:
+1. verificar no código-fonte real uma implementação FSRS Android/Kotlin permissiva, incluindo licença, versão, API e compatibilidade;
+2. não incorporar dependência AGPL nem assumir que referência antiga continua compatível;
+3. definir uma fronteira pequena entre fatos observados (`LearningEvidence`/`ReviewEvidenceSummary`) e estado calculado de agendamento;
+4. não chamar estado de scheduler de nível CEFR ou mastery;
+5. preservar o seletor starter atual até existir agendamento explícito, testado e migrável;
+6. começar com testes puros/determinísticos antes de ligar scheduler à UI/DataStore;
+7. não alterar desbloqueio/trilha com base nessa fundação;
+8. CI verde antes de persistência ou navegação;
+9. depois continuar infraestrutura difícil: revisão/retenção, persistência/migração, áudio/listening, speaking tecnicamente honesto, assets e estrutura escalável de conteúdo.
+
+A decisão de usar biblioteca externa ou implementação interna só pode ser tomada após verificar licença/API/manutenção e custo de migração. Nenhum scheduler está integrado neste estado.
 
 ## 15. PRAZO
 Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta cada vez mais utilizável, infraestrutura difícil e documentação para continuidade posterior. Não sacrificar pedagogia para fingir A1–C2 completo. Continuidade deve depender do GitHub, não memória do chat.
@@ -114,10 +119,13 @@ Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta ca
 16. Atualizar este arquivo ao fim de frente relevante com HEAD/CI/próximo passo.
 
 ## 17. ARQUIVOS-CHAVE
-`PROJECT_STATE.md`, `PRODUCT_SPEC.md`, `VISUAL_BIBLE.md`, `RESEARCH.md`, `.github/workflows/android-ci.yml`, `ChiuKnowApp.kt`, `LearningActivity.kt`, `StarterLearningActivities.kt`, `A1IntegratedLearningActivities.kt`, `A1ReadingActivities.kt`, `A1ReorderActivities.kt`, `StarterReviewSelection.kt`, `LearningEvidence.kt`, `LearningEvidenceCodec.kt`, `LearningEvidenceSummary.kt`; testes especialmente `StarterReviewSelectionTest.kt`, `StarterLearningActivitiesIntegrationTest.kt`, `LearningActivityTest.kt`, `A1ReorderActivitiesTest.kt`.
+`PROJECT_STATE.md`, `PRODUCT_SPEC.md`, `VISUAL_BIBLE.md`, `RESEARCH.md`, `.github/workflows/android-ci.yml`, `ChiuKnowApp.kt`, `LearningActivity.kt`, `StarterLearningActivities.kt`, `A1IntegratedLearningActivities.kt`, `A1ReadingActivities.kt`, `A1ReorderActivities.kt`, `A1MultipleChoiceActivities.kt`, `StarterReviewSelection.kt`, `LearningEvidence.kt`, `LearningEvidenceCodec.kt`, `LearningEvidenceSummary.kt`, `ReviewEvidenceSummary.kt`; testes especialmente `StarterReviewSelectionTest.kt`, `StarterLearningActivitiesIntegrationTest.kt`, `LearningActivityTest.kt`, `A1ReorderActivitiesTest.kt`.
 
 ## 18. MARCOS FINAIS DESTE HANDOFF
 - `b85e6c3...`: 7 atividades starter/idioma; CI #118 SUCCESS.
 - `5d44f438793408fbbbddbfc586f637585acc8a6e`: refresh anterior do handoff; CI #119 / run `33659861778` SUCCESS.
 - `73b734950aa2498e53a83bf71c2683a01bc9bb1b`: proteção da rotação FILL_IN/FILL_IN/REORDER e erro como tentativa; CI #120 / run `33660512925` SUCCESS.
-- O commit que grava este documento passa a ser o novo HEAD documental; conferir seu CI no próximo chat antes de prosseguir.
+- `a407785b503c46e5c3d2fa017b65248e9e8b693b`: UI MULTIPLE_CHOICE dedicada; CI #122 / run `33662794556` SUCCESS.
+- `c386afff4d99fa9a3a08022ac1c60e7c0a6d06b9`: fatia A1 MULTIPLE_CHOICE nos cinco idiomas e testes; CI #123 / run `33663382962` SUCCESS.
+- `e0351805eca7ff35400cbeb76f50171f40850ab1`: evidência agregada por reviewKey sem mastery; CI #124 / run `33663675090` SUCCESS.
+- O commit que grava este documento passa a ser o novo HEAD documental; conferir seu CI antes de prosseguir.
