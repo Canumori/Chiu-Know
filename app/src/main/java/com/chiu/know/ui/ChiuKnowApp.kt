@@ -48,7 +48,7 @@ import com.chiu.know.model.LearningActivity
 import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.advanceAdaptivePlacement
 import com.chiu.know.model.buildCefrTrail
-import com.chiu.know.model.evaluateLearningActivity
+import com.chiu.know.model.isLearningAnswerCorrect
 import com.chiu.know.model.placementQuestionForLevel
 import com.chiu.know.model.startAdaptivePlacement
 import com.chiu.know.model.starterLearningActivityFor
@@ -75,24 +75,15 @@ fun ChiuKnowApp() {
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             var step by remember { mutableStateOf(AppStep.LANGUAGE_SELECTION) }
-            var interfaceLanguage by remember(persistedInterfaceCode) {
-                mutableStateOf(supportedInterfaceLanguages.firstOrNull { it.code == persistedInterfaceCode } ?: supportedInterfaceLanguages.first())
-            }
-            var targetLanguage by remember(persistedTargetCode) {
-                mutableStateOf(supportedTargetLanguages.firstOrNull { it.code == persistedTargetCode } ?: supportedTargetLanguages.first())
-            }
-            val persistedEstimatedLevel = preferences[estimatedLevelKey(targetLanguage.code)]
-                ?.let { stored -> CefrLevel.entries.firstOrNull { it.name == stored } }
+            var interfaceLanguage by remember(persistedInterfaceCode) { mutableStateOf(supportedInterfaceLanguages.firstOrNull { it.code == persistedInterfaceCode } ?: supportedInterfaceLanguages.first()) }
+            var targetLanguage by remember(persistedTargetCode) { mutableStateOf(supportedTargetLanguages.firstOrNull { it.code == persistedTargetCode } ?: supportedTargetLanguages.first()) }
+            val persistedEstimatedLevel = preferences[estimatedLevelKey(targetLanguage.code)]?.let { stored -> CefrLevel.entries.firstOrNull { it.name == stored } }
             var adaptiveState by remember { mutableStateOf(startAdaptivePlacement()) }
             var estimatedLevel by remember(persistedEstimatedLevel) { mutableStateOf(persistedEstimatedLevel ?: CefrLevel.A1) }
             var correctAnswers by remember { mutableIntStateOf(0) }
             var trailOpenedFromResult by remember { mutableStateOf(false) }
             val placementQuestions = starterPlacementQuestionsFor(targetLanguage.code)
-            val currentQuestion = placementQuestionForLevel(
-                questions = placementQuestions,
-                level = adaptiveState.currentLevel,
-                attemptIndex = adaptiveState.answeredQuestions
-            )
+            val currentQuestion = placementQuestionForLevel(placementQuestions, adaptiveState.currentLevel, adaptiveState.answeredQuestions)
 
             LaunchedEffect(persistedInterfaceCode) {
                 val code = persistedInterfaceCode ?: return@LaunchedEffect
@@ -110,73 +101,23 @@ fun ChiuKnowApp() {
                     targetLanguage = selected
                     coroutineScope.launch { context.languagePreferencesDataStore.edit { it[targetLanguageCodeKey] = selected.code } }
                 }) { step = AppStep.PLACEMENT_INTRO }
-
-                AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(
-                    targetLanguage = targetLanguage,
-                    previousLevel = persistedEstimatedLevel,
-                    onContinueLearning = { level ->
-                        estimatedLevel = level
-                        trailOpenedFromResult = false
-                        step = AppStep.LEARNING_TRAIL
-                    },
-                    onStart = {
-                        adaptiveState = startAdaptivePlacement()
-                        estimatedLevel = CefrLevel.A1
-                        correctAnswers = 0
-                        step = AppStep.PLACEMENT_TEST
-                    },
-                    onBack = { step = AppStep.LANGUAGE_SELECTION }
-                )
-
-                AppStep.PLACEMENT_TEST -> PlacementQuestionScreen(
-                    question = currentQuestion,
-                    number = adaptiveState.answeredQuestions + 1,
-                    total = placementQuestions.size,
-                    onAnswer = { selected ->
-                        val answeredCorrectly = selected == currentQuestion.correctIndex
-                        if (answeredCorrectly) correctAnswers++
-                        val result = advanceAdaptivePlacement(adaptiveState, answeredCorrectly)
-                        adaptiveState = result.state
-                        estimatedLevel = result.estimatedLevel
-                        if (result.finished) {
-                            coroutineScope.launch {
-                                context.languagePreferencesDataStore.edit {
-                                    it[estimatedLevelKey(targetLanguage.code)] = result.estimatedLevel.name
-                                }
-                            }
-                            step = AppStep.PLACEMENT_RESULT
-                        }
+                AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(targetLanguage, persistedEstimatedLevel, { level -> estimatedLevel = level; trailOpenedFromResult = false; step = AppStep.LEARNING_TRAIL }, { adaptiveState = startAdaptivePlacement(); estimatedLevel = CefrLevel.A1; correctAnswers = 0; step = AppStep.PLACEMENT_TEST }, { step = AppStep.LANGUAGE_SELECTION })
+                AppStep.PLACEMENT_TEST -> PlacementQuestionScreen(currentQuestion, adaptiveState.answeredQuestions + 1, placementQuestions.size) { selected ->
+                    val answeredCorrectly = selected == currentQuestion.correctIndex
+                    if (answeredCorrectly) correctAnswers++
+                    val result = advanceAdaptivePlacement(adaptiveState, answeredCorrectly)
+                    adaptiveState = result.state; estimatedLevel = result.estimatedLevel
+                    if (result.finished) {
+                        coroutineScope.launch { context.languagePreferencesDataStore.edit { it[estimatedLevelKey(targetLanguage.code)] = result.estimatedLevel.name } }
+                        step = AppStep.PLACEMENT_RESULT
                     }
-                )
-
-                AppStep.PLACEMENT_RESULT -> PlacementResultScreen(
-                    level = estimatedLevel,
-                    correctAnswers = correctAnswers,
-                    total = adaptiveState.answeredQuestions,
-                    onContinue = {
-                        trailOpenedFromResult = true
-                        step = AppStep.LEARNING_TRAIL
-                    },
-                    onRestart = { step = AppStep.PLACEMENT_INTRO },
-                    onChangeLanguage = { step = AppStep.LANGUAGE_SELECTION }
-                )
-
-                AppStep.LEARNING_TRAIL -> LearningTrailScreen(
-                    estimatedLevel = estimatedLevel,
-                    hasFoundationActivity = starterLearningActivityFor(targetLanguage.code, CefrLevel.A1) != null,
-                    onStartFoundationActivity = { step = AppStep.LEARNING_ACTIVITY },
-                    onBack = {
-                        step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO
-                    }
-                )
-
+                }
+                AppStep.PLACEMENT_RESULT -> PlacementResultScreen(estimatedLevel, correctAnswers, adaptiveState.answeredQuestions, { trailOpenedFromResult = true; step = AppStep.LEARNING_TRAIL }, { step = AppStep.PLACEMENT_INTRO }, { step = AppStep.LANGUAGE_SELECTION })
+                AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, CefrLevel.A1) != null, { step = AppStep.LEARNING_ACTIVITY }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
                 AppStep.LEARNING_ACTIVITY -> {
                     val activity = starterLearningActivityFor(targetLanguage.code, CefrLevel.A1)
-                    if (activity == null) {
-                        LaunchedEffect(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
-                    } else {
-                        LearningActivityScreen(activity = activity, onBack = { step = AppStep.LEARNING_TRAIL })
-                    }
+                    if (activity == null) LaunchedEffect(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
+                    else LearningActivityScreen(activity) { step = AppStep.LEARNING_TRAIL }
                 }
             }
         }
@@ -185,170 +126,38 @@ fun ChiuKnowApp() {
 
 @Composable
 private fun LanguageOnboardingScreen(interfaceLanguage: LanguageOption, targetLanguage: LanguageOption, onInterfaceLanguageSelected: (LanguageOption) -> Unit, onTargetLanguageSelected: (LanguageOption) -> Unit, onContinue: () -> Unit) {
-    CenteredColumn {
-        Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.welcome_title), style = MaterialTheme.typography.titleMedium); Spacer(Modifier.height(32.dp))
-        LanguageSelector(stringResource(R.string.interface_language), interfaceLanguage, supportedInterfaceLanguages, onInterfaceLanguageSelected); Spacer(Modifier.height(20.dp))
-        LanguageSelector(stringResource(R.string.target_language), targetLanguage, supportedTargetLanguages, onTargetLanguageSelected); Spacer(Modifier.height(32.dp))
-        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onContinue) { Text(stringResource(R.string.continue_button)) }
-    }
+    CenteredColumn { Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.welcome_title), style = MaterialTheme.typography.titleMedium); Spacer(Modifier.height(32.dp)); LanguageSelector(stringResource(R.string.interface_language), interfaceLanguage, supportedInterfaceLanguages, onInterfaceLanguageSelected); Spacer(Modifier.height(20.dp)); LanguageSelector(stringResource(R.string.target_language), targetLanguage, supportedTargetLanguages, onTargetLanguageSelected); Spacer(Modifier.height(32.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onContinue) { Text(stringResource(R.string.continue_button)) } }
 }
 
 @Composable
-private fun PlacementTestIntroScreen(
-    targetLanguage: LanguageOption,
-    previousLevel: CefrLevel?,
-    onContinueLearning: (CefrLevel) -> Unit,
-    onStart: () -> Unit,
-    onBack: () -> Unit
-) {
-    CenteredColumn {
-        Text(stringResource(R.string.placement_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(16.dp))
-        Text(stringResource(R.string.placement_description, targetLanguage.label), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.placement_prototype_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(24.dp))
-        if (previousLevel != null) {
-            Text("${stringResource(R.string.estimated_level)}: ${previousLevel.name}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(12.dp))
-            Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = { onContinueLearning(previousLevel) }) {
-                Text(stringResource(R.string.continue_to_path))
-            }
-            Spacer(Modifier.height(12.dp))
-        }
-        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStart) { Text(stringResource(R.string.start_level_test)) }; Spacer(Modifier.height(12.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) }
-    }
+private fun PlacementTestIntroScreen(targetLanguage: LanguageOption, previousLevel: CefrLevel?, onContinueLearning: (CefrLevel) -> Unit, onStart: () -> Unit, onBack: () -> Unit) {
+    CenteredColumn { Text(stringResource(R.string.placement_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(16.dp)); Text(stringResource(R.string.placement_description, targetLanguage.label), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.placement_prototype_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(24.dp)); if (previousLevel != null) { Text("${stringResource(R.string.estimated_level)}: ${previousLevel.name}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = { onContinueLearning(previousLevel) }) { Text(stringResource(R.string.continue_to_path)) }; Spacer(Modifier.height(12.dp)) }; Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStart) { Text(stringResource(R.string.start_level_test)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) } }
 }
 
 @Composable
 private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, total: Int, onAnswer: (Int) -> Unit) {
-    CenteredColumn {
-        Text(stringResource(R.string.question_progress, number, total), style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(12.dp))
-        Text(question.level.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(20.dp))
-        Text(question.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(28.dp))
-        question.options.forEachIndexed { index, option ->
-            OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { onAnswer(index) }) { Text(option) }
-            Spacer(Modifier.height(10.dp))
-        }
-    }
+    CenteredColumn { Text(stringResource(R.string.question_progress, number, total), style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(12.dp)); Text(question.level.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(20.dp)); Text(question.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(28.dp)); question.options.forEachIndexed { index, option -> OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { onAnswer(index) }) { Text(option) }; Spacer(Modifier.height(10.dp)) } }
 }
 
 @Composable
 private fun PlacementResultScreen(level: CefrLevel, correctAnswers: Int, total: Int, onContinue: () -> Unit, onRestart: () -> Unit, onChangeLanguage: () -> Unit) {
-    CenteredColumn {
-        Text(stringResource(R.string.estimated_level), style = MaterialTheme.typography.titleLarge); Spacer(Modifier.height(12.dp))
-        Text(level.name, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.correct_answers, correctAnswers, total)); Spacer(Modifier.height(8.dp))
-        Text(stringResource(R.string.prototype_score_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(28.dp))
-        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onContinue) { Text(stringResource(R.string.continue_to_path)) }; Spacer(Modifier.height(12.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onRestart) { Text(stringResource(R.string.try_again)) }; Spacer(Modifier.height(12.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onChangeLanguage) { Text(stringResource(R.string.change_languages)) }
-    }
+    CenteredColumn { Text(stringResource(R.string.estimated_level), style = MaterialTheme.typography.titleLarge); Spacer(Modifier.height(12.dp)); Text(level.name, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.correct_answers, correctAnswers, total)); Spacer(Modifier.height(8.dp)); Text(stringResource(R.string.prototype_score_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(28.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onContinue) { Text(stringResource(R.string.continue_to_path)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onRestart) { Text(stringResource(R.string.try_again)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onChangeLanguage) { Text(stringResource(R.string.change_languages)) } }
 }
 
 @Composable
-private fun LearningTrailScreen(
-    estimatedLevel: CefrLevel,
-    hasFoundationActivity: Boolean,
-    onStartFoundationActivity: () -> Unit,
-    onBack: () -> Unit
-) {
+private fun LearningTrailScreen(estimatedLevel: CefrLevel, hasFoundationActivity: Boolean, onStartFoundationActivity: () -> Unit, onBack: () -> Unit) {
     val trail = remember(estimatedLevel) { buildCefrTrail(estimatedLevel) }
-    CenteredColumn {
-        Text(stringResource(R.string.learning_path_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.learning_path_description), style = MaterialTheme.typography.bodyLarge)
-        Spacer(Modifier.height(20.dp))
-        trail.forEach { item ->
-            val statusLabel = when (item.status) {
-                CefrTrailStatus.COMPLETED -> stringResource(R.string.trail_completed)
-                CefrTrailStatus.CURRENT -> stringResource(R.string.trail_current)
-                CefrTrailStatus.LOCKED -> stringResource(R.string.trail_locked)
-            }
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                tonalElevation = if (item.status == CefrTrailStatus.CURRENT) 6.dp else 1.dp
-            ) {
-                Text(
-                    text = "${item.level.name} · $statusLabel",
-                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = if (item.status == CefrTrailStatus.CURRENT) FontWeight.Bold else FontWeight.Normal
-                )
-            }
-            Spacer(Modifier.height(8.dp))
-        }
-        if (hasFoundationActivity) {
-            Spacer(Modifier.height(8.dp))
-            Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStartFoundationActivity) {
-                Text(stringResource(R.string.start_foundation_activity))
-            }
-        }
-        Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.trail_foundation_note), style = MaterialTheme.typography.bodyMedium)
-        Spacer(Modifier.height(16.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) }
-    }
+    CenteredColumn { Text(stringResource(R.string.learning_path_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.learning_path_description), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(20.dp)); trail.forEach { item -> val statusLabel = when (item.status) { CefrTrailStatus.COMPLETED -> stringResource(R.string.trail_completed); CefrTrailStatus.CURRENT -> stringResource(R.string.trail_current); CefrTrailStatus.LOCKED -> stringResource(R.string.trail_locked) }; Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = if (item.status == CefrTrailStatus.CURRENT) 6.dp else 1.dp) { Text("${item.level.name} · $statusLabel", modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = if (item.status == CefrTrailStatus.CURRENT) FontWeight.Bold else FontWeight.Normal) }; Spacer(Modifier.height(8.dp)) }; if (hasFoundationActivity) { Spacer(Modifier.height(8.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStartFoundationActivity) { Text(stringResource(R.string.start_foundation_activity)) } }; Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.trail_foundation_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(16.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) } }
 }
 
 @Composable
 private fun LearningActivityScreen(activity: LearningActivity, onBack: () -> Unit) {
-    var answer by remember(activity.id) { mutableStateOf("") }
-    var checked by remember(activity.id) { mutableStateOf(false) }
-    val correct = checked && evaluateLearningActivity(activity, answer)
-
-    CenteredColumn {
-        Text(stringResource(R.string.activity_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(8.dp))
-        Text("${activity.level.name} · ${activity.primarySkill.name}", style = MaterialTheme.typography.labelLarge)
-        Spacer(Modifier.height(20.dp))
-        Text(activity.prompt, style = MaterialTheme.typography.headlineSmall)
-        Spacer(Modifier.height(20.dp))
-        OutlinedTextField(
-            value = answer,
-            onValueChange = { answer = it; checked = false },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text(stringResource(R.string.activity_answer_hint)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
-        )
-        Spacer(Modifier.height(16.dp))
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp),
-            enabled = answer.isNotBlank(),
-            onClick = { checked = true }
-        ) { Text(stringResource(R.string.check_answer)) }
-        if (checked) {
-            Spacer(Modifier.height(20.dp))
-            Text(
-                if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(Modifier.height(8.dp))
-            Text("${stringResource(R.string.activity_feedback)}: ${activity.feedback}", style = MaterialTheme.typography.bodyLarge)
-        }
-        Spacer(Modifier.height(20.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) {
-            Text(stringResource(R.string.back_to_path))
-        }
-    }
+    var answer by remember(activity.id) { mutableStateOf("") }; var checked by remember(activity.id) { mutableStateOf(false) }; val correct = checked && isLearningAnswerCorrect(activity, answer)
+    CenteredColumn { Text(stringResource(R.string.activity_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(8.dp)); Text("${activity.level.name} · ${activity.primarySkill.name}", style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(20.dp)); Text(activity.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(20.dp)); OutlinedTextField(value = answer, onValueChange = { answer = it; checked = false }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.activity_answer_hint)) }, singleLine = true, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)); Spacer(Modifier.height(16.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = answer.isNotBlank(), onClick = { checked = true }) { Text(stringResource(R.string.check_answer)) }; if (checked) { Spacer(Modifier.height(20.dp)); Text(if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(8.dp)); Text("${stringResource(R.string.activity_feedback)}: ${activity.feedback}", style = MaterialTheme.typography.bodyLarge) }; Spacer(Modifier.height(20.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) } }
 }
 
 @Composable
-private fun CenteredColumn(content: @Composable () -> Unit) {
-    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 32.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) { content() }
-}
+private fun CenteredColumn(content: @Composable () -> Unit) { Column(modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 32.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) { content() } }
 
 @Composable
-private fun LanguageSelector(title: String, selected: LanguageOption, options: List<LanguageOption>, onSelected: (LanguageOption) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(title, style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(8.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { expanded = true }) { Text(selected.label) }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            options.forEach { option -> DropdownMenuItem(text = { Text(option.label) }, onClick = { onSelected(option); expanded = false }) }
-        }
-    }
-}
+private fun LanguageSelector(title: String, selected: LanguageOption, options: List<LanguageOption>, onSelected: (LanguageOption) -> Unit) { var expanded by remember { mutableStateOf(false) }; Column(modifier = Modifier.fillMaxWidth()) { Text(title, style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(8.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { expanded = true }) { Text(selected.label) }; DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) { options.forEach { option -> DropdownMenuItem(text = { Text(option.label) }, onClick = { onSelected(option); expanded = false }) } } } }
