@@ -36,4 +36,15 @@
     <string name="next_review_time">Próxima revisão: %1$s</string>
     <string name="practice_more">Praticar mais</string>
     <string name="optional_practice_note">A prática opcional dá explicações, mas ainda não altera seu agendamento de revisões.</string>
+
+    <string name="preview_temporary_voices">Ouvir vozes temporárias</string>
+    <string name="voice_samples_title">Amostras de voz temporárias</string>
+    <string name="voice_samples_description">Ouça três estilos de teste do próprio aparelho. Estas não são as vozes oficiais dos personagens.</string>
+    <string name="voice_sample_neutral">Amostra neutra</string>
+    <string name="voice_sample_calm">Amostra calma</string>
+    <string name="voice_sample_lively">Amostra animada</string>
+    <string name="voice_sample_playing">Tocando: %1$s</string>
+    <string name="voice_samples_loading">Preparando a voz do aparelho…</string>
+    <string name="voice_samples_unavailable">Este aparelho não possui no momento uma voz compatível com o idioma escolhido.</string>
+    <string name="voice_samples_temporary_note">Estas amostras servem apenas para comparação técnica e não se tornarão oficiais sem aprovação.</string>
 </resources>

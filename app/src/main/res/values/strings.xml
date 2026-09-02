@@ -36,4 +36,15 @@
     <string name="next_review_time">Next review: %1$s</string>
     <string name="practice_more">Practice more</string>
     <string name="optional_practice_note">Optional practice gives feedback but does not change your review schedule yet.</string>
+
+    <string name="preview_temporary_voices">Preview temporary voices</string>
+    <string name="voice_samples_title">Temporary voice samples</string>
+    <string name="voice_samples_description">Listen to three test styles from this device. These are not the characters’ official voices.</string>
+    <string name="voice_sample_neutral">Neutral sample</string>
+    <string name="voice_sample_calm">Calm sample</string>
+    <string name="voice_sample_lively">Lively sample</string>
+    <string name="voice_sample_playing">Playing: %1$s</string>
+    <string name="voice_samples_loading">Preparing the device voice…</string>
+    <string name="voice_samples_unavailable">This device does not currently have a compatible voice for the selected language.</string>
+    <string name="voice_samples_temporary_note">These samples are only for technical comparison and will not become official without approval.</string>
 </resources>

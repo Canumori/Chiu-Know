@@ -1,6 +1,10 @@
 package com.chiu.know.ui
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +26,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,6 +53,9 @@ import com.chiu.know.model.CefrLevel
 import com.chiu.know.model.CefrTrailStatus
 import com.chiu.know.model.LanguageOption
 import com.chiu.know.model.LearningActivity
+import com.chiu.know.model.TemporaryVoiceStyle
+import com.chiu.know.model.temporaryVoiceSamples
+import com.chiu.know.model.voiceSamplePhrase
 import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.ResponseType
 import com.chiu.know.model.advanceAdaptivePlacement
@@ -71,6 +79,7 @@ import com.chiu.know.model.supportedTargetLanguages
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.util.Date
+import java.util.Locale
 
 private val Context.languagePreferencesDataStore by preferencesDataStore(name = "language_preferences")
 private val interfaceLanguageCodeKey = stringPreferencesKey("interface_language_code")
@@ -79,7 +88,7 @@ private fun estimatedLevelKey(languageCode: String) = stringPreferencesKey("esti
 private fun learningEvidenceKey(languageCode: String) = stringSetPreferencesKey("learning_evidence_$languageCode")
 private fun reviewScheduleKey(languageCode: String) = stringSetPreferencesKey("review_schedule_$languageCode")
 
-private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, LEARNING_TRAIL, LEARNING_ACTIVITY }
+private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, LEARNING_TRAIL, LEARNING_ACTIVITY, VOICE_PREVIEW }
 
 @Composable
 fun ChiuKnowApp() {
@@ -136,7 +145,8 @@ fun ChiuKnowApp() {
                     }
                 }
                 AppStep.PLACEMENT_RESULT -> PlacementResultScreen(estimatedLevel, correctAnswers, adaptiveState.answeredQuestions, { trailOpenedFromResult = true; step = AppStep.LEARNING_TRAIL }, { step = AppStep.PLACEMENT_INTRO }, { step = AppStep.LANGUAGE_SELECTION })
-                AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
+                AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }, { step = AppStep.VOICE_PREVIEW }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
+                AppStep.VOICE_PREVIEW -> VoiceSampleScreen(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
                 AppStep.LEARNING_ACTIVITY -> {
                     val queue = remember(targetLanguage.code, estimatedLevel) {
                         starterQueueSelection(
@@ -211,11 +221,101 @@ private fun PlacementResultScreen(level: CefrLevel, correctAnswers: Int, total: 
 }
 
 @Composable
-private fun LearningTrailScreen(estimatedLevel: CefrLevel, hasFoundationActivity: Boolean, onStartFoundationActivity: () -> Unit, onBack: () -> Unit) {
+private fun LearningTrailScreen(estimatedLevel: CefrLevel, hasFoundationActivity: Boolean, onStartFoundationActivity: () -> Unit, onPreviewVoices: () -> Unit, onBack: () -> Unit) {
     val trail = remember(estimatedLevel) { buildCefrTrail(estimatedLevel) }
     val scrollState = rememberScrollState()
     Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(horizontal = 24.dp, vertical = 32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(stringResource(R.string.learning_path_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.learning_path_description), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(20.dp)); trail.forEach { item -> val statusLabel = when (item.status) { CefrTrailStatus.COMPLETED -> stringResource(R.string.trail_completed); CefrTrailStatus.CURRENT -> stringResource(R.string.trail_current); CefrTrailStatus.LOCKED -> stringResource(R.string.trail_locked) }; Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = if (item.status == CefrTrailStatus.CURRENT) 6.dp else 1.dp) { Text("${item.level.name} · $statusLabel", modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = if (item.status == CefrTrailStatus.CURRENT) FontWeight.Bold else FontWeight.Normal) }; Spacer(Modifier.height(8.dp)) }; if (hasFoundationActivity) { Spacer(Modifier.height(8.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStartFoundationActivity) { Text(stringResource(R.string.start_foundation_activity)) } }; Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.trail_foundation_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(16.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) }
+        Text(stringResource(R.string.learning_path_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.learning_path_description), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(20.dp)); trail.forEach { item -> val statusLabel = when (item.status) { CefrTrailStatus.COMPLETED -> stringResource(R.string.trail_completed); CefrTrailStatus.CURRENT -> stringResource(R.string.trail_current); CefrTrailStatus.LOCKED -> stringResource(R.string.trail_locked) }; Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = if (item.status == CefrTrailStatus.CURRENT) 6.dp else 1.dp) { Text("${item.level.name} · $statusLabel", modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = if (item.status == CefrTrailStatus.CURRENT) FontWeight.Bold else FontWeight.Normal) }; Spacer(Modifier.height(8.dp)) }; if (hasFoundationActivity) { Spacer(Modifier.height(8.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStartFoundationActivity) { Text(stringResource(R.string.start_foundation_activity)) } }; Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.trail_foundation_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(16.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onPreviewVoices) { Text(stringResource(R.string.preview_temporary_voices)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) }
+    }
+}
+
+@Composable
+private fun VoiceSampleScreen(languageCode: String, onBack: () -> Unit) {
+    val context = LocalContext.current
+    val mainHandler = remember { Handler(Looper.getMainLooper()) }
+    var engine by remember { mutableStateOf<TextToSpeech?>(null) }
+    var ready by remember { mutableStateOf(false) }
+    var unavailable by remember { mutableStateOf(false) }
+    var playingStyle by remember { mutableStateOf<TemporaryVoiceStyle?>(null) }
+    val phrase = remember(languageCode) { voiceSamplePhrase(languageCode) }
+
+    DisposableEffect(languageCode) {
+        val textToSpeech = TextToSpeech(context.applicationContext) { status ->
+            mainHandler.post {
+                ready = status == TextToSpeech.SUCCESS
+                unavailable = status != TextToSpeech.SUCCESS
+            }
+        }
+        textToSpeech.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) {
+                mainHandler.post { playingStyle = TemporaryVoiceStyle.entries.firstOrNull { it.name == utteranceId } }
+            }
+
+            override fun onDone(utteranceId: String?) {
+                mainHandler.post { playingStyle = null }
+            }
+
+            @Deprecated("Android callback")
+            override fun onError(utteranceId: String?) {
+                mainHandler.post { playingStyle = null; unavailable = true }
+            }
+
+            override fun onError(utteranceId: String?, errorCode: Int) {
+                mainHandler.post { playingStyle = null; unavailable = true }
+            }
+        })
+        engine = textToSpeech
+        onDispose {
+            textToSpeech.stop()
+            textToSpeech.shutdown()
+        }
+    }
+
+    LaunchedEffect(ready, languageCode, engine) {
+        val textToSpeech = engine
+        if (ready && textToSpeech != null) {
+            val result = textToSpeech.setLanguage(Locale.forLanguageTag(languageCode))
+            unavailable = result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED
+        }
+    }
+
+    CenteredColumn {
+        Text(stringResource(R.string.voice_samples_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(12.dp))
+        Text(stringResource(R.string.voice_samples_description), style = MaterialTheme.typography.bodyLarge)
+        Spacer(Modifier.height(12.dp))
+        Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) {
+            Text(phrase, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium)
+        }
+        Spacer(Modifier.height(16.dp))
+        temporaryVoiceSamples().forEach { sample ->
+            val label = when (sample.style) {
+                TemporaryVoiceStyle.NEUTRAL -> stringResource(R.string.voice_sample_neutral)
+                TemporaryVoiceStyle.CALM -> stringResource(R.string.voice_sample_calm)
+                TemporaryVoiceStyle.LIVELY -> stringResource(R.string.voice_sample_lively)
+            }
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp),
+                enabled = ready && !unavailable,
+                onClick = {
+                    engine?.apply {
+                        setSpeechRate(sample.speechRate)
+                        setPitch(sample.pitch)
+                        speak(phrase, TextToSpeech.QUEUE_FLUSH, null, sample.style.name)
+                    }
+                }
+            ) {
+                Text(if (playingStyle == sample.style) stringResource(R.string.voice_sample_playing, label) else label)
+            }
+            Spacer(Modifier.height(8.dp))
+        }
+        if (!ready && !unavailable) Text(stringResource(R.string.voice_samples_loading))
+        if (unavailable) Text(stringResource(R.string.voice_samples_unavailable), style = MaterialTheme.typography.bodyMedium)
+        Spacer(Modifier.height(12.dp))
+        Text(stringResource(R.string.voice_samples_temporary_note), style = MaterialTheme.typography.bodyMedium)
+        Spacer(Modifier.height(20.dp))
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) }
     }
 }
 
