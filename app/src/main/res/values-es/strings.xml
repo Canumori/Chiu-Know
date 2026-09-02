@@ -23,4 +23,12 @@
     <string name="trail_locked">Bloqueado</string>
     <string name="trail_foundation_note">Esta es la primera base de la ruta de aprendizaje. Las lecciones, actividades y reglas de progreso vienen después.</string>
     <string name="back_to_result">Volver al resultado</string>
+    <string name="start_foundation_activity">Practicar fundamentos A1</string>
+    <string name="activity_title">Actividad de aprendizaje</string>
+    <string name="activity_answer_hint">Escribe tu respuesta</string>
+    <string name="check_answer">Comprobar respuesta</string>
+    <string name="answer_correct">Correcto</string>
+    <string name="answer_incorrect">Todavía no</string>
+    <string name="activity_feedback">Explicación</string>
+    <string name="back_to_path">Volver a la ruta</string>
 </resources>
