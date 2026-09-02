@@ -23,4 +23,12 @@
     <string name="trail_locked">잠김</string>
     <string name="trail_foundation_note">이 화면은 학습 경로의 첫 기반입니다. 다음 단계에서 수업, 활동, 진도 규칙을 추가합니다.</string>
     <string name="back_to_result">결과로 돌아가기</string>
+    <string name="start_foundation_activity">A1 기초 연습</string>
+    <string name="activity_title">학습 활동</string>
+    <string name="activity_answer_hint">답을 입력하세요</string>
+    <string name="check_answer">답 확인</string>
+    <string name="answer_correct">정답입니다</string>
+    <string name="answer_incorrect">아직 아니에요</string>
+    <string name="activity_feedback">설명</string>
+    <string name="back_to_path">학습 경로로 돌아가기</string>
 </resources>
