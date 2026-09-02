@@ -25,6 +25,11 @@ enum class ResponseType {
  *
  * Learning purpose, expected evidence and future review identity live in the
  * model instead of being inferred from UI visits or XP.
+ *
+ * responseOptions is intentionally empty for plain text retrieval. Structured
+ * response types such as MULTIPLE_CHOICE and REORDER must declare their visible
+ * choices/tokens explicitly so the UI does not have to infer them from prompt
+ * text or accepted answers.
  */
 data class LearningActivity(
     val id: String,
@@ -36,7 +41,8 @@ data class LearningActivity(
     val prompt: String,
     val feedback: String,
     val reviewKey: String,
-    val acceptedAnswers: List<String>
+    val acceptedAnswers: List<String>,
+    val responseOptions: List<String> = emptyList()
 ) {
     init {
         require(id.isNotBlank()) { "Activity id must not be blank" }
@@ -47,6 +53,12 @@ data class LearningActivity(
         require(reviewKey.isNotBlank()) { "Review key must not be blank" }
         require(acceptedAnswers.isNotEmpty()) { "Activity must define accepted answers" }
         require(acceptedAnswers.none { it.isBlank() }) { "Accepted answers must not be blank" }
+        require(responseOptions.none { it.isBlank() }) { "Response options must not be blank" }
+        if (responseType == ResponseType.MULTIPLE_CHOICE || responseType == ResponseType.REORDER) {
+            require(responseOptions.size >= 2) {
+                "$responseType activity must define at least two structured response options"
+            }
+        }
     }
 }
 
