@@ -52,6 +52,7 @@ import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.advanceAdaptivePlacement
 import com.chiu.know.model.buildCefrTrail
 import com.chiu.know.model.decodeLearningEvidenceSet
+import com.chiu.know.model.encodeLearningEvidence
 import com.chiu.know.model.isLearningAnswerCorrect
 import com.chiu.know.model.learningEvidenceFor
 import com.chiu.know.model.placementQuestionForLevel
@@ -148,15 +149,7 @@ fun ChiuKnowApp() {
                             context.languagePreferencesDataStore.edit { prefs ->
                                 val key = learningEvidenceKey(targetLanguage.code)
                                 val current = prefs[key].orEmpty()
-                                val encoded = listOf(
-                                    evidence.attemptedAtEpochMillis,
-                                    evidence.activityId,
-                                    evidence.reviewKey,
-                                    evidence.level.name,
-                                    evidence.primarySkill.name,
-                                    evidence.correct
-                                ).joinToString("|")
-                                prefs[key] = current + encoded
+                                prefs[key] = current + encodeLearningEvidence(evidence)
                             }
                         }
                     }) { step = AppStep.LEARNING_TRAIL }
