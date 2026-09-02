@@ -1,5 +1,147 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ATUALIZAÇÃO AUTORITATIVA — 2026-09-02 — PRIMEIRA FATIA PEDAGÓGICA + EVIDÊNCIA LOCAL VALIDADA
+
+Este bloco substitui qualquer seção antiga de “estado atual” ou “próximo passo” abaixo quando houver conflito. O histórico anterior permanece no arquivo por rastreabilidade.
+
+Antes de continuar, ler em conjunto:
+1. `PROJECT_STATE.md` — estado técnico real e continuidade;
+2. `PRODUCT_SPEC.md` — visão, roadmap e princípios pedagógicos;
+3. `RESEARCH.md` — referências/arquitetura;
+4. `VISUAL_BIBLE.md` — identidade/personagens quando a frente envolver UI, atividades, histórias ou arte.
+
+O GitHub real vence documentação desatualizada. Não usar memória do chat como fonte única.
+
+### HEAD / CI ATUAL
+- Repositório: `Canumori/Chiu-Know`
+- Branch: `main`
+- Head validado mais recente: `518fcddddaf8435eff5c5db04de5074390a41086` — `test: protect persisted evidence decoding`
+- Android CI #75 / run `33584347501`: COMPLETED / SUCCESS.
+- Android CI #74 / run `33584337301`: COMPLETED / SUCCESS.
+- Android CI #73 / run `33584156504`: COMPLETED / SUCCESS.
+- Android CI #71 / run `33581452970`: COMPLETED / SUCCESS.
+
+### FLUXO ATUAL REAL
+`LANGUAGE_SELECTION → PLACEMENT_INTRO → PLACEMENT_TEST → PLACEMENT_RESULT → LEARNING_TRAIL → LEARNING_ACTIVITY`.
+
+Se já existir nível estimado salvo para o idioma-alvo, `PLACEMENT_INTRO` permite continuar para `LEARNING_TRAIL` sem refazer o placement. O reteste permanece disponível.
+
+### PRIMEIRA FATIA PEDAGÓGICA REAL
+Modelo: `app/src/main/java/com/chiu/know/model/LearningActivity.kt`.
+
+Campos pedagógicos já explícitos:
+- habilidade principal;
+- objetivo de aprendizagem;
+- nível CEFR;
+- conhecimento-alvo;
+- tipo de resposta;
+- prompt;
+- feedback;
+- vínculo de revisão (`reviewKey`);
+- respostas aceitas.
+
+A correção atual é determinística por `isLearningAnswerCorrect(...)`, com `trim()` + lowercase, sem apagar acentos nem reescrever a resposta. Tipos de resposta mais complexos deverão receber avaliadores próprios.
+
+Banco inicial: `StarterLearningActivities.kt`.
+Há exatamente uma atividade A1 de recuperação de vocabulário por idioma-alvo (English, Português, Español, Français, 한국어), usada apenas para validar a arquitetura ponta a ponta antes de produção em massa.
+
+A UI da atividade já permite:
+- responder;
+- verificar resposta;
+- receber correto/incorreto;
+- receber feedback;
+- voltar à trilha.
+
+Correção que não deve ser perdida: a UI usa o avaliador determinístico real; não reintroduzir função inexistente/alternativa.
+
+### EVIDÊNCIA DE APRENDIZAGEM — SEM CONFUNDIR COM DOMÍNIO
+Modelo: `LearningEvidence.kt`.
+Cada tentativa observada registra:
+- `activityId`;
+- `reviewKey`;
+- nível;
+- habilidade principal;
+- correto/incorreto;
+- timestamp.
+
+Isso é evidência de uma tentativa específica. NÃO é:
+- prova de domínio;
+- XP;
+- streak;
+- evento de desbloqueio;
+- decisão CEFR;
+- FSRS ainda.
+
+A UI salva a evidência localmente em DataStore por idioma-alvo sob `learning_evidence_<languageCode>`. O texto bruto digitado pelo aluno NÃO é salvo.
+
+Formato compacto atual do evento persistido:
+`timestamp|activityId|reviewKey|level|primarySkill|correct`.
+
+Esta codificação é fundação local pequena; não tratá-la como armazenamento definitivo para histórico ilimitado.
+
+### RESUMO/AGREGAÇÃO DE EVIDÊNCIA
+Arquivo: `LearningEvidenceSummary.kt`.
+Commit: `1a7c82a2c3917dbb35adb6a4b28240781eebd385` — `feat: add learning evidence summaries`.
+Teste: commit `7cc3e1eb16c09fcc64fa5172b56a713834f46d84` — `test: protect learning evidence summaries`.
+CI #73 / `33584156504`: SUCCESS.
+
+`summarizeLearningEvidence(...)` agrupa por identidade de atividade/revisão e expõe apenas fatos observados:
+- total de tentativas;
+- corretas;
+- incorretas;
+- tentativa mais recente;
+- se a tentativa mais recente foi correta.
+
+Não inferir “mastery” a partir desses campos.
+
+### LEITURA/DECODIFICAÇÃO DO HISTÓRICO LOCAL
+Commit: `f7ecf3ad55e2490d86c3fb8fd27b69ffd6802f82` — `feat: decode persisted learning evidence`.
+Teste: `518fcddddaf8435eff5c5db04de5074390a41086` — `test: protect persisted evidence decoding`.
+CI #74 e #75: SUCCESS.
+
+Há decodificação determinística do formato persistido de volta para `LearningEvidence`. Entradas malformadas são ignoradas de forma segura em vez de derrubar o fluxo. Os testes cobrem entrada válida, nível/habilidade inválidos, boolean inválido e conjunto misto de entradas válidas/corrompidas.
+
+### IMPORTANTE — PEQUENO DÉBITO FUNCIONAL IDENTIFICADO
+A UI da trilha/atividade ainda chama `starterLearningActivityFor(targetLanguage.code, CefrLevel.A1)` de forma fixa. Isso faz a atividade A1 aparecer mesmo para aluno estimado em B1/C1/C2.
+
+A intenção pedagógica mínima mais segura é usar o nível estimado (`estimatedLevel`) ao procurar a atividade. Como o banco inicial possui apenas A1, somente aluno A1 verá essa atividade enquanto conteúdos reais dos demais níveis não existirem. Não fabricar atividade “equivalente” para níveis superiores nem tratar revisão A1 universal como decisão de produto sem autorização.
+
+### LOCALIZAÇÃO PENDENTE
+As strings da primeira tela de atividade foram adicionadas inicialmente ao `values/strings.xml` padrão. Ainda revisar/adicionar equivalentes em `values-pt`, `values-es`, `values-fr` e `values-ko` em commits pequenos, sem alterar lógica.
+
+### UI PENDENTE — TELA DA TRILHA
+`LearningTrailScreen` ainda usa `CenteredColumn` verticalmente centralizado. Seis cards + cabeçalho + nota + botão podem estourar em telas pequenas. Fazer mudança isolada para layout scroll-safe, sem redesign e sem alterar identidade visual.
+
+### PERSONAGENS — MOMENTO DE ENTRADA
+Os personagens começam a entrar quando a expansão de atividades/cards/contextos pedagógicos for iniciada, logo após estabilizar esta fundação de atividade/evidência. Eles não devem ser usados como decoração aleatória.
+
+Antes de qualquer uso visual:
+- reler `VISUAL_BIBLE.md`;
+- reutilizar asset-mestre aprovado quando existir;
+- não gerar/redesenhar por iniciativa própria;
+- pedir autorização se uma nova arte/pose for necessária.
+
+Regra absoluta permanece: Chiu do logo/ícone = Chihuahua branco fotorrealista aprovado; Chiu do universo/atividades = Chihuahua amarelo cartunesco aprovado. Nunca misturar.
+
+### SUPABASE — NÃO TOCADO NESTA FRENTE
+Nenhuma das etapas de atividade, evidência, resumo ou decodificação usou Supabase.
+
+Chiu Know? permitido: `uskxabsodcnzlovuaurp`.
+Chiu Player proibido nesta frente: `hpcbkvbrlwjnwlikmbfb`.
+Se o projeto do Player aparecer numa operação do Chiu Know?, parar imediatamente.
+
+### PRÓXIMOS PASSOS SEGUROS
+1. Confirmar head/CI antes de nova escrita.
+2. Corrigir em commit isolado a exposição hardcoded de A1 para procurar `starterLearningActivityFor(targetLanguage.code, estimatedLevel)`.
+3. Validar CI.
+4. Conectar leitura das evidências persistidas ao estado do app sem mostrar score falso de domínio; a primeira integração pode apenas produzir/usar resumo factual do histórico.
+5. Localizar as novas strings nos quatro recursos de idioma restantes em commits pequenos.
+6. Tornar a trilha scroll-safe em mudança isolada.
+7. Depois iniciar expansão pedagógica controlada, momento em que os personagens podem entrar em contexto real, respeitando `VISUAL_BIBLE.md` e os assets aprovados.
+8. Ainda não pular para implementação grande de FSRS, XP/streak, desbloqueio automático, IA, áudio/speaking, backend ou histórias completas.
+
+---
+
 ## ATUALIZAÇÃO AUTORITATIVA — 2026-09-01 — TRILHA CEFR PÓS-PLACEMENT INICIADA
 
 Este arquivo é a fonte autoritativa de continuidade operacional do Chiu Know?, mas NÃO é o único documento de planejamento. Antes de qualquer nova frente, o próximo chat deve ler em conjunto, obrigatoriamente:
