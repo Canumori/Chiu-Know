@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.datastore.preferences.core.edit
@@ -41,11 +44,14 @@ import com.chiu.know.R
 import com.chiu.know.model.CefrLevel
 import com.chiu.know.model.CefrTrailStatus
 import com.chiu.know.model.LanguageOption
+import com.chiu.know.model.LearningActivity
 import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.advanceAdaptivePlacement
 import com.chiu.know.model.buildCefrTrail
+import com.chiu.know.model.evaluateLearningActivity
 import com.chiu.know.model.placementQuestionForLevel
 import com.chiu.know.model.startAdaptivePlacement
+import com.chiu.know.model.starterLearningActivityFor
 import com.chiu.know.model.starterPlacementQuestionsFor
 import com.chiu.know.model.supportedInterfaceLanguages
 import com.chiu.know.model.supportedTargetLanguages
@@ -56,7 +62,7 @@ private val interfaceLanguageCodeKey = stringPreferencesKey("interface_language_
 private val targetLanguageCodeKey = stringPreferencesKey("target_language_code")
 private fun estimatedLevelKey(languageCode: String) = stringPreferencesKey("estimated_level_$languageCode")
 
-private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, LEARNING_TRAIL }
+private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, LEARNING_TRAIL, LEARNING_ACTIVITY }
 
 @Composable
 fun ChiuKnowApp() {
@@ -157,10 +163,21 @@ fun ChiuKnowApp() {
 
                 AppStep.LEARNING_TRAIL -> LearningTrailScreen(
                     estimatedLevel = estimatedLevel,
+                    hasFoundationActivity = starterLearningActivityFor(targetLanguage.code, CefrLevel.A1) != null,
+                    onStartFoundationActivity = { step = AppStep.LEARNING_ACTIVITY },
                     onBack = {
                         step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO
                     }
                 )
+
+                AppStep.LEARNING_ACTIVITY -> {
+                    val activity = starterLearningActivityFor(targetLanguage.code, CefrLevel.A1)
+                    if (activity == null) {
+                        LaunchedEffect(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
+                    } else {
+                        LearningActivityScreen(activity = activity, onBack = { step = AppStep.LEARNING_TRAIL })
+                    }
+                }
             }
         }
     }
@@ -229,7 +246,12 @@ private fun PlacementResultScreen(level: CefrLevel, correctAnswers: Int, total: 
 }
 
 @Composable
-private fun LearningTrailScreen(estimatedLevel: CefrLevel, onBack: () -> Unit) {
+private fun LearningTrailScreen(
+    estimatedLevel: CefrLevel,
+    hasFoundationActivity: Boolean,
+    onStartFoundationActivity: () -> Unit,
+    onBack: () -> Unit
+) {
     val trail = remember(estimatedLevel) { buildCefrTrail(estimatedLevel) }
     CenteredColumn {
         Text(stringResource(R.string.learning_path_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
@@ -256,10 +278,61 @@ private fun LearningTrailScreen(estimatedLevel: CefrLevel, onBack: () -> Unit) {
             }
             Spacer(Modifier.height(8.dp))
         }
+        if (hasFoundationActivity) {
+            Spacer(Modifier.height(8.dp))
+            Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStartFoundationActivity) {
+                Text(stringResource(R.string.start_foundation_activity))
+            }
+        }
         Spacer(Modifier.height(12.dp))
         Text(stringResource(R.string.trail_foundation_note), style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(16.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_result)) }
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) }
+    }
+}
+
+@Composable
+private fun LearningActivityScreen(activity: LearningActivity, onBack: () -> Unit) {
+    var answer by remember(activity.id) { mutableStateOf("") }
+    var checked by remember(activity.id) { mutableStateOf(false) }
+    val correct = checked && evaluateLearningActivity(activity, answer)
+
+    CenteredColumn {
+        Text(stringResource(R.string.activity_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(8.dp))
+        Text("${activity.level.name} · ${activity.primarySkill.name}", style = MaterialTheme.typography.labelLarge)
+        Spacer(Modifier.height(20.dp))
+        Text(activity.prompt, style = MaterialTheme.typography.headlineSmall)
+        Spacer(Modifier.height(20.dp))
+        OutlinedTextField(
+            value = answer,
+            onValueChange = { answer = it; checked = false },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text(stringResource(R.string.activity_answer_hint)) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+        )
+        Spacer(Modifier.height(16.dp))
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp),
+            enabled = answer.isNotBlank(),
+            onClick = { checked = true }
+        ) { Text(stringResource(R.string.check_answer)) }
+        if (checked) {
+            Spacer(Modifier.height(20.dp))
+            Text(
+                if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(Modifier.height(8.dp))
+            Text("${stringResource(R.string.activity_feedback)}: ${activity.feedback}", style = MaterialTheme.typography.bodyLarge)
+        }
+        Spacer(Modifier.height(20.dp))
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) {
+            Text(stringResource(R.string.back_to_path))
+        }
     }
 }
 
