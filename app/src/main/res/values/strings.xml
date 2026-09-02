@@ -23,4 +23,12 @@
     <string name="trail_locked">Locked</string>
     <string name="trail_foundation_note">This is the first foundation of the learning path. Lessons, activities and progress rules come next.</string>
     <string name="back_to_result">Back to result</string>
+    <string name="start_foundation_activity">Practice A1 foundation</string>
+    <string name="activity_title">Learning activity</string>
+    <string name="activity_answer_hint">Type your answer</string>
+    <string name="check_answer">Check answer</string>
+    <string name="answer_correct">Correct</string>
+    <string name="answer_incorrect">Not quite yet</string>
+    <string name="activity_feedback">Feedback</string>
+    <string name="back_to_path">Back to path</string>
 </resources>
