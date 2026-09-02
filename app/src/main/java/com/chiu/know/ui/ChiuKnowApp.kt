@@ -56,6 +56,7 @@ import com.chiu.know.model.isLearningAnswerCorrect
 import com.chiu.know.model.learningEvidenceFor
 import com.chiu.know.model.placementQuestionForLevel
 import com.chiu.know.model.startAdaptivePlacement
+import com.chiu.know.model.starterLearningActivitiesFor
 import com.chiu.know.model.starterLearningActivityFor
 import com.chiu.know.model.starterPlacementQuestionsFor
 import com.chiu.know.model.summarizeLearningEvidence
@@ -129,7 +130,16 @@ fun ChiuKnowApp() {
                 AppStep.PLACEMENT_RESULT -> PlacementResultScreen(estimatedLevel, correctAnswers, adaptiveState.answeredQuestions, { trailOpenedFromResult = true; step = AppStep.LEARNING_TRAIL }, { step = AppStep.PLACEMENT_INTRO }, { step = AppStep.LANGUAGE_SELECTION })
                 AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
                 AppStep.LEARNING_ACTIVITY -> {
-                    val activity = starterLearningActivityFor(targetLanguage.code, estimatedLevel)
+                    val starterReviewKeys = remember(targetLanguage.code, estimatedLevel) {
+                        starterLearningActivitiesFor(targetLanguage.code)
+                            .filter { it.level == estimatedLevel }
+                            .map { it.reviewKey }
+                            .toSet()
+                    }
+                    val priorAttemptCount = remember(targetLanguage.code, estimatedLevel) {
+                        persistedLearningEvidence.count { it.reviewKey in starterReviewKeys }
+                    }
+                    val activity = starterLearningActivityFor(targetLanguage.code, estimatedLevel, priorAttemptCount)
                     if (activity == null) LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
                     else LearningActivityScreen(activity, onAttempt = { learnerAnswer ->
                         val correct = isLearningAnswerCorrect(activity, learnerAnswer)
