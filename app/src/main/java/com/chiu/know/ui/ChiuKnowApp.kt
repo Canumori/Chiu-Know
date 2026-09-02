@@ -49,6 +49,7 @@ import com.chiu.know.model.CefrTrailStatus
 import com.chiu.know.model.LanguageOption
 import com.chiu.know.model.LearningActivity
 import com.chiu.know.model.PlacementQuestion
+import com.chiu.know.model.ResponseType
 import com.chiu.know.model.advanceAdaptivePlacement
 import com.chiu.know.model.buildCefrTrail
 import com.chiu.know.model.decodeLearningEvidenceSet
@@ -184,8 +185,84 @@ private fun LearningTrailScreen(estimatedLevel: CefrLevel, hasFoundationActivity
 
 @Composable
 private fun LearningActivityScreen(activity: LearningActivity, onAttempt: (String) -> Unit, onBack: () -> Unit) {
-    var answer by remember(activity.id) { mutableStateOf("") }; var checked by remember(activity.id) { mutableStateOf(false) }; val correct = checked && isLearningAnswerCorrect(activity, answer)
-    CenteredColumn { Text(stringResource(R.string.activity_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(8.dp)); Text("${activity.level.name} · ${activity.primarySkill.name}", style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(20.dp)); Text(activity.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(20.dp)); OutlinedTextField(value = answer, onValueChange = { answer = it; checked = false }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.activity_answer_hint)) }, singleLine = true, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)); Spacer(Modifier.height(16.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = answer.isNotBlank(), onClick = { checked = true; onAttempt(answer) }) { Text(stringResource(R.string.check_answer)) }; if (checked) { Spacer(Modifier.height(20.dp)); Text(if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(8.dp)); Text("${stringResource(R.string.activity_feedback)}: ${activity.feedback}", style = MaterialTheme.typography.bodyLarge) }; Spacer(Modifier.height(20.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) } }
+    var answer by remember(activity.id) { mutableStateOf("") }
+    var selectedTokenIndices by remember(activity.id) { mutableStateOf(emptyList<Int>()) }
+    var checked by remember(activity.id) { mutableStateOf(false) }
+    val effectiveAnswer = if (activity.responseType == ResponseType.REORDER) {
+        selectedTokenIndices.joinToString(" ") { activity.responseOptions[it] }
+    } else {
+        answer
+    }
+    val correct = checked && isLearningAnswerCorrect(activity, effectiveAnswer)
+
+    CenteredColumn {
+        Text(stringResource(R.string.activity_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(8.dp))
+        Text("${activity.level.name} · ${activity.primarySkill.name}", style = MaterialTheme.typography.labelLarge)
+        Spacer(Modifier.height(20.dp))
+        Text(activity.prompt, style = MaterialTheme.typography.headlineSmall)
+        Spacer(Modifier.height(20.dp))
+
+        if (activity.responseType == ResponseType.REORDER) {
+            Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) {
+                Text(
+                    text = if (effectiveAnswer.isBlank()) "…" else effectiveAnswer,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+            Spacer(Modifier.height(12.dp))
+            activity.responseOptions.forEachIndexed { index, token ->
+                if (index !in selectedTokenIndices) {
+                    OutlinedButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        onClick = {
+                            selectedTokenIndices = selectedTokenIndices + index
+                            checked = false
+                        }
+                    ) { Text(token) }
+                    Spacer(Modifier.height(8.dp))
+                }
+            }
+            if (selectedTokenIndices.isNotEmpty()) {
+                OutlinedButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    onClick = {
+                        selectedTokenIndices = selectedTokenIndices.dropLast(1)
+                        checked = false
+                    }
+                ) { Text("↶") }
+                Spacer(Modifier.height(8.dp))
+            }
+        } else {
+            OutlinedTextField(
+                value = answer,
+                onValueChange = { answer = it; checked = false },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.activity_answer_hint)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+            )
+        }
+
+        Spacer(Modifier.height(16.dp))
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp),
+            enabled = effectiveAnswer.isNotBlank(),
+            onClick = { checked = true; onAttempt(effectiveAnswer) }
+        ) { Text(stringResource(R.string.check_answer)) }
+        if (checked) {
+            Spacer(Modifier.height(20.dp))
+            Text(if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(8.dp))
+            Text("${stringResource(R.string.activity_feedback)}: ${activity.feedback}", style = MaterialTheme.typography.bodyLarge)
+        }
+        Spacer(Modifier.height(20.dp))
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) }
+    }
 }
 
 @Composable
