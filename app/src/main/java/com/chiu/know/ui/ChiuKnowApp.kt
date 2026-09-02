@@ -39,6 +39,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.chiu.know.R
 import com.chiu.know.model.CefrLevel
@@ -49,6 +50,7 @@ import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.advanceAdaptivePlacement
 import com.chiu.know.model.buildCefrTrail
 import com.chiu.know.model.isLearningAnswerCorrect
+import com.chiu.know.model.learningEvidenceFor
 import com.chiu.know.model.placementQuestionForLevel
 import com.chiu.know.model.startAdaptivePlacement
 import com.chiu.know.model.starterLearningActivityFor
@@ -61,6 +63,7 @@ private val Context.languagePreferencesDataStore by preferencesDataStore(name = 
 private val interfaceLanguageCodeKey = stringPreferencesKey("interface_language_code")
 private val targetLanguageCodeKey = stringPreferencesKey("target_language_code")
 private fun estimatedLevelKey(languageCode: String) = stringPreferencesKey("estimated_level_$languageCode")
+private fun learningEvidenceKey(languageCode: String) = stringSetPreferencesKey("learning_evidence_$languageCode")
 
 private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, LEARNING_TRAIL, LEARNING_ACTIVITY }
 
@@ -117,7 +120,25 @@ fun ChiuKnowApp() {
                 AppStep.LEARNING_ACTIVITY -> {
                     val activity = starterLearningActivityFor(targetLanguage.code, CefrLevel.A1)
                     if (activity == null) LaunchedEffect(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
-                    else LearningActivityScreen(activity) { step = AppStep.LEARNING_TRAIL }
+                    else LearningActivityScreen(activity, onAttempt = { learnerAnswer ->
+                        val correct = isLearningAnswerCorrect(activity, learnerAnswer)
+                        val evidence = learningEvidenceFor(activity, correct, System.currentTimeMillis())
+                        coroutineScope.launch {
+                            context.languagePreferencesDataStore.edit { prefs ->
+                                val key = learningEvidenceKey(targetLanguage.code)
+                                val current = prefs[key].orEmpty()
+                                val encoded = listOf(
+                                    evidence.attemptedAtEpochMillis,
+                                    evidence.activityId,
+                                    evidence.reviewKey,
+                                    evidence.level.name,
+                                    evidence.primarySkill.name,
+                                    evidence.correct
+                                ).joinToString("|")
+                                prefs[key] = current + encoded
+                            }
+                        }
+                    }) { step = AppStep.LEARNING_TRAIL }
                 }
             }
         }
@@ -151,9 +172,9 @@ private fun LearningTrailScreen(estimatedLevel: CefrLevel, hasFoundationActivity
 }
 
 @Composable
-private fun LearningActivityScreen(activity: LearningActivity, onBack: () -> Unit) {
+private fun LearningActivityScreen(activity: LearningActivity, onAttempt: (String) -> Unit, onBack: () -> Unit) {
     var answer by remember(activity.id) { mutableStateOf("") }; var checked by remember(activity.id) { mutableStateOf(false) }; val correct = checked && isLearningAnswerCorrect(activity, answer)
-    CenteredColumn { Text(stringResource(R.string.activity_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(8.dp)); Text("${activity.level.name} · ${activity.primarySkill.name}", style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(20.dp)); Text(activity.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(20.dp)); OutlinedTextField(value = answer, onValueChange = { answer = it; checked = false }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.activity_answer_hint)) }, singleLine = true, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)); Spacer(Modifier.height(16.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = answer.isNotBlank(), onClick = { checked = true }) { Text(stringResource(R.string.check_answer)) }; if (checked) { Spacer(Modifier.height(20.dp)); Text(if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(8.dp)); Text("${stringResource(R.string.activity_feedback)}: ${activity.feedback}", style = MaterialTheme.typography.bodyLarge) }; Spacer(Modifier.height(20.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) } }
+    CenteredColumn { Text(stringResource(R.string.activity_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(8.dp)); Text("${activity.level.name} · ${activity.primarySkill.name}", style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(20.dp)); Text(activity.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(20.dp)); OutlinedTextField(value = answer, onValueChange = { answer = it; checked = false }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.activity_answer_hint)) }, singleLine = true, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)); Spacer(Modifier.height(16.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = answer.isNotBlank(), onClick = { checked = true; onAttempt(answer) }) { Text(stringResource(R.string.check_answer)) }; if (checked) { Spacer(Modifier.height(20.dp)); Text(if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(8.dp)); Text("${stringResource(R.string.activity_feedback)}: ${activity.feedback}", style = MaterialTheme.typography.bodyLarge) }; Spacer(Modifier.height(20.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) } }
 }
 
 @Composable
