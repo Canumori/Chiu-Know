@@ -13,7 +13,7 @@ class StarterLearningActivitiesIntegrationTest {
     fun providesIntegratedA1VocabularyGrammarAndReadingForEveryLanguage() {
         supportedTargetLanguages.forEach { language ->
             val activities = starterLearningActivitiesFor(language.code)
-            assertEquals(5, activities.size)
+            assertEquals(6, activities.size)
             assertTrue(activities.all { it.level == CefrLevel.A1 })
             assertEquals(
                 setOf(LearningSkill.VOCABULARY, LearningSkill.GRAMMAR, LearningSkill.READING),
@@ -24,7 +24,7 @@ class StarterLearningActivitiesIntegrationTest {
     }
 
     @Test
-    fun rotatesThroughVocabularyPairGrammarPairThenReading() {
+    fun rotatesThroughVocabularyGrammarAndReadingPairs() {
         supportedTargetLanguages.forEach { language ->
             val first = starterLearningActivityFor(language.code, CefrLevel.A1, 0)
             val second = starterLearningActivityFor(language.code, CefrLevel.A1, 1)
@@ -32,22 +32,25 @@ class StarterLearningActivitiesIntegrationTest {
             val fourth = starterLearningActivityFor(language.code, CefrLevel.A1, 3)
             val fifth = starterLearningActivityFor(language.code, CefrLevel.A1, 4)
             val sixth = starterLearningActivityFor(language.code, CefrLevel.A1, 5)
+            val seventh = starterLearningActivityFor(language.code, CefrLevel.A1, 6)
 
-            assertNotNull(first)
-            assertNotNull(second)
-            assertNotNull(third)
-            assertNotNull(fourth)
-            assertNotNull(fifth)
+            listOf(first, second, third, fourth, fifth, sixth, seventh).forEach { assertNotNull(it) }
+
             assertNotEquals(first?.id, second?.id)
             assertEquals(first?.reviewKey, second?.reviewKey)
             assertEquals(LearningSkill.VOCABULARY, first?.primarySkill)
+
             assertNotEquals(third?.id, fourth?.id)
             assertEquals(third?.reviewKey, fourth?.reviewKey)
             assertEquals(LearningSkill.GRAMMAR, third?.primarySkill)
             assertNotEquals(first?.reviewKey, third?.reviewKey)
+
+            assertNotEquals(fifth?.id, sixth?.id)
+            assertEquals(fifth?.reviewKey, sixth?.reviewKey)
             assertEquals(LearningSkill.READING, fifth?.primarySkill)
             assertNotEquals(fourth?.reviewKey, fifth?.reviewKey)
-            assertEquals(first?.id, sixth?.id)
+
+            assertEquals(first?.id, seventh?.id)
         }
     }
 
