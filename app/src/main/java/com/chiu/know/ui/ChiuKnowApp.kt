@@ -86,6 +86,7 @@ fun ChiuKnowApp() {
             val persistedLearningEvidence = remember(preferences, targetLanguage.code) {
                 decodeLearningEvidenceSet(preferences[learningEvidenceKey(targetLanguage.code)].orEmpty())
             }
+            @Suppress("UNUSED_VARIABLE")
             val learningEvidenceSummaries = remember(persistedLearningEvidence) {
                 summarizeLearningEvidence(persistedLearningEvidence)
             }
@@ -124,7 +125,7 @@ fun ChiuKnowApp() {
                     }
                 }
                 AppStep.PLACEMENT_RESULT -> PlacementResultScreen(estimatedLevel, correctAnswers, adaptiveState.answeredQuestions, { trailOpenedFromResult = true; step = AppStep.LEARNING_TRAIL }, { step = AppStep.PLACEMENT_INTRO }, { step = AppStep.LANGUAGE_SELECTION })
-                AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, learningEvidenceSummaries.size, { step = AppStep.LEARNING_ACTIVITY }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
+                AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
                 AppStep.LEARNING_ACTIVITY -> {
                     val activity = starterLearningActivityFor(targetLanguage.code, estimatedLevel)
                     if (activity == null) LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
@@ -174,9 +175,9 @@ private fun PlacementResultScreen(level: CefrLevel, correctAnswers: Int, total: 
 }
 
 @Composable
-private fun LearningTrailScreen(estimatedLevel: CefrLevel, hasFoundationActivity: Boolean, observedReviewTargets: Int, onStartFoundationActivity: () -> Unit, onBack: () -> Unit) {
+private fun LearningTrailScreen(estimatedLevel: CefrLevel, hasFoundationActivity: Boolean, onStartFoundationActivity: () -> Unit, onBack: () -> Unit) {
     val trail = remember(estimatedLevel) { buildCefrTrail(estimatedLevel) }
-    CenteredColumn { Text(stringResource(R.string.learning_path_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.learning_path_description), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(20.dp)); trail.forEach { item -> val statusLabel = when (item.status) { CefrTrailStatus.COMPLETED -> stringResource(R.string.trail_completed); CefrTrailStatus.CURRENT -> stringResource(R.string.trail_current); CefrTrailStatus.LOCKED -> stringResource(R.string.trail_locked) }; Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = if (item.status == CefrTrailStatus.CURRENT) 6.dp else 1.dp) { Text("${item.level.name} · $statusLabel", modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = if (item.status == CefrTrailStatus.CURRENT) FontWeight.Bold else FontWeight.Normal) }; Spacer(Modifier.height(8.dp)) }; if (hasFoundationActivity) { Spacer(Modifier.height(8.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStartFoundationActivity) { Text(stringResource(R.string.start_foundation_activity)) } }; if (observedReviewTargets > 0) { Spacer(Modifier.height(8.dp)); Text("$observedReviewTargets review target(s) recorded locally", style = MaterialTheme.typography.bodySmall) }; Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.trail_foundation_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(16.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) } }
+    CenteredColumn { Text(stringResource(R.string.learning_path_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.learning_path_description), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(20.dp)); trail.forEach { item -> val statusLabel = when (item.status) { CefrTrailStatus.COMPLETED -> stringResource(R.string.trail_completed); CefrTrailStatus.CURRENT -> stringResource(R.string.trail_current); CefrTrailStatus.LOCKED -> stringResource(R.string.trail_locked) }; Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = if (item.status == CefrTrailStatus.CURRENT) 6.dp else 1.dp) { Text("${item.level.name} · $statusLabel", modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = if (item.status == CefrTrailStatus.CURRENT) FontWeight.Bold else FontWeight.Normal) }; Spacer(Modifier.height(8.dp)) }; if (hasFoundationActivity) { Spacer(Modifier.height(8.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStartFoundationActivity) { Text(stringResource(R.string.start_foundation_activity)) } }; Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.trail_foundation_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(16.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) } }
 }
 
 @Composable
