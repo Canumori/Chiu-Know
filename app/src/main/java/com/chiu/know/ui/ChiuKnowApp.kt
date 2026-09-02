@@ -54,6 +54,7 @@ import com.chiu.know.model.advanceAdaptivePlacement
 import com.chiu.know.model.buildCefrTrail
 import com.chiu.know.model.decodeLearningEvidenceSet
 import com.chiu.know.model.encodeLearningEvidence
+import com.chiu.know.model.updateReviewScheduleStateSet
 import com.chiu.know.model.isLearningAnswerCorrect
 import com.chiu.know.model.learningEvidenceFor
 import com.chiu.know.model.placementQuestionForLevel
@@ -70,6 +71,7 @@ private val interfaceLanguageCodeKey = stringPreferencesKey("interface_language_
 private val targetLanguageCodeKey = stringPreferencesKey("target_language_code")
 private fun estimatedLevelKey(languageCode: String) = stringPreferencesKey("estimated_level_$languageCode")
 private fun learningEvidenceKey(languageCode: String) = stringSetPreferencesKey("learning_evidence_$languageCode")
+private fun reviewScheduleKey(languageCode: String) = stringSetPreferencesKey("review_schedule_$languageCode")
 
 private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, LEARNING_TRAIL, LEARNING_ACTIVITY }
 
@@ -135,6 +137,11 @@ fun ChiuKnowApp() {
                                 val key = learningEvidenceKey(targetLanguage.code)
                                 val current = prefs[key].orEmpty()
                                 prefs[key] = current + encodeLearningEvidence(evidence)
+                                val scheduleKey = reviewScheduleKey(targetLanguage.code)
+                                prefs[scheduleKey] = updateReviewScheduleStateSet(
+                                    encoded = prefs[scheduleKey].orEmpty(),
+                                    evidence = evidence
+                                )
                             }
                         }
                     }) { step = AppStep.LEARNING_TRAIL }
