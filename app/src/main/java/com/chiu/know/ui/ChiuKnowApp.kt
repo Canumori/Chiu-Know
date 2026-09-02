@@ -57,10 +57,9 @@ import com.chiu.know.model.isLearningAnswerCorrect
 import com.chiu.know.model.learningEvidenceFor
 import com.chiu.know.model.placementQuestionForLevel
 import com.chiu.know.model.startAdaptivePlacement
-import com.chiu.know.model.starterLearningActivitiesFor
 import com.chiu.know.model.starterLearningActivityFor
+import com.chiu.know.model.starterLearningActivityForEvidence
 import com.chiu.know.model.starterPlacementQuestionsFor
-import com.chiu.know.model.summarizeLearningEvidence
 import com.chiu.know.model.supportedInterfaceLanguages
 import com.chiu.know.model.supportedTargetLanguages
 import kotlinx.coroutines.launch
@@ -89,10 +88,6 @@ fun ChiuKnowApp() {
             val persistedEstimatedLevel = preferences[estimatedLevelKey(targetLanguage.code)]?.let { stored -> CefrLevel.entries.firstOrNull { it.name == stored } }
             val persistedLearningEvidence = remember(preferences, targetLanguage.code) {
                 decodeLearningEvidenceSet(preferences[learningEvidenceKey(targetLanguage.code)].orEmpty())
-            }
-            @Suppress("UNUSED_VARIABLE")
-            val learningEvidenceSummaries = remember(persistedLearningEvidence) {
-                summarizeLearningEvidence(persistedLearningEvidence)
             }
             var adaptiveState by remember { mutableStateOf(startAdaptivePlacement()) }
             var estimatedLevel by remember(persistedEstimatedLevel) { mutableStateOf(persistedEstimatedLevel ?: CefrLevel.A1) }
@@ -131,16 +126,9 @@ fun ChiuKnowApp() {
                 AppStep.PLACEMENT_RESULT -> PlacementResultScreen(estimatedLevel, correctAnswers, adaptiveState.answeredQuestions, { trailOpenedFromResult = true; step = AppStep.LEARNING_TRAIL }, { step = AppStep.PLACEMENT_INTRO }, { step = AppStep.LANGUAGE_SELECTION })
                 AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
                 AppStep.LEARNING_ACTIVITY -> {
-                    val starterReviewKeys = remember(targetLanguage.code, estimatedLevel) {
-                        starterLearningActivitiesFor(targetLanguage.code)
-                            .filter { it.level == estimatedLevel }
-                            .map { it.reviewKey }
-                            .toSet()
+                    val activity = remember(targetLanguage.code, estimatedLevel) {
+                        starterLearningActivityForEvidence(targetLanguage.code, estimatedLevel, persistedLearningEvidence)
                     }
-                    val priorAttemptCount = remember(targetLanguage.code, estimatedLevel) {
-                        persistedLearningEvidence.count { it.reviewKey in starterReviewKeys }
-                    }
-                    val activity = starterLearningActivityFor(targetLanguage.code, estimatedLevel, priorAttemptCount)
                     if (activity == null) LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
                     else LearningActivityScreen(activity, onAttempt = { learnerAnswer ->
                         val correct = isLearningAnswerCorrect(activity, learnerAnswer)
@@ -177,7 +165,6 @@ private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, to
 @Composable
 private fun PlacementResultScreen(level: CefrLevel, correctAnswers: Int, total: Int, onContinue: () -> Unit, onRestart: () -> Unit, onChangeLanguage: () -> Unit) {
     CenteredColumn { Text(stringResource(R.string.estimated_level), style = MaterialTheme.typography.titleLarge); Spacer(Modifier.height(12.dp)); Text(level.name, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.correct_answers, correctAnswers, total)); Spacer(Modifier.height(8.dp)); Text(stringResource(R.string.prototype_score_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(28.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onContinue) { Text(stringResource(R.string.continue_to_path)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onRestart) { Text(stringResource(R.string.try_again)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onChangeLanguage) { Text(stringResource(R.string.change_languages)) } }
-}
 
 @Composable
 private fun LearningTrailScreen(estimatedLevel: CefrLevel, hasFoundationActivity: Boolean, onStartFoundationActivity: () -> Unit, onBack: () -> Unit) {
