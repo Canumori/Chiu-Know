@@ -47,6 +47,65 @@ class StarterReviewSelectionTest {
     }
 
     @Test
+    fun reachesReorderAsThirdGrammarVariantWithoutCreatingANewReviewTarget() {
+        val language = "en"
+        val all = starterLearningActivitiesFor(language)
+        val vocabulary = all.first { it.primarySkill == LearningSkill.VOCABULARY }
+        val reading = all.first { it.primarySkill == LearningSkill.READING }
+        val grammarVariants = all.filter { it.reviewKey == "en:a1:grammar:copula:first-person" }
+
+        assertEquals(3, grammarVariants.size)
+        assertEquals(ResponseType.FILL_IN, grammarVariants[0].responseType)
+        assertEquals(ResponseType.FILL_IN, grammarVariants[1].responseType)
+        assertEquals(ResponseType.REORDER, grammarVariants[2].responseType)
+        assertEquals("en-a1-copula-reorder-001", grammarVariants[2].id)
+
+        val evidenceBeforeGrammar = listOf(
+            attempt(vocabulary, 1L), attempt(vocabulary, 2L), attempt(vocabulary, 3L),
+            attempt(reading, 4L), attempt(reading, 5L), attempt(reading, 6L)
+        )
+
+        val firstGrammar = starterLearningActivityForEvidence(language, CefrLevel.A1, evidenceBeforeGrammar)!!
+        assertEquals(grammarVariants[0].id, firstGrammar.id)
+
+        val secondGrammar = starterLearningActivityForEvidence(
+            language,
+            CefrLevel.A1,
+            evidenceBeforeGrammar + attempt(firstGrammar, 7L)
+        )!!
+        assertEquals(grammarVariants[1].id, secondGrammar.id)
+
+        val reorderGrammar = starterLearningActivityForEvidence(
+            language,
+            CefrLevel.A1,
+            evidenceBeforeGrammar + attempt(firstGrammar, 7L) + attempt(secondGrammar, 8L)
+        )!!
+        assertEquals(ResponseType.REORDER, reorderGrammar.responseType)
+        assertEquals("en-a1-copula-reorder-001", reorderGrammar.id)
+        assertEquals(firstGrammar.reviewKey, reorderGrammar.reviewKey)
+    }
+
+    @Test
+    fun correctnessDoesNotChangeExposureBalancing() {
+        val language = "en"
+        val first = starterLearningActivityForEvidence(language, CefrLevel.A1, emptyList())!!
+
+        val afterCorrect = starterLearningActivityForEvidence(
+            language,
+            CefrLevel.A1,
+            listOf(attempt(first, 1L, correct = true))
+        )!!
+        val afterIncorrect = starterLearningActivityForEvidence(
+            language,
+            CefrLevel.A1,
+            listOf(attempt(first, 1L, correct = false))
+        )!!
+
+        assertEquals(afterCorrect.id, afterIncorrect.id)
+        assertEquals(afterCorrect.reviewKey, afterIncorrect.reviewKey)
+    }
+
+    @Test
     fun ignoresEvidenceOutsideAvailableLevelAndReturnsNullForMissingContent() {
         val a1 = starterLearningActivityFor("en", CefrLevel.A1)!!
         val unrelated = LearningEvidence(
@@ -62,6 +121,9 @@ class StarterReviewSelectionTest {
         assertNull(starterLearningActivityForEvidence("en", CefrLevel.B1, emptyList()))
     }
 
-    private fun attempt(activity: LearningActivity, at: Long) =
-        learningEvidenceFor(activity, correct = true, attemptedAtEpochMillis = at)
+    private fun attempt(
+        activity: LearningActivity,
+        at: Long,
+        correct: Boolean = true
+    ) = learningEvidenceFor(activity, correct = correct, attemptedAtEpochMillis = at)
 }
