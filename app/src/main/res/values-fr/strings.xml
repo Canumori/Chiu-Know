@@ -31,4 +31,9 @@
     <string name="answer_incorrect">Pas encore</string>
     <string name="activity_feedback">Explication</string>
     <string name="back_to_path">Retour au parcours</string>
+    <string name="review_up_to_date_title">Révisions à jour</string>
+    <string name="review_up_to_date_description">Vous avez terminé tout ce qui était prévu pour le moment.</string>
+    <string name="next_review_time">Prochaine révision : %1$s</string>
+    <string name="practice_more">Pratiquer davantage</string>
+    <string name="optional_practice_note">La pratique facultative fournit des explications, mais ne modifie pas encore votre calendrier de révision.</string>
 </resources>

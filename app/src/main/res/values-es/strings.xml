@@ -31,4 +31,9 @@
     <string name="answer_incorrect">Todavía no</string>
     <string name="activity_feedback">Explicación</string>
     <string name="back_to_path">Volver a la ruta</string>
+    <string name="review_up_to_date_title">Revisiones al día</string>
+    <string name="review_up_to_date_description">Has completado todo lo programado para ahora.</string>
+    <string name="next_review_time">Próxima revisión: %1$s</string>
+    <string name="practice_more">Practicar más</string>
+    <string name="optional_practice_note">La práctica opcional ofrece explicaciones, pero todavía no cambia tu calendario de revisiones.</string>
 </resources>

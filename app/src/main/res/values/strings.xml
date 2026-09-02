@@ -31,4 +31,9 @@
     <string name="answer_incorrect">Not quite yet</string>
     <string name="activity_feedback">Feedback</string>
     <string name="back_to_path">Back to path</string>
+    <string name="review_up_to_date_title">Reviews up to date</string>
+    <string name="review_up_to_date_description">You completed everything scheduled for now.</string>
+    <string name="next_review_time">Next review: %1$s</string>
+    <string name="practice_more">Practice more</string>
+    <string name="optional_practice_note">Optional practice gives feedback but does not change your review schedule yet.</string>
 </resources>

@@ -52,7 +52,9 @@ import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.ResponseType
 import com.chiu.know.model.advanceAdaptivePlacement
 import com.chiu.know.model.buildCefrTrail
+import com.chiu.know.model.StarterQueueReason
 import com.chiu.know.model.decodeLearningEvidenceSet
+import com.chiu.know.model.decodeReviewScheduleStateSet
 import com.chiu.know.model.encodeLearningEvidence
 import com.chiu.know.model.updateReviewScheduleStateSet
 import com.chiu.know.model.isLearningAnswerCorrect
@@ -61,10 +63,13 @@ import com.chiu.know.model.placementQuestionForLevel
 import com.chiu.know.model.startAdaptivePlacement
 import com.chiu.know.model.starterLearningActivityFor
 import com.chiu.know.model.starterLearningActivityForEvidence
+import com.chiu.know.model.starterQueueSelection
 import com.chiu.know.model.starterPlacementQuestionsFor
 import com.chiu.know.model.supportedInterfaceLanguages
 import com.chiu.know.model.supportedTargetLanguages
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.util.Date
 
 private val Context.languagePreferencesDataStore by preferencesDataStore(name = "language_preferences")
 private val interfaceLanguageCodeKey = stringPreferencesKey("interface_language_code")
@@ -90,6 +95,7 @@ fun ChiuKnowApp() {
             var targetLanguage by remember(persistedTargetCode) { mutableStateOf(supportedTargetLanguages.firstOrNull { it.code == persistedTargetCode } ?: supportedTargetLanguages.first()) }
             val persistedEstimatedLevel = preferences[estimatedLevelKey(targetLanguage.code)]?.let { stored -> CefrLevel.entries.firstOrNull { it.name == stored } }
             val persistedLearningEvidence = remember(preferences, targetLanguage.code) { decodeLearningEvidenceSet(preferences[learningEvidenceKey(targetLanguage.code)].orEmpty()) }
+            val persistedReviewSchedules = remember(preferences, targetLanguage.code) { decodeReviewScheduleStateSet(preferences[reviewScheduleKey(targetLanguage.code)].orEmpty()) }
             var adaptiveState by remember { mutableStateOf(startAdaptivePlacement()) }
             var estimatedLevel by remember(persistedEstimatedLevel) { mutableStateOf(persistedEstimatedLevel ?: CefrLevel.A1) }
             var correctAnswers by remember { mutableIntStateOf(0) }
@@ -127,24 +133,52 @@ fun ChiuKnowApp() {
                 AppStep.PLACEMENT_RESULT -> PlacementResultScreen(estimatedLevel, correctAnswers, adaptiveState.answeredQuestions, { trailOpenedFromResult = true; step = AppStep.LEARNING_TRAIL }, { step = AppStep.PLACEMENT_INTRO }, { step = AppStep.LANGUAGE_SELECTION })
                 AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
                 AppStep.LEARNING_ACTIVITY -> {
-                    val activity = remember(targetLanguage.code, estimatedLevel) { starterLearningActivityForEvidence(targetLanguage.code, estimatedLevel, persistedLearningEvidence) }
-                    if (activity == null) LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
-                    else LearningActivityScreen(activity, onAttempt = { learnerAnswer ->
-                        val correct = isLearningAnswerCorrect(activity, learnerAnswer)
-                        val evidence = learningEvidenceFor(activity, correct, System.currentTimeMillis())
-                        coroutineScope.launch {
-                            context.languagePreferencesDataStore.edit { prefs ->
-                                val key = learningEvidenceKey(targetLanguage.code)
-                                val current = prefs[key].orEmpty()
-                                prefs[key] = current + encodeLearningEvidence(evidence)
-                                val scheduleKey = reviewScheduleKey(targetLanguage.code)
-                                prefs[scheduleKey] = updateReviewScheduleStateSet(
-                                    encoded = prefs[scheduleKey].orEmpty(),
-                                    evidence = evidence
-                                )
-                            }
-                        }
-                    }) { step = AppStep.LEARNING_TRAIL }
+                    val queue = remember(targetLanguage.code, estimatedLevel) {
+                        starterQueueSelection(
+                            languageCode = targetLanguage.code,
+                            level = estimatedLevel,
+                            evidence = persistedLearningEvidence,
+                            schedules = persistedReviewSchedules,
+                            nowEpochMillis = System.currentTimeMillis()
+                        )
+                    }
+                    var optionalPracticeRequested by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(false) }
+                    val optionalPracticeActivity = if (optionalPracticeRequested) {
+                        starterLearningActivityForEvidence(targetLanguage.code, estimatedLevel, persistedLearningEvidence)
+                    } else {
+                        null
+                    }
+                    val activity = optionalPracticeActivity ?: queue.activity
+
+                    when {
+                        queue.reason == StarterQueueReason.NO_CONTENT ->
+                            LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
+                        queue.reason == StarterQueueReason.NONE_DUE && !optionalPracticeRequested ->
+                            ReviewUpToDateScreen(
+                                nextDueAtEpochMillis = queue.nextDueAtEpochMillis,
+                                onPracticeMore = { optionalPracticeRequested = true },
+                                onBack = { step = AppStep.LEARNING_TRAIL }
+                            )
+                        activity != null ->
+                            LearningActivityScreen(activity, onAttempt = { learnerAnswer ->
+                                if (!optionalPracticeRequested) {
+                                    val correct = isLearningAnswerCorrect(activity, learnerAnswer)
+                                    val evidence = learningEvidenceFor(activity, correct, System.currentTimeMillis())
+                                    coroutineScope.launch {
+                                        context.languagePreferencesDataStore.edit { prefs ->
+                                            val key = learningEvidenceKey(targetLanguage.code)
+                                            val current = prefs[key].orEmpty()
+                                            prefs[key] = current + encodeLearningEvidence(evidence)
+                                            val scheduleKey = reviewScheduleKey(targetLanguage.code)
+                                            prefs[scheduleKey] = updateReviewScheduleStateSet(
+                                                encoded = prefs[scheduleKey].orEmpty(),
+                                                evidence = evidence
+                                            )
+                                        }
+                                    }
+                                }
+                            }) { step = AppStep.LEARNING_TRAIL }
+                    }
                 }
             }
         }
@@ -177,6 +211,37 @@ private fun LearningTrailScreen(estimatedLevel: CefrLevel, hasFoundationActivity
     val scrollState = rememberScrollState()
     Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(horizontal = 24.dp, vertical = 32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(stringResource(R.string.learning_path_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.learning_path_description), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(20.dp)); trail.forEach { item -> val statusLabel = when (item.status) { CefrTrailStatus.COMPLETED -> stringResource(R.string.trail_completed); CefrTrailStatus.CURRENT -> stringResource(R.string.trail_current); CefrTrailStatus.LOCKED -> stringResource(R.string.trail_locked) }; Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = if (item.status == CefrTrailStatus.CURRENT) 6.dp else 1.dp) { Text("${item.level.name} · $statusLabel", modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = if (item.status == CefrTrailStatus.CURRENT) FontWeight.Bold else FontWeight.Normal) }; Spacer(Modifier.height(8.dp)) }; if (hasFoundationActivity) { Spacer(Modifier.height(8.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStartFoundationActivity) { Text(stringResource(R.string.start_foundation_activity)) } }; Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.trail_foundation_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(16.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) }
+    }
+}
+
+@Composable
+private fun ReviewUpToDateScreen(
+    nextDueAtEpochMillis: Long?,
+    onPracticeMore: () -> Unit,
+    onBack: () -> Unit
+) {
+    val nextReview = nextDueAtEpochMillis?.let {
+        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(it))
+    }
+
+    CenteredColumn {
+        Text(stringResource(R.string.review_up_to_date_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(12.dp))
+        Text(stringResource(R.string.review_up_to_date_description), style = MaterialTheme.typography.bodyLarge)
+        if (nextReview != null) {
+            Spacer(Modifier.height(12.dp))
+            Text(stringResource(R.string.next_review_time, nextReview), style = MaterialTheme.typography.titleMedium)
+        }
+        Spacer(Modifier.height(24.dp))
+        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onPracticeMore) {
+            Text(stringResource(R.string.practice_more))
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(stringResource(R.string.optional_practice_note), style = MaterialTheme.typography.bodyMedium)
+        Spacer(Modifier.height(12.dp))
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) {
+            Text(stringResource(R.string.back_to_path))
+        }
     }
 }
 
