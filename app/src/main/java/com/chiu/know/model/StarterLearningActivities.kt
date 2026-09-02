@@ -125,7 +125,8 @@ private val starterLearningActivities = listOf(
 
 fun starterLearningActivitiesFor(languageCode: String): List<LearningActivity> =
     starterLearningActivities.filter { it.id.startsWith("$languageCode-") } +
-        a1IntegratedGrammarActivitiesFor(languageCode)
+        a1IntegratedGrammarActivitiesFor(languageCode) +
+        a1ReadingActivitiesFor(languageCode)
 
 fun starterLearningActivityFor(
     languageCode: String,
