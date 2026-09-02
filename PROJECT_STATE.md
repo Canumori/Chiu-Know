@@ -1,6 +1,6 @@
 # CHIU KNOW? — PROJECT STATE
 
-## ESTADO AUTORITATIVO — 2026-09-02 15:29 UTC — REVISÃO ATIVA + CONTRATO NEUTRO DE ÁUDIO VALIDADOS ATÉ CI #136
+## ESTADO AUTORITATIVO — 2026-09-02 16:00 UTC — REVISÃO ATIVA + PRÉVIA TEMPORÁRIA DE VOZ VALIDADAS ATÉ CI #138
 
 Este arquivo é o handoff operacional autoritativo. Em qualquer novo chat: NÃO recomeçar, NÃO inferir estado apenas pela memória e NÃO alterar antes de conferir GitHub real. O estado real do GitHub vence documentação desatualizada.
 
@@ -93,23 +93,27 @@ UI de atividade localizada default/pt/es/fr/ko; commits `15ead396...`, `a1f4caf.
 Mastery real; otimização personalizada dos parâmetros FSRS; desbloqueio por retenção; FREE_TEXT apropriado; listening/áudio real; speaking/ASR/pronúncia; writing real; histórias funcionais; tutor IA; gamificação completa; seis scores válidos no placement; integração binária final dos personagens; conteúdo A1–C2 completo.
 
 ## 14. PRÓXIMO PASSO EXATO
-Último HEAD funcional validado antes deste commit documental: `5dff578c2ae9e5d351b77935975fae4135899111`, CI #136 / run `33667291082` SUCCESS.
+Último HEAD funcional validado antes deste commit documental: `6d67f9618d7a90683f9b9e4a6e5b22d07d9034e7`, CI #138 / run `33670372566` SUCCESS.
 
-A fundação neutra de listening/áudio está validada:
-- `LearningActivity` possui `audioPromptId` separado da resposta;
-- LISTEN_AND_RESPOND exige referência de áudio não vazia;
-- `LearningAudioPrompt` separa texto falado, idioma, papel de voz e forma de entrega;
-- o contrato aceita voz do sistema, asset empacotado ou arquivo em cache sem amarrar o app a fornecedor;
-- áudio empacotado/cacheado exige chave de recurso;
-- estados de reprodução e transições são puros, determinísticos e testados;
-- nenhum serviço pago, binário de áudio ou conteúdo listening artificial foi adicionado;
-- listening continua separado de speaking, ASR e avaliação de pronúncia.
+A usuária autorizou criar as primeiras amostras de voz. Foi implementada uma prévia temporária dentro do APK:
+- acesso pela trilha, sem virar atividade pedagógica nem registrar evidência;
+- usa exclusivamente o mecanismo de voz já instalado no Android, sem fornecedor, conta, custo ou dependência nova;
+- três estilos técnicos: neutro, calmo e animado, variando somente ritmo/tom;
+- frase localizada no idioma-alvo para pt/en/es/fr/ko;
+- mensagens da interface localizadas nos cinco idiomas;
+- tela declara expressamente que as amostras não são vozes oficiais;
+- indisponibilidade de voz/idioma é tratada sem inventar áudio;
+- testes protegem três estilos, cinco idiomas e fallback;
+- nenhum personagem recebeu voz canônica e nenhum asset binário foi integrado;
+- artifact candidato: `chiu-know-debug`, artifact ID `9862277634`, run #138.
 
-Decisão REAL necessária antes da primeira fatia audível A1:
-1. usar voz simples do próprio Android como protótipo técnico temporário, mantendo as vozes canônicas dos personagens para uma fase aprovada depois; ou
-2. não criar protótipo audível ainda e esperar a definição/produção das vozes canônicas.
+Próximo passo exige teste físico e opinião compreensível da usuária:
+1. instalar o APK candidato sem publicar;
+2. entrar na trilha e tocar em “Ouvir vozes temporárias”;
+3. ouvir Neutra, Calma e Animada;
+4. informar se alguma serve como voz técnica provisória ou se todas devem ser rejeitadas.
 
-Recomendação operacional: opção 1, claramente tratada como voz temporária e não como identidade final. Depois da decisão, implementar primeiro reprodução determinística + uma pequena fatia A1 nos cinco idiomas, sem massificar conteúdo, e exigir CI verde.
+Não criar conteúdo LISTEN_AND_RESPOND real nem oficializar voz antes desse retorno. A voz reproduzida depende do pacote TTS instalado no aparelho e pode variar entre dispositivos. Depois da aprovação técnica, implementar uma única fatia A1 listening controlada nos cinco idiomas e validar CI.
 
 ## 15. PRAZO
 Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta cada vez mais utilizável, infraestrutura difícil e documentação para continuidade posterior. Não sacrificar pedagogia para fingir A1–C2 completo. Continuidade deve depender do GitHub, não memória do chat.
@@ -153,4 +157,6 @@ Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta ca
 - `387f8fde97b92a025aebdd477aad24b44519d277`: reconstrução de schedule por evidência histórica; CI #134 / run `33666723947` SUCCESS.
 - `12f47a176470f43439ded27a70708ee4ada5131d`: documentação da revisão ativa/migração e handoff de áudio; CI #135 / run `33666911683` SUCCESS.
 - `5dff578c2ae9e5d351b77935975fae4135899111`: contrato neutro de áudio, vínculo obrigatório em LISTEN_AND_RESPOND e estado determinístico de reprodução; CI #136 / run `33667291082` SUCCESS.
+- `b491a251b368ea431bdc160b547542e80724aa99`: documentação do contrato neutro e decisão de voz; CI #137 / run `33667581198` SUCCESS.
+- `6d67f9618d7a90683f9b9e4a6e5b22d07d9034e7`: prévia temporária com três estilos de voz do Android nos cinco idiomas; CI #138 / run `33670372566` SUCCESS; artifact `9862277634`.
 - O commit que grava este documento passa a ser o novo HEAD documental; conferir seu CI antes de prosseguir.
