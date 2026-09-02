@@ -23,4 +23,12 @@
     <string name="trail_locked">Bloqueado</string>
     <string name="trail_foundation_note">Esta é a primeira fundação da trilha de aprendizagem. Lições, atividades e regras de progresso vêm a seguir.</string>
     <string name="back_to_result">Voltar ao resultado</string>
+    <string name="start_foundation_activity">Praticar fundamentos A1</string>
+    <string name="activity_title">Atividade de aprendizagem</string>
+    <string name="activity_answer_hint">Digite sua resposta</string>
+    <string name="check_answer">Verificar resposta</string>
+    <string name="answer_correct">Correto</string>
+    <string name="answer_incorrect">Ainda não</string>
+    <string name="activity_feedback">Explicação</string>
+    <string name="back_to_path">Voltar à trilha</string>
 </resources>
