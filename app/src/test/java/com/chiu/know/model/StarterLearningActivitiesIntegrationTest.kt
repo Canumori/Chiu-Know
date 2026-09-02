@@ -10,32 +10,34 @@ import org.junit.Test
 class StarterLearningActivitiesIntegrationTest {
 
     @Test
-    fun providesIntegratedA1VocabularyAndGrammarForEveryLanguage() {
+    fun providesIntegratedA1VocabularyGrammarAndReadingForEveryLanguage() {
         supportedTargetLanguages.forEach { language ->
             val activities = starterLearningActivitiesFor(language.code)
-            assertEquals(4, activities.size)
+            assertEquals(5, activities.size)
             assertTrue(activities.all { it.level == CefrLevel.A1 })
             assertEquals(
-                setOf(LearningSkill.VOCABULARY, LearningSkill.GRAMMAR),
+                setOf(LearningSkill.VOCABULARY, LearningSkill.GRAMMAR, LearningSkill.READING),
                 activities.map { it.primarySkill }.toSet()
             )
-            assertEquals(2, activities.map { it.reviewKey }.distinct().size)
+            assertEquals(3, activities.map { it.reviewKey }.distinct().size)
         }
     }
 
     @Test
-    fun rotatesThroughVocabularyPairThenGrammarPair() {
+    fun rotatesThroughVocabularyPairGrammarPairThenReading() {
         supportedTargetLanguages.forEach { language ->
             val first = starterLearningActivityFor(language.code, CefrLevel.A1, 0)
             val second = starterLearningActivityFor(language.code, CefrLevel.A1, 1)
             val third = starterLearningActivityFor(language.code, CefrLevel.A1, 2)
             val fourth = starterLearningActivityFor(language.code, CefrLevel.A1, 3)
             val fifth = starterLearningActivityFor(language.code, CefrLevel.A1, 4)
+            val sixth = starterLearningActivityFor(language.code, CefrLevel.A1, 5)
 
             assertNotNull(first)
             assertNotNull(second)
             assertNotNull(third)
             assertNotNull(fourth)
+            assertNotNull(fifth)
             assertNotEquals(first?.id, second?.id)
             assertEquals(first?.reviewKey, second?.reviewKey)
             assertEquals(LearningSkill.VOCABULARY, first?.primarySkill)
@@ -43,7 +45,9 @@ class StarterLearningActivitiesIntegrationTest {
             assertEquals(third?.reviewKey, fourth?.reviewKey)
             assertEquals(LearningSkill.GRAMMAR, third?.primarySkill)
             assertNotEquals(first?.reviewKey, third?.reviewKey)
-            assertEquals(first?.id, fifth?.id)
+            assertEquals(LearningSkill.READING, fifth?.primarySkill)
+            assertNotEquals(fourth?.reviewKey, fifth?.reviewKey)
+            assertEquals(first?.id, sixth?.id)
         }
     }
 
