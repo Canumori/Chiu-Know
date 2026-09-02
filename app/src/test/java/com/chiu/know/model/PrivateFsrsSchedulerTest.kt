@@ -19,7 +19,7 @@ class PrivateFsrsSchedulerTest {
         assertEquals(ReviewPhase.REVIEW, state.phase)
         assertEquals(2.3065, state.stabilityDays, 0.0000001)
         assertEquals(2.118103970459015, state.difficulty, 0.0000001)
-        assertEquals(reviewedAt + (2.3065 * 86_400_000.0).toLong(), state.dueAtEpochMillis, 1L)
+        assertTrue(kotlin.math.abs(state.dueAtEpochMillis - (reviewedAt + (2.3065 * 86_400_000.0).toLong())) <= 1L)
         assertEquals(1, state.reviewCount)
         assertEquals(0, state.lapseCount)
     }
