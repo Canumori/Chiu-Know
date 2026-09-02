@@ -1,6 +1,6 @@
 # CHIU KNOW? — PROJECT STATE
 
-## ESTADO AUTORITATIVO — 2026-09-02 16:24 BRT — REVISÃO FSRS ATIVA + PRÁTICA OPCIONAL + MIGRAÇÃO VALIDADAS ATÉ CI #134
+## ESTADO AUTORITATIVO — 2026-09-02 15:29 UTC — REVISÃO ATIVA + CONTRATO NEUTRO DE ÁUDIO VALIDADOS ATÉ CI #136
 
 Este arquivo é o handoff operacional autoritativo. Em qualquer novo chat: NÃO recomeçar, NÃO inferir estado apenas pela memória e NÃO alterar antes de conferir GitHub real. O estado real do GitHub vence documentação desatualizada.
 
@@ -93,28 +93,23 @@ UI de atividade localizada default/pt/es/fr/ko; commits `15ead396...`, `a1f4caf.
 Mastery real; otimização personalizada dos parâmetros FSRS; desbloqueio por retenção; FREE_TEXT apropriado; listening/áudio real; speaking/ASR/pronúncia; writing real; histórias funcionais; tutor IA; gamificação completa; seis scores válidos no placement; integração binária final dos personagens; conteúdo A1–C2 completo.
 
 ## 14. PRÓXIMO PASSO EXATO
-Último HEAD funcional validado antes deste commit documental: `387f8fde97b92a025aebdd477aad24b44519d277`, CI #134 / run `33666723947` SUCCESS.
+Último HEAD funcional validado antes deste commit documental: `5dff578c2ae9e5d351b77935975fae4135899111`, CI #136 / run `33667291082` SUCCESS.
 
-A primeira versão funcional da frente de revisão/retenção está integrada:
-- scheduler próprio FSRS-6;
-- persistência versionada;
-- fila vencido→novo→em dia;
-- tela localizada;
-- prática opcional sem distorcer agenda;
-- reconstrução de histórico antigo;
-- sem mastery/desbloqueio falso.
+A fundação neutra de listening/áudio está validada:
+- `LearningActivity` possui `audioPromptId` separado da resposta;
+- LISTEN_AND_RESPOND exige referência de áudio não vazia;
+- `LearningAudioPrompt` separa texto falado, idioma, papel de voz e forma de entrega;
+- o contrato aceita voz do sistema, asset empacotado ou arquivo em cache sem amarrar o app a fornecedor;
+- áudio empacotado/cacheado exige chave de recurso;
+- estados de reprodução e transições são puros, determinísticos e testados;
+- nenhum serviço pago, binário de áudio ou conteúdo listening artificial foi adicionado;
+- listening continua separado de speaking, ASR e avaliação de pronúncia.
 
-Próxima frente segura: listening/áudio.
-1. definir contrato de áudio separado da atividade e do provedor;
-2. distinguir áudio pré-gerado/cacheado de TTS dinâmico;
-3. não escolher ou integrar serviço pago sem necessidade/decisão;
-4. criar estado determinístico de reprodução e testes puros antes da UI;
-5. não chamar transcrição de avaliação de pronúncia;
-6. manter LISTEN_AND_RESPOND sem conteúdo artificial até o caminho técnico estar validado;
-7. preservar seis habilidades como roadmap, sem inventar score;
-8. CI verde antes de adicionar uma pequena fatia listening A1.
+Decisão REAL necessária antes da primeira fatia audível A1:
+1. usar voz simples do próprio Android como protótipo técnico temporário, mantendo as vozes canônicas dos personagens para uma fase aprovada depois; ou
+2. não criar protótipo audível ainda e esperar a definição/produção das vozes canônicas.
 
-Depois do contrato neutro, pode surgir decisão de produto compreensível sobre voz: voz simples do sistema para protótipo ou vozes canônicas produzidas/cacheadas para personagens. Não decidir isso por suposição.
+Recomendação operacional: opção 1, claramente tratada como voz temporária e não como identidade final. Depois da decisão, implementar primeiro reprodução determinística + uma pequena fatia A1 nos cinco idiomas, sem massificar conteúdo, e exigir CI verde.
 
 ## 15. PRAZO
 Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta cada vez mais utilizável, infraestrutura difícil e documentação para continuidade posterior. Não sacrificar pedagogia para fingir A1–C2 completo. Continuidade deve depender do GitHub, não memória do chat.
@@ -138,7 +133,7 @@ Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta ca
 16. Atualizar este arquivo ao fim de frente relevante com HEAD/CI/próximo passo.
 
 ## 17. ARQUIVOS-CHAVE
-`PROJECT_STATE.md`, `PRODUCT_SPEC.md`, `VISUAL_BIBLE.md`, `RESEARCH.md`, `.github/workflows/android-ci.yml`, `ChiuKnowApp.kt`, `LearningActivity.kt`, `StarterLearningActivities.kt`, `A1IntegratedLearningActivities.kt`, `A1ReadingActivities.kt`, `A1ReorderActivities.kt`, `A1MultipleChoiceActivities.kt`, `StarterReviewSelection.kt`, `LearningEvidence.kt`, `LearningEvidenceCodec.kt`, `LearningEvidenceSummary.kt`, `ReviewEvidenceSummary.kt`, `ReviewScheduleState.kt`, `PrivateFsrsScheduler.kt`, `ReviewScheduleCodec.kt`, `ReviewSchedulePersistence.kt`, `StarterReviewQueue.kt`; testes especialmente `StarterReviewSelectionTest.kt`, `StarterLearningActivitiesIntegrationTest.kt`, `LearningActivityTest.kt`, `A1ReorderActivitiesTest.kt`.
+`PROJECT_STATE.md`, `PRODUCT_SPEC.md`, `VISUAL_BIBLE.md`, `RESEARCH.md`, `.github/workflows/android-ci.yml`, `ChiuKnowApp.kt`, `LearningActivity.kt`, `StarterLearningActivities.kt`, `A1IntegratedLearningActivities.kt`, `A1ReadingActivities.kt`, `A1ReorderActivities.kt`, `A1MultipleChoiceActivities.kt`, `StarterReviewSelection.kt`, `LearningEvidence.kt`, `LearningEvidenceCodec.kt`, `LearningEvidenceSummary.kt`, `ReviewEvidenceSummary.kt`, `ReviewScheduleState.kt`, `PrivateFsrsScheduler.kt`, `ReviewScheduleCodec.kt`, `ReviewSchedulePersistence.kt`, `StarterReviewQueue.kt`, `LearningAudioPrompt.kt`; testes especialmente `StarterReviewSelectionTest.kt`, `StarterLearningActivitiesIntegrationTest.kt`, `LearningActivityTest.kt`, `A1ReorderActivitiesTest.kt`.
 
 ## 18. MARCOS FINAIS DESTE HANDOFF
 - `b85e6c3...`: 7 atividades starter/idioma; CI #118 SUCCESS.
@@ -156,4 +151,6 @@ Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta ca
 - `802b22f5160d90d2ba22f5c5c7bded32b2e5d7f0`: documentação/licenças/decisão; CI #132 / run `33665991859` SUCCESS.
 - `e088f92bd6edda99895b1e5217b7d866b12146b6`: fila conectada + prática opcional localizada; CI #133 / run `33666462350` SUCCESS.
 - `387f8fde97b92a025aebdd477aad24b44519d277`: reconstrução de schedule por evidência histórica; CI #134 / run `33666723947` SUCCESS.
+- `12f47a176470f43439ded27a70708ee4ada5131d`: documentação da revisão ativa/migração e handoff de áudio; CI #135 / run `33666911683` SUCCESS.
+- `5dff578c2ae9e5d351b77935975fae4135899111`: contrato neutro de áudio, vínculo obrigatório em LISTEN_AND_RESPOND e estado determinístico de reprodução; CI #136 / run `33667291082` SUCCESS.
 - O commit que grava este documento passa a ser o novo HEAD documental; conferir seu CI antes de prosseguir.
