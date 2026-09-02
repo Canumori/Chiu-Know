@@ -1,6 +1,6 @@
 # CHIU KNOW? — PROJECT STATE
 
-## ESTADO AUTORITATIVO — 2026-09-02 16:12 BRT — NÚCLEO PRIVADO FSRS-6 + PERSISTÊNCIA + FILA VALIDADOS ATÉ CI #131
+## ESTADO AUTORITATIVO — 2026-09-02 16:24 BRT — REVISÃO FSRS ATIVA + PRÁTICA OPCIONAL + MIGRAÇÃO VALIDADAS ATÉ CI #134
 
 Este arquivo é o handoff operacional autoritativo. Em qualquer novo chat: NÃO recomeçar, NÃO inferir estado apenas pela memória e NÃO alterar antes de conferir GitHub real. O estado real do GitHub vence documentação desatualizada.
 
@@ -67,7 +67,10 @@ Infraestrutura de revisão própria, sem dependência GPL:
 - `PrivateFsrsScheduler`: núcleo FSRS-6 implementado internamente a partir das fórmulas públicas atuais; o app mapeia honestamente incorreto→Again e correto→Good, sem inventar Hard/Easy. Primeira tentativa `5b6b1eba...` teve somente erro de compilação no teste (#127); correção estreita `01a6b79...`, CI #128 SUCCESS.
 - `ReviewScheduleCodec`: round-trip versionado, malformed/versão desconhecida ignorados, mantém estado mais novo por reviewKey; `9829a95...`, CI #129 SUCCESS.
 - Persistência DataStore junto da evidência, ainda sem mudar seleção visível; `dfd7c7a...`, CI #130 SUCCESS.
-- `StarterReviewQueue`: distingue DUE_REVIEW, NEW_TARGET, NONE_DUE e NO_CONTENT; prioriza vencido, depois conhecimento sem estado; `a6c0b1a...`, CI #131 SUCCESS. A fila ainda NÃO está conectada à UI.
+- `StarterReviewQueue`: distingue DUE_REVIEW, NEW_TARGET, NONE_DUE e NO_CONTENT; prioriza vencido, depois conhecimento sem estado; `a6c0b1a...`, CI #131 SUCCESS.
+- Decisão aprovada pela usuária: quando não houver revisão vencida, mostrar “Revisões em dia”, próximo horário e prática opcional; prática opcional inicialmente não altera scheduler.
+- Fila conectada à UI nos cinco idiomas preservando feedback congelado; prática opcional dá feedback sem persistir evidência/agendamento; `e088f92...`, CI #133 / run `33666462350` SUCCESS.
+- Migração: se houver evidência histórica e nenhum schedule salvo, reconstruir cronologicamente por reviewKey sem apagar histórico; `387f8fd...`, CI #134 / run `33666723947` SUCCESS.
 
 ## 10. VISUAL — ABSOLUTO
 Ler `VISUAL_BIBLE.md` antes de arte.
@@ -87,28 +90,31 @@ UI de atividade localizada default/pt/es/fr/ko; commits `15ead396...`, `a1f4caf.
 - Sempre validar CI do HEAD novo; não massificar conteúdo antes da infraestrutura.
 
 ## 13. NÃO EXISTE AINDA — NÃO INVENTAR
-Mastery real; scheduler ativo na UI/seleção; otimização personalizada dos parâmetros FSRS; desbloqueio por retenção; FREE_TEXT apropriado; listening/áudio real; speaking/ASR/pronúncia; writing real; histórias funcionais; tutor IA; gamificação completa; seis scores válidos no placement; integração binária final dos personagens; conteúdo A1–C2 completo.
+Mastery real; otimização personalizada dos parâmetros FSRS; desbloqueio por retenção; FREE_TEXT apropriado; listening/áudio real; speaking/ASR/pronúncia; writing real; histórias funcionais; tutor IA; gamificação completa; seis scores válidos no placement; integração binária final dos personagens; conteúdo A1–C2 completo.
 
 ## 14. PRÓXIMO PASSO EXATO
-Último HEAD funcional validado antes deste commit documental: `a6c0b1ad996524efd3bd9a334fdb86302fb48c7a`, CI #131 / run `33665698425` SUCCESS.
+Último HEAD funcional validado antes deste commit documental: `387f8fde97b92a025aebdd477aad24b44519d277`, CI #134 / run `33666723947` SUCCESS.
 
-Decisão de produto necessária antes de conectar a fila à UI:
-- quando todos os conhecimentos conhecidos estiverem agendados para o futuro e não houver revisão vencida, definir se o aluno:
-  1. vê uma pausa pedagógica com o próximo horário e pode fazer prática opcional;
-  2. fica bloqueado até o próximo horário;
-  3. continua recebendo prática livre sem alterar o scheduler.
+A primeira versão funcional da frente de revisão/retenção está integrada:
+- scheduler próprio FSRS-6;
+- persistência versionada;
+- fila vencido→novo→em dia;
+- tela localizada;
+- prática opcional sem distorcer agenda;
+- reconstrução de histórico antigo;
+- sem mastery/desbloqueio falso.
 
-Recomendação: opção 1. Ela respeita espaçamento sem impedir quem quiser estudar mais. Prática opcional deve ser registrada separadamente ou, inicialmente, não alterar o estado FSRS para não distorcer intervalos.
+Próxima frente segura: listening/áudio.
+1. definir contrato de áudio separado da atividade e do provedor;
+2. distinguir áudio pré-gerado/cacheado de TTS dinâmico;
+3. não escolher ou integrar serviço pago sem necessidade/decisão;
+4. criar estado determinístico de reprodução e testes puros antes da UI;
+5. não chamar transcrição de avaliação de pronúncia;
+6. manter LISTEN_AND_RESPOND sem conteúdo artificial até o caminho técnico estar validado;
+7. preservar seis habilidades como roadmap, sem inventar score;
+8. CI verde antes de adicionar uma pequena fatia listening A1.
 
-Depois da decisão:
-1. criar estado/tela localizados para NONE_DUE;
-2. conectar `StarterReviewQueue` à UI sem alterar placement/trilha/desbloqueio;
-3. preservar feedback congelado;
-4. testar DUE/NEW/NONE/NO_CONTENT;
-5. CI verde;
-6. só depois avaliar prática opcional, migração e parâmetros personalizados.
-
-Repositório permanece público para CI ilimitado; uso do app permanece restrito; não adicionar GPL nem arquivo LICENSE sem autorização explícita.
+Depois do contrato neutro, pode surgir decisão de produto compreensível sobre voz: voz simples do sistema para protótipo ou vozes canônicas produzidas/cacheadas para personagens. Não decidir isso por suposição.
 
 ## 15. PRAZO
 Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta cada vez mais utilizável, infraestrutura difícil e documentação para continuidade posterior. Não sacrificar pedagogia para fingir A1–C2 completo. Continuidade deve depender do GitHub, não memória do chat.
@@ -147,4 +153,7 @@ Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta ca
 - `9829a95e4d42cfab51c9ae7c76954e306a85075e`: codec versionado; CI #129 SUCCESS.
 - `dfd7c7a54c02ade892a266e2bdbf9b096c8ea5a5`: persistência junto da evidência; CI #130 SUCCESS.
 - `a6c0b1ad996524efd3bd9a334fdb86302fb48c7a`: fila conservadora; CI #131 / run `33665698425` SUCCESS.
+- `802b22f5160d90d2ba22f5c5c7bded32b2e5d7f0`: documentação/licenças/decisão; CI #132 / run `33665991859` SUCCESS.
+- `e088f92bd6edda99895b1e5217b7d866b12146b6`: fila conectada + prática opcional localizada; CI #133 / run `33666462350` SUCCESS.
+- `387f8fde97b92a025aebdd477aad24b44519d277`: reconstrução de schedule por evidência histórica; CI #134 / run `33666723947` SUCCESS.
 - O commit que grava este documento passa a ser o novo HEAD documental; conferir seu CI antes de prosseguir.
