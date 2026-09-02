@@ -23,4 +23,12 @@
     <string name="trail_locked">Verrouillé</string>
     <string name="trail_foundation_note">Ceci est la première base du parcours d’apprentissage. Les leçons, activités et règles de progression viennent ensuite.</string>
     <string name="back_to_result">Retour au résultat</string>
+    <string name="start_foundation_activity">Pratiquer les bases A1</string>
+    <string name="activity_title">Activité d’apprentissage</string>
+    <string name="activity_answer_hint">Saisissez votre réponse</string>
+    <string name="check_answer">Vérifier la réponse</string>
+    <string name="answer_correct">Correct</string>
+    <string name="answer_incorrect">Pas encore</string>
+    <string name="activity_feedback">Explication</string>
+    <string name="back_to_path">Retour au parcours</string>
 </resources>
