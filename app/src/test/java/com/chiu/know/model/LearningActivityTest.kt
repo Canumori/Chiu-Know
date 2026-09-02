@@ -54,6 +54,21 @@ class LearningActivityTest {
         assertFalse(isLearningAnswerCorrect(activity, "Mia I am"))
     }
 
+    @Test
+    fun multipleChoiceKeepsVisibleOptionsSeparateFromCorrectAnswer() {
+        val activity = sampleActivity().copy(
+            id = "en-a1-reading-choice-001",
+            responseType = ResponseType.MULTIPLE_CHOICE,
+            prompt = "Who is speaking?",
+            acceptedAnswers = listOf("Mia"),
+            responseOptions = listOf("Mia", "Chiu")
+        )
+
+        assertEquals(listOf("Mia", "Chiu"), activity.responseOptions)
+        assertTrue(isLearningAnswerCorrect(activity, "Mia"))
+        assertFalse(isLearningAnswerCorrect(activity, "Chiu"))
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun structuredResponseRejectsMissingOptions() {
         sampleActivity().copy(responseType = ResponseType.REORDER)

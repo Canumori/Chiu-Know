@@ -10,10 +10,10 @@ import org.junit.Test
 class StarterLearningActivitiesIntegrationTest {
 
     @Test
-    fun providesIntegratedA1VocabularyGrammarReadingAndReorderForEveryLanguage() {
+    fun providesIntegratedA1VocabularyGrammarReadingReorderAndMultipleChoiceForEveryLanguage() {
         supportedTargetLanguages.forEach { language ->
             val activities = starterLearningActivitiesFor(language.code)
-            assertEquals(7, activities.size)
+            assertEquals(8, activities.size)
             assertTrue(activities.all { it.level == CefrLevel.A1 })
             assertEquals(
                 setOf(LearningSkill.VOCABULARY, LearningSkill.GRAMMAR, LearningSkill.READING),
@@ -21,6 +21,7 @@ class StarterLearningActivitiesIntegrationTest {
             )
             assertEquals(3, activities.map { it.reviewKey }.distinct().size)
             assertEquals(1, activities.count { it.responseType == ResponseType.REORDER })
+            assertEquals(1, activities.count { it.responseType == ResponseType.MULTIPLE_CHOICE })
         }
     }
 
@@ -35,8 +36,9 @@ class StarterLearningActivitiesIntegrationTest {
             val sixth = starterLearningActivityFor(language.code, CefrLevel.A1, 5)
             val seventh = starterLearningActivityFor(language.code, CefrLevel.A1, 6)
             val eighth = starterLearningActivityFor(language.code, CefrLevel.A1, 7)
+            val ninth = starterLearningActivityFor(language.code, CefrLevel.A1, 8)
 
-            listOf(first, second, third, fourth, fifth, sixth, seventh, eighth).forEach { assertNotNull(it) }
+            listOf(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth).forEach { assertNotNull(it) }
 
             assertNotEquals(first?.id, second?.id)
             assertEquals(first?.reviewKey, second?.reviewKey)
@@ -56,7 +58,11 @@ class StarterLearningActivitiesIntegrationTest {
             assertEquals(ResponseType.REORDER, seventh?.responseType)
             assertEquals(third?.reviewKey, seventh?.reviewKey)
 
-            assertEquals(first?.id, eighth?.id)
+            assertEquals(LearningSkill.READING, eighth?.primarySkill)
+            assertEquals(ResponseType.MULTIPLE_CHOICE, eighth?.responseType)
+            assertEquals(fifth?.reviewKey, eighth?.reviewKey)
+
+            assertEquals(first?.id, ninth?.id)
         }
     }
 

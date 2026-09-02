@@ -127,7 +127,8 @@ fun starterLearningActivitiesFor(languageCode: String): List<LearningActivity> =
     starterLearningActivities.filter { it.id.startsWith("$languageCode-") } +
         a1IntegratedGrammarActivitiesFor(languageCode) +
         a1ReadingActivitiesFor(languageCode) +
-        a1ReorderActivitiesFor(languageCode)
+        a1ReorderActivitiesFor(languageCode) +
+        a1MultipleChoiceActivitiesFor(languageCode)
 
 fun starterLearningActivityFor(
     languageCode: String,

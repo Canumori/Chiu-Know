@@ -86,6 +86,43 @@ class StarterReviewSelectionTest {
     }
 
     @Test
+    fun reachesMultipleChoiceAsThirdReadingVariantWithoutCreatingANewReviewTarget() {
+        val language = "en"
+        val all = starterLearningActivitiesFor(language)
+        val vocabulary = all.first { it.primarySkill == LearningSkill.VOCABULARY }
+        val grammar = all.first { it.primarySkill == LearningSkill.GRAMMAR }
+        val readingVariants = all.filter { it.reviewKey == "en:a1:reading:introduction-name" }
+
+        assertEquals(3, readingVariants.size)
+        assertEquals(ResponseType.FILL_IN, readingVariants[0].responseType)
+        assertEquals(ResponseType.FILL_IN, readingVariants[1].responseType)
+        assertEquals(ResponseType.MULTIPLE_CHOICE, readingVariants[2].responseType)
+
+        val evidenceBeforeReading = listOf(
+            attempt(vocabulary, 1L), attempt(vocabulary, 2L), attempt(vocabulary, 3L),
+            attempt(grammar, 4L), attempt(grammar, 5L), attempt(grammar, 6L)
+        )
+
+        val firstReading = starterLearningActivityForEvidence(language, CefrLevel.A1, evidenceBeforeReading)!!
+        val secondReading = starterLearningActivityForEvidence(
+            language,
+            CefrLevel.A1,
+            evidenceBeforeReading + attempt(firstReading, 7L)
+        )!!
+        val multipleChoiceReading = starterLearningActivityForEvidence(
+            language,
+            CefrLevel.A1,
+            evidenceBeforeReading + attempt(firstReading, 7L) + attempt(secondReading, 8L)
+        )!!
+
+        assertEquals(readingVariants[0].id, firstReading.id)
+        assertEquals(readingVariants[1].id, secondReading.id)
+        assertEquals(ResponseType.MULTIPLE_CHOICE, multipleChoiceReading.responseType)
+        assertEquals(readingVariants[2].id, multipleChoiceReading.id)
+        assertEquals(firstReading.reviewKey, multipleChoiceReading.reviewKey)
+    }
+
+    @Test
     fun correctnessDoesNotChangeExposureBalancing() {
         val language = "en"
         val first = starterLearningActivityForEvidence(language, CefrLevel.A1, emptyList())!!
