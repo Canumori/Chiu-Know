@@ -77,6 +77,7 @@ fun advancePlacementSession(
             state = state,
             current = current,
             answeredCorrectly = answeredCorrectly,
+            questions = questions,
             policy = policy,
             answeredCount = answeredCount
         )
@@ -149,7 +150,7 @@ private fun advanceLocating(
         adaptiveState = step.state,
         phase = PlacementSessionPhase.CONFIRM,
         current = first,
-        usedQuestionIds = state.usedQuestionIds + queue.map { it.question.id },
+        usedQuestionIds = state.usedQuestionIds + first.question.id,
         confirmationQueue = queue.drop(1),
         provisionalLevel = provisional,
         answeredQuestions = answeredCount
@@ -160,6 +161,7 @@ private fun advanceConfirmation(
     state: PlacementSessionState,
     current: PlacementSessionQuestion,
     answeredCorrectly: Boolean,
+    questions: List<PlacementQuestion>,
     policy: PlacementQualityPolicy,
     answeredCount: Int
 ): PlacementSessionState {
@@ -172,8 +174,10 @@ private fun advanceConfirmation(
     )
 
     if (state.confirmationQueue.isNotEmpty() && answeredCount < policy.maximumAnsweredQuestions) {
+        val next = state.confirmationQueue.first()
         return state.copy(
-            current = state.confirmationQueue.first(),
+            current = next,
+            usedQuestionIds = state.usedQuestionIds + next.question.id,
             confirmationQueue = state.confirmationQueue.drop(1),
             confirmationEvidence = evidence,
             answeredQuestions = answeredCount
@@ -187,24 +191,74 @@ private fun advanceConfirmation(
         policy = policy
     )
 
-    val complete = answeredCount >= policy.minimumAnsweredQuestions &&
-        decision.status !in setOf(
-            PlacementDecisionStatus.NEEDS_MORE_EVIDENCE,
-            PlacementDecisionStatus.BANK_INSUFFICIENT
+    val enoughAnswers = answeredCount >= policy.minimumAnsweredQuestions
+    val decisive = decision.status !in setOf(
+        PlacementDecisionStatus.NEEDS_MORE_EVIDENCE,
+        PlacementDecisionStatus.BANK_INSUFFICIENT
+    )
+
+    if (enoughAnswers && decisive) {
+        return state.copy(
+            phase = PlacementSessionPhase.COMPLETE,
+            current = null,
+            confirmationQueue = emptyList(),
+            confirmationEvidence = evidence,
+            finalDecision = decision,
+            answeredQuestions = answeredCount
         )
+    }
+
+    if (answeredCount < policy.maximumAnsweredQuestions) {
+        val supplemental = nextSupplementalConfirmationQuestion(
+            questions = questions,
+            provisionalLevel = provisional,
+            usedQuestionIds = state.usedQuestionIds
+        )
+        if (supplemental != null) {
+            return state.copy(
+                phase = PlacementSessionPhase.CONFIRM,
+                current = supplemental,
+                usedQuestionIds = state.usedQuestionIds + supplemental.question.id,
+                confirmationQueue = emptyList(),
+                confirmationEvidence = evidence,
+                finalDecision = null,
+                answeredQuestions = answeredCount
+            )
+        }
+    }
 
     return state.copy(
-        phase = if (complete) PlacementSessionPhase.COMPLETE else PlacementSessionPhase.BANK_INSUFFICIENT,
+        phase = PlacementSessionPhase.BANK_INSUFFICIENT,
         current = null,
         confirmationQueue = emptyList(),
         confirmationEvidence = evidence,
-        finalDecision = if (complete) decision else PlacementConfirmationDecision(
+        finalDecision = PlacementConfirmationDecision(
             provisionalLevel = provisional,
             decidedLevel = null,
             status = PlacementDecisionStatus.BANK_INSUFFICIENT
         ),
         answeredQuestions = answeredCount
     )
+}
+
+private fun nextSupplementalConfirmationQuestion(
+    questions: List<PlacementQuestion>,
+    provisionalLevel: CefrLevel,
+    usedQuestionIds: Set<String>
+): PlacementSessionQuestion? {
+    val levels = CefrLevel.entries
+    val index = levels.indexOf(provisionalLevel)
+    val targets = listOfNotNull(
+        provisionalLevel to PlacementConfirmationRole.ESTIMATED_LEVEL,
+        levels.getOrNull(index - 1)?.let { it to PlacementConfirmationRole.LOWER_BOUNDARY },
+        levels.getOrNull(index + 1)?.let { it to PlacementConfirmationRole.UPPER_BOUNDARY }
+    )
+
+    return targets.firstNotNullOfOrNull { (level, role) ->
+        nextUnusedPlacementQuestion(questions, level, usedQuestionIds)?.let {
+            PlacementSessionQuestion(it, role)
+        }
+    }
 }
 
 /**
@@ -244,15 +298,16 @@ private fun buildConfirmationQueue(
         alreadyAnswered + queue.size < policy.maximumAnsweredQuestions
     ) {
         var added = false
-        repeat(supplementalTargets.size) {
+        var attempts = 0
+        while (attempts < supplementalTargets.size && !added) {
             val (level, role) = supplementalTargets[targetIndex % supplementalTargets.size]
             targetIndex++
+            attempts++
             val question = nextUnusedPlacementQuestion(questions, level, used)
             if (question != null) {
                 queue += PlacementSessionQuestion(question, role)
                 used += question.id
                 added = true
-                return@repeat
             }
         }
         if (!added) return null
