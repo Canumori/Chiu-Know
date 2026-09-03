@@ -1,5 +1,46 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-03 20:24 BRT — CI #198 VERDE; PLACEMENT EN/PT/ES ENDURECIDO E RESULTADO INCONCLUSIVO EXPLÍCITO NA UI
+
+Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
+
+### HEAD / CI validado
+- HEAD funcional: commit `fc904af7cd05439fc6a19a3dca5b2192036260bc` — `feat: show honest unresolved placement outcomes`.
+- Android CI #198, run `33817328846`: `COMPLETED / SUCCESS`.
+- Testes unitários passaram, APK debug compilou e o workflow concluiu verde.
+
+### Placement de qualidade — estado real
+- Inglês, português e espanhol estão habilitados em `QUALITY_SESSION` com bancos expandidos de 24 questões, 4 por nível A1–C2.
+- Francês e coreano continuam em `LEGACY_FOUNDATION`; NÃO alegar equivalência de qualidade antes da expansão/validação equivalente.
+- Política de engenharia atual permanece quality-first: mínimo 8 respostas e máximo de segurança 14. Isso NÃO é validação psicométrica, certificado nem porcentagem de confiança.
+- A decisão conservadora aceita evidência fresca para resolver ambiguidade: empate/mistura inicial pode pedir mais evidência; maioria positiva fresca pode confirmar o nível provisório; revisões para cima/baixo continuam limitadas à regra validada.
+- Commit `7e6a6891955503c2bee8998a72f26d66a8248a04`, CI #188 verde: distingue `BANK_INSUFFICIENT` de `MAX_EVIDENCE_INCONCLUSIVE` por `PlacementTerminalReason`.
+- Se o limite máximo é atingido ainda sem nível defensável, nenhum nível é inventado ou persistido.
+- Se não existem perguntas novas elegíveis suficientes antes do teto, o término é banco insuficiente, também sem nível inventado.
+
+### Não repetição / apresentação real — protegido exaustivamente
+- Commit `5258f600ba16b8db3ed21c0421fce77f82fe8418`, CI #189 verde: sessão ativa deve ter exatamente uma pergunta apresentada ainda não respondida; perguntas futuras da fila não podem ser pré-reservadas como apresentadas.
+- Commit `256b87b9fa233b73025e91bc33b3537f4358975a`, CI #190 verde: mesma invariante protegida em todos os caminhos exaustivos do português.
+- Commit `9628e4a89866f89c6928d797cfd1e4a7898243de`, CI #191 verde: mesma invariante protegida em todos os caminhos exaustivos do espanhol.
+- Sessão terminal deve ter `usedQuestionIds.size == answeredQuestions`; sessão ativa deve ter `usedQuestionIds.size == answeredQuestions + 1`; itens ainda na `confirmationQueue` não podem constar como usados/apresentados.
+
+### UI de término não conclusivo — agora explícita
+- Novo `PlacementUnresolvedScreen.kt`, criado em `e31917e758d7d707d6450e213848fe497a0e92a4`.
+- Cópia padrão e traduções adicionadas em inglês, português, espanhol, francês e coreano; commits finais dessa frente incluem `84069330...`, `2cc935ee...`, `fa95d0f9...`, `4287fafc...`, `d113f140...`.
+- `ChiuKnowApp.kt` agora possui `AppStep.PLACEMENT_UNRESOLVED`.
+- Se uma sessão de qualidade terminar sem decisão válida, a interface NÃO volta silenciosamente para a introdução e NÃO mostra nível provisório como resultado.
+- `MAX_EVIDENCE_INCONCLUSIVE`: tela explica que as respostas atingiram o limite de evidência sem sustentar um nível defensável.
+- `BANK_INSUFFICIENT`: tela explica que faltaram perguntas novas elegíveis suficientes para sustentar um nível defensável.
+- Em ambos os casos: nenhum CEFR novo é salvo; usuário pode tentar novamente ou mudar idioma.
+- O início da sessão também trata banco insuficiente imediato sem tentar abrir `current` nulo.
+
+### Próximo passo exato
+1. Endurecer a validação global do banco usado pela sessão: IDs devem ser não vazios e globalmente únicos antes do início; falhar fechado de forma testável, sem depender apenas dos validadores específicos de cada banco.
+2. Revisar a semântica global do teto durante `LOCATE` e a interação entre teto máximo e fila obrigatória de confirmação, garantindo que nenhuma evidência obrigatória seja avaliada parcialmente de forma enganosa.
+3. Preservar CI verde com testes exaustivos em en/pt/es após cada alteração estrutural.
+4. Depois desse núcleo estabilizado, expandir e validar o banco francês para 24 questões e só então considerar `QUALITY_SESSION`; repetir o processo para coreano.
+5. Não massificar conteúdo nem alegar placement psicometricamente validado antes de resolver essas dívidas estruturais.
+
 ## ESTADO AUTORITATIVO — 2026-09-03 14:21 BRT — CI #170 VERDE; PLACEMENT ROBUSTO INTEGRADO À UI EM INGLÊS
 
 Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
