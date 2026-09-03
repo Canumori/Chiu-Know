@@ -1,5 +1,52 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-03 10:40 BRT — PESQUISA PEDAGÓGICA APROVADA; CI #146 VERDE
+
+Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
+
+### GitHub/Android
+- Repositório `Canumori/Chiu-Know`, branch `main`, deliberadamente público; não mudar visibilidade por suposição.
+- Commit funcional/testes `f3668338884aca5b1dc46598cd34f70943049575` — `test: exhaustively verify adaptive placement paths`.
+- Android CI #146, run `33761545918`: `COMPLETED / SUCCESS`.
+- O novo teste percorre sistematicamente caminhos possíveis de acerto/erro do motor adaptativo, exige término seguro, invariantes válidos e alcançabilidade de A1–C2. Nenhuma lógica funcional de placement foi alterada nesse commit.
+- Documento pedagógico aprovado criado em `PEDAGOGY_ARCHITECTURE.md`, commit `79c3cbbf3affd85edd2166d9927a8fab871f2777`.
+
+### Pesquisa comparativa aprovada pela usuária
+Foram estudadas abordagens públicas de Duolingo, Babbel, Busuu, Memrise, Rosetta Stone, LingQ, Pimsleur, ELSA Speak e HelloTalk, além do CEFR/CEFR Companion Volume e evidências sobre spacing/retrieval practice. A decisão é combinar princípios úteis em arquitetura própria, sem copiar conteúdo, assets, marca, interface ou implementação.
+
+Direção aprovada:
+- hábito/gamificação servem engajamento, nunca mastery;
+- conteúdo deve evoluir de compreensão/reconhecimento para recuperação com menos pistas, produção, transferência a novo contexto e revisão espaçada;
+- preservar FSRS-6 próprio separado da evidência; erro = tentativa/exposição, não domínio;
+- futuramente personalizar por objetivo, disponibilidade e prioridade sem remover competências CEFR essenciais;
+- CEFR deve evoluir para evidência multidimensional honesta (recepção, produção, interação, mediação e competências pertinentes), sem inventar scores por habilidade;
+- listening deve progredir de fala controlada para natural, variações e material autêntico; não fingir listening sem áudio real;
+- conversação deve começar guiada já em A1 e ganhar abertura/complexidade até C2;
+- ASR/transcrição não equivale a pronúncia; futura avaliação deve separar inteligibilidade, sons/contrastes, ritmo/fluência, tonicidade/prosódia e entonação conforme idioma;
+- gramática/vocabulário devem reaparecer em contextos e formatos diferentes, não como listas desconectadas;
+- histórias com Chiu/Mia/Jurandir/demais personagens devem conectar input, vocabulário, gramática, compreensão, diálogo, produção e recuperação posterior, preservando `VISUAL_BIBLE.md`;
+- feedback deve respeitar objetivo da tarefa: imediato em precisão focal quando útil; pós-bloco em fluência quando interrupção prejudicaria desempenho;
+- placement atual continua adaptativo/local/determinístico, mas banco 12/idioma é fundação insuficiente para lançamento e deve ser ampliado com itens variados/revisados;
+- checkpoints futuros reajustam percurso com evidência/retensão sem apagar histórico;
+- métricas prioritárias: retenção, recuperação sem pista, transferência, compreensão de material não memorizado, redução de erros recorrentes e desempenho CEFR; XP/streak/tempo no app são apenas engajamento.
+
+Modelo-alvo aprovado:
+`PLACEMENT → DIAGNÓSTICO HONESTO → OBJETIVO/PREFERÊNCIAS → CONTEÚDO CEFR → INPUT COMPREENSÍVEL → PRÁTICA ATIVA → FEEDBACK → RETRIEVAL COM MENOS PISTAS → FSRS → TRANSFERÊNCIA → INTERAÇÃO/CONVERSAÇÃO → CHECKPOINT → REAJUSTE`.
+
+`PEDAGOGY_ARCHITECTURE.md` é agora leitura obrigatória junto de `PROJECT_STATE.md` e `PRODUCT_SPEC.md` para mudanças pedagógicas. Para arte continua obrigatório `VISUAL_BIBLE.md`; para pesquisa, `RESEARCH.md`.
+
+### Voz/Storage — permanece congelado com segurança
+Nada desta frente autoriza contornar o bloqueio anterior. `Chiu-animada-recorte-final.m4a` continua privada, fora do GitHub/Supabase/APK. Não usar `storage.objects` via SQL, service_role, bucket público, Edge Function privilegiada ou outro bypass. Quando houver operação normal de Storage, executar primeiro o teste descartável registrado abaixo e só depois pedir confirmação imediata para a voz aprovada.
+
+### Próximos passos seguros
+1. Usar a nova arquitetura pedagógica como contrato, sem massificar conteúdo ainda.
+2. Fortalecer/expandir gradualmente placement por nível e variedade, com testes e CI verde entre mudanças estruturais.
+3. Definir contrato de evidência por competência antes de qualquer score multidimensional visível.
+4. Definir modelo de objetivo/disponibilidade/prioridade sem alterar currículo essencial.
+5. Planejar progressão de retirada de pistas/transferência e histórias como unidades pedagógicas conectadas.
+6. Listening real continua dependente da frente segura de áudio; speaking/pronúncia somente com mecanismo honesto de captura/análise.
+7. Parar e pedir decisão da usuária apenas quando houver escolha real de produto/privacidade/experiência, não por microetapas técnicas.
+
 ## ESTADO AUTORITATIVO — 2026-09-03 10:16 BRT — STORAGE PRIVADO RECONFIRMADO; TESTE DE OBJETO BLOQUEADO PELA FERRAMENTA
 
 Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub e do Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
@@ -42,223 +89,24 @@ Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado 
 7. Somente se todos os testes passarem, pedir confirmação imediata da usuária antes de enviar `Chiu-animada-recorte-final.m4a`.
 8. Até lá, não improvisar com Edge Function privilegiada, política anônima temporária, GitHub Action com segredo, service_role ou outro backend.
 
-## ESTADO AUTORITATIVO — 2026-09-02 22:10 BRT — LOGIN POR E-MAIL VALIDADO FISICAMENTE; STORAGE PRIVADO AINDA SEM A VOZ
+## NOTA DE PRESERVAÇÃO DO HISTÓRICO
+O histórico operacional detalhado anterior a este bloco permanece no Git do arquivo e nos commits anteriores. Em caso de necessidade de auditoria, consultar a versão `5dc1bcde09904d954a49434ad835127105dfe9c3` do blob anterior e os commits registrados. Este arquivo foi condensado nesta atualização para manter o topo autoritativo legível sem apagar as regras operacionais essenciais.
 
-Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub e do Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
-
-### GitHub/Android confirmados
-- Repositório `Canumori/Chiu-Know`, branch `main`, deliberadamente público para GitHub Actions ilimitado; não mudar visibilidade por suposição.
-- HEAD funcional atual: `f26a01d2940d0d290658527eafbbbc820b8e0fca` — `feat: add authorized email login flow`.
-- Android CI #143, run `33701029682`, job `100480152685`: `COMPLETED / SUCCESS`.
-- Todas as etapas passaram: testes unitários, build debug e upload do artefato.
-- Artefato: `chiu-know-debug`, ID `9873538252`; APK extraído tem 13.655.538 bytes e SHA-256 `fefb25b4a351a39cd1346c7b4d81da358d0f2dc8968a4d783c86267ee5423c8e`.
-- A usuária instalou o APK candidato, solicitou a definição/recuperação de senha, abriu o novo link no Android, definiu a senha e confirmou expressamente: “Deu tudo certo”. A senha não foi solicitada, recebida nem registrada.
-- O app agora bloqueia o conteúdo até existir sessão Supabase autenticada, permite login por e-mail/senha, envia recuperação de senha, recebe `chiuknow://auth-callback` e mostra a tela de nova senha quando o callback é de recuperação.
-- Fundação anterior: `3dfce8d32834a2b91fb6bcee19579c574bb5a203`, CI #142 / run `33700180273` SUCCESS. Acrescentou somente URL pública do projeto, publishable key, Auth/Storage, INTERNET e deep link. Nenhum `service_role`/secret foi colocado no APK, repositório ou logs.
-
-### Supabase correto e alterações reais
-- ÚNICO projeto permitido: Chiu Know? `uskxabsodcnzlovuaurp`, organização `aeerqbmrwulxsawhjyvm`, região `sa-east-1`.
-- Chiu Player `hpcbkvbrlwjnwlikmbfb` permanece absolutamente proibido e não foi tocado.
-- Auth Site URL foi corrigida de `http://localhost:3000` para `chiuknow://auth-callback`.
-- `chiuknow://auth-callback` também foi incluída explicitamente na allowlist de Redirect URLs; total confirmado: 1.
-- O primeiro convite já havia confirmado a conta, apesar da página `localhost` falhar. O fluxo posterior pelo APK confirmou na prática o callback correto e a definição de senha.
-- Existe uma usuária autorizada ativa na tabela privada de acesso; não publicar e-mail, senha, token ou identificador pessoal no repositório.
-- Migração versionada: `supabase/migrations/20260903000000_private_character_voice_access.sql`, commit `73b63229920a02bc460e1c02418362970f104798`, CI #141 / run `33698994933` SUCCESS.
-- Estrutura real: `private.app_user_access`, RLS ativa, leitura do próprio acesso apenas para autenticado autorizado; `anon` sem uso/leitura.
-- Bucket `character-voices`: privado (`public=false`), limite 2 MiB, MIME permitido `audio/mp4`, `audio/x-m4a`, `audio/m4a`.
-- Política SELECT `authorized_users_read_character_voices`: exige sessão authenticated e linha própria habilitada em `private.app_user_access`. Não existem políticas de upload/update/delete para usuários do APK.
-- Advisors de segurança e performance foram executados após as mudanças e retornaram zero lints.
-- Estado mais recente observado do bucket: vazio. Nenhum arquivo de voz foi enviado.
-
-### Voz — preservação absoluta
-- Arquivo aprovado: `Chiu-animada-recorte-final.m4a`, aproximadamente 15,4 s e 309.196 bytes, preservado privadamente fora do GitHub.
-- Não está no repositório público, não está no APK e ainda não está no Storage.
-- Não criar commit com áudio original/derivado; não bucket público; não URL pública permanente; não usar para outros personagens; não usar em outro projeto; não tocar no Chiu Player.
-- A usuária escolheu a terceira estratégia vocal: criar uma voz privada do Chiu capaz de gerar as frases do personagem a partir da amostra aprovada. Os demais personagens terão vozes próprias pelo mesmo processo, com amostras próprias; nunca reutilizar a voz do Chiu neles.
-- A autorização de modelagem não autoriza envio arbitrário a serviço externo. Selecionar rota segura e pedir nova autorização expressa antes de qualquer fornecedor externo.
-- Uma amostra silenciosa descartável de 1 segundo (`storage-policy-test.m4a`, 1.184 bytes, `audio/x-m4a`) foi gerada apenas localmente para preparar o teste de política. Ela NÃO foi enviada ao Supabase e NÃO pertence ao produto.
-
-### Placement — decisão nova
-- Banco atual: 12 perguntas por idioma, 2 por nível A1–C2, 5 idiomas, 60 no total.
-- O motor adaptativo atualmente apresenta apenas 2 ou 3 perguntas conforme as respostas. Isso valida o mecanismo, mas é insuficiente como avaliação final confiável.
-- A usuária concordou expressamente em ampliar o banco antes do lançamento. Não voltar a porcentagem fixa, não massificar perguntas rasas e não inventar seis scores de habilidade sem evidência válida.
-
-### Próximo passo exato
-1. Reconfirmar o HEAD/CI e o projeto Supabase exato antes de qualquer operação.
-2. Não enviar ainda `Chiu-animada-recorte-final.m4a`.
-3. Fazer teste real do bucket privado com um objeto de áudio descartável, sem conteúdo pessoal: acesso autenticado/autorizado deve funcionar; acesso anônimo/não autorizado deve falhar; não pode existir URL pública permanente.
-4. Se o painel/MCP não permitir upload normal pelo Storage, não manipular `storage.objects` via SQL, não pedir/expor `service_role` e não improvisar. Explicar a permissão ausente e parar com a voz preservada.
-5. Remover o objeto descartável depois do teste e confirmar a remoção.
-6. Somente após os testes passarem, pedir confirmação imediata antes do envio do arquivo de voz aprovado ao bucket privado correto.
-7. Confirmar objeto real, caminho, tamanho, MIME e ausência de URL pública permanente; depois implementar download autenticado/cache/reprodução determinística no Android em patch pequeno.
-8. Não remover a prévia TTS até existir substituição segura validada. Não criar LISTEN_AND_RESPOND em massa.
-9. Em paralelo futuro, ampliar cuidadosamente o banco de placement por nível/competência, sem misturar esta frente de segurança da voz.
-
-### O que ainda NÃO existe
-- A voz aprovada não foi armazenada nem integrada.
-- Não houve teste real de download autorizado/anônimo de um objeto no bucket.
-- Não existe geração/clonagem operacional da voz do Chiu.
-- Não existe cache/download autenticado de voz no APK.
-- Não existe conteúdo listening real em massa, speaking/ASR/pronúncia, escrita livre avançada, banco completo de placement ou seis scores válidos.
-
-## ESTADO AUTORITATIVO — 2026-09-02 20:45 BRT — VOZ DO CHIU APROVADA PRIVADAMENTE; CÓDIGO VALIDADO ATÉ CI #139
-
-Este arquivo é o handoff operacional autoritativo. Em qualquer novo chat: NÃO recomeçar, NÃO inferir estado apenas pela memória e NÃO alterar antes de conferir GitHub real. O estado real do GitHub vence documentação desatualizada.
-
-LEITURA OBRIGATÓRIA: `PROJECT_STATE.md` + `PRODUCT_SPEC.md` JUNTOS antes de qualquer alteração. Para arte/personagens, ler `VISUAL_BIBLE.md`; para referências, `RESEARCH.md`.
-
-## 1. IDENTIDADE TÉCNICA E SEPARAÇÃO ABSOLUTA
-- Repo: `Canumori/Chiu-Know`; branch: `main`; Android Kotlin + Jetpack Compose; uso inicialmente privado/restrito ~100 usuários.
-- O repositório está PUBLICAMENTE visível para usar minutos ilimitados do GitHub Actions; não mudar a visibilidade por suposição. Não existe arquivo `LICENSE` neste estado: visibilidade pública não torna automaticamente o código GPL ou permissivamente licenciado.
-- Supabase EXCLUSIVO Chiu Know?: `uskxabsodcnzlovuaurp`, org `Chiu Know` / `aeerqbmrwulxsawhjyvm`, região `sa-east-1`.
-- Supabase Chiu Player PROIBIDO: `hpcbkvbrlwjnwlikmbfb`, org `Chiu` / `nnrwosbnvdvzaoflwxlo`. Se aparecer numa operação desta frente, PARAR e não escrever.
-- Não misturar Player: código, branches, APKs, workflows, backend, OTA ou decisões.
-- Placement/trilha/atividades/evidência/REORDER recentes são locais Android e não tocaram Supabase.
-
-## 2. PRODUTO/PEDAGOGIA — NÃO REDUZIR
-Visão: app multilíngue CEFR A1–C2, ensino adaptativo, revisão inteligente, histórias, personagens e tutor IA. Meta é competência real, retenção e uso fora do app, não cliques/XP.
-Roadmap inclui interface e idioma-alvo independentes; placement/reteste; resultado geral e futuramente por seis habilidades quando houver evidência válida; trilha A1→C2; FSRS/equivalente permissivo; gamificação sem confundir com domínio; histórias; IA; listening/speaking.
-Preservar integralmente os 10 princípios de `PRODUCT_SPEC.md`: compreensão, prática ativa, retrieval/retenção, transferência, feedback útil, progresso≠domínio, seis habilidades, tarefas realmente avançadas em C1/C2, adaptação por evidência, métricas de aprendizagem. Validar fatias pequenas antes de massificar.
-
-## 3. FLUXO FUNCIONAL
-`LANGUAGE_SELECTION → PLACEMENT_INTRO → PLACEMENT_TEST → PLACEMENT_RESULT → LEARNING_TRAIL → LEARNING_ACTIVITY`.
-Com nível salvo pode seguir à trilha sem refazer placement; reteste disponível. Idiomas: pt/en/es/fr/ko. DataStore local.
-Config: `com.chiu.know`, versionCode 1, versionName 0.1.0, minSdk 26, target/compile 35, JVM 17, Compose BOM 2024.12.01, AppCompat 1.7.0, DataStore 1.1.7, JUnit 4.13.2.
-
-## 4. PLACEMENT — PRESERVAR
-Local/determinístico; começa B1; acerto/erro estreita A1–C2; resultado do motor adaptativo. NÃO voltar a proporção fixa. Banco: 12/idioma, 2 por nível A1–C2, 5 idiomas, 60 itens, IDs únicos/testados. É estimativa, não certificação. Não inventar seis scores por habilidade: banco atual não sustenta isso.
-
-## 5. TRILHA
-`CefrTrail.kt`: COMPLETED/CURRENT/LOCKED e `buildCefrTrail`. Fundação visual/navegação, não mastery. `2121e7ca...` tornou trilha scroll-safe. Preservar; não alterar `CenteredColumn` global para corrigir tela local.
-
-## 6. MODELO DE ATIVIDADE
-Skills: GRAMMAR/VOCABULARY/LISTENING/READING/WRITING/SPEAKING. ResponseTypes: MULTIPLE_CHOICE/FILL_IN/REORDER/FREE_TEXT/LISTEN_AND_RESPOND/SPEAK. Metadados incluem id, level, skill, objective, target, responseType, prompt, feedback, reviewKey, acceptedAnswers, `responseOptions`.
-`isLearningAnswerCorrect` é comparador determinístico simples (trim/lowercase, mantém acentos); não usar para escrita livre/fala/pronúncia complexa.
-`b6cdaf285...` adicionou opções estruturadas; `74e460db...` testes; CI #113 SUCCESS.
-
-## 7. STARTER A1 VALIDADO
-Exatamente 8 atividades/idioma = 40 total:
-- 2 VOCABULARY FILL_IN;
-- 2 GRAMMAR FILL_IN;
-- 2 READING FILL_IN;
-- 1 GRAMMAR REORDER;
-- 1 READING MULTIPLE_CHOICE.
-REORDER compartilha reviewKey com grammar FILL_IN. MULTIPLE_CHOICE compartilha reviewKey com reading FILL_IN. Formato diferente não cria artificialmente conhecimento/mastery novo. Continuam 3 reviewKeys/idioma. Não há B1/C2 artificial.
-Arquivos: `StarterLearningActivities.kt`, `A1IntegratedLearningActivities.kt`, `A1ReadingActivities.kt`, `A1ReorderActivities.kt`, `A1MultipleChoiceActivities.kt`.
-
-REORDER UI: commit `1cfdbf3aa6418eba221a15a781e569fb8e3fe1b2`; tokens por `responseOptions`, seleção por índice, usados somem, desfazer, montagem com espaços, check determinístico; FILL_IN preservado. CI #114 run `33658745087` SUCCESS.
-MULTIPLE_CHOICE UI dedicada: commit `a407785b503c46e5c3d2fa017b65248e9e8b693b`; opções em botões, seleção visível, resposta determinística; FILL_IN/REORDER preservados. CI #122 run `33662794556` SUCCESS.
-Fatia controlada nos cinco idiomas + testes de contrato/integração/rotação: commit `c386afff4d99fa9a3a08022ac1c60e7c0a6d06b9`; CI #123 run `33663382962` SUCCESS. MULTIPLE_CHOICE permanece reconhecimento minoritário, não formato dominante.
-
-## 8. SELETOR POR EVIDÊNCIA
-`starterLearningActivityForEvidence`: agrupa candidatos por reviewKey em ordem estável; escolhe alvo com menos tentativas; empate pela ordem curricular; variante = tentativas daquele reviewKey módulo nº variantes. NÃO é mastery/FSRS/progresso CEFR. Acerto/erro não declara domínio.
-Base: `571b1dab...`; testes `7a5130c...`; CI #108 SUCCESS. UI `150fbff...`; regressão sintática #109 corrigida estreitamente por `aae3d727...`; #110 SUCCESS.
-Preservar congelamento da atividade durante feedback: salvar evidência não troca exercício na mesma composição; sair/reentrar permite seleção nova.
-
-### Proteção REORDER mais recente
-Commit `73b734950aa2498e53a83bf71c2683a01bc9bb1b` — `test: protect reorder rotation within grammar evidence`.
-CI #120 / run `33660512925`: **COMPLETED / SUCCESS** em 2026-09-02.
-O teste prova a rotação do alvo grammar `FILL_IN 1 → FILL_IN 2 → REORDER → ciclo`, e prova que erro conta como tentativa/exposição sem virar mastery. Esse é o último HEAD funcional explicitamente validado antes deste commit documental.
-
-## 9. EVIDÊNCIA LOCAL
-`LearningEvidence`: activityId, reviewKey, level, primarySkill, correct, timestamp. DataStore por idioma. Codec: `timestamp|activityId|reviewKey|level|primarySkill|correct`; não guarda resposta bruta; malformed ignorado. `LearningEvidenceSummary` descreve uma atividade. `ReviewEvidenceSummary` agrega por nível + reviewKey através de variantes, mantendo fatos separados; commit `e0351805...`, CI #124 SUCCESS.
-
-Infraestrutura de revisão própria, sem dependência GPL:
-- `ReviewScheduleState`/`ReviewScheduler`: fronteira persistível versionada, separada de UI/evidência/mastery; `824ecdd...`, CI #126 SUCCESS.
-- `PrivateFsrsScheduler`: núcleo FSRS-6 implementado internamente a partir das fórmulas públicas atuais; o app mapeia honestamente incorreto→Again e correto→Good, sem inventar Hard/Easy. Primeira tentativa `5b6b1eba...` teve somente erro de compilação no teste (#127); correção estreita `01a6b79...`, CI #128 SUCCESS.
-- `ReviewScheduleCodec`: round-trip versionado, malformed/versão desconhecida ignorados, mantém estado mais novo por reviewKey; `9829a95...`, CI #129 SUCCESS.
-- Persistência DataStore junto da evidência, ainda sem mudar seleção visível; `dfd7c7a...`, CI #130 SUCCESS.
-- `StarterReviewQueue`: distingue DUE_REVIEW, NEW_TARGET, NONE_DUE e NO_CONTENT; prioriza vencido, depois conhecimento sem estado; `a6c0b1a...`, CI #131 SUCCESS.
-- Decisão aprovada pela usuária: quando não houver revisão vencida, mostrar “Revisões em dia”, próximo horário e prática opcional; prática opcional inicialmente não altera scheduler.
-- Fila conectada à UI nos cinco idiomas preservando feedback congelado; prática opcional dá feedback sem persistir evidência/agendamento; `e088f92...`, CI #133 / run `33666462350` SUCCESS.
-- Migração: se houver evidência histórica e nenhum schedule salvo, reconstruir cronologicamente por reviewKey sem apagar histórico; `387f8fd...`, CI #134 / run `33666723947` SUCCESS.
-
-## 10. VISUAL — ABSOLUTO
-Ler `VISUAL_BIBLE.md` antes de arte.
-- Logo/ícone: SOMENTE Chiu realista branco com cabelo castanho escuro bowl-cut, olhos grandes/dentinhos; reutilizar master aprovado, não redesenhar quando identidade exata necessária.
-- Universo/atividades/histórias: SEMPRE Chiu cartunesco amarelo/esquisito aprovado. Nunca trocar os dois.
-- Elenco: Chiu, Mia, Jurandir, Barto, Lara, Caca, Onça, Perry, Lena. Mosquito = JURANDIR definitivamente; nome antigo só como proveniência histórica.
-- Pranchas A/B/C/D aprovadas conforme Visual Bible. Master aprovado imutável. Nova pose = candidata mostrada à usuária antes de integrar; aprovada vira canonical reusable asset.
-- Não deformar/recolorir arbitrariamente/misturar estilos. Personagens têm função pedagógica.
-- Não declarar prancha PNG/binário integrado ao GitHub/APK sem verificar binário real. Até este estado, nenhum novo binário visual foi integrado ao APK.
-
-## 11. I18N
-UI de atividade localizada default/pt/es/fr/ko; commits `15ead396...`, `a1f4caf...`, `b5ec61bc...`, `b47064dc...`, CIs #80–#83 verdes. Não hardcodar interface em inglês sem necessidade.
-
-## 12. REGRESSÕES A NÃO REPETIR
-- #102: teste antigo esperava 4 atividades após Reading; produção não era causa; `e33b256...` → #103 verde.
-- #109: reconstrução ampla de `ChiuKnowApp.kt` apagou `}` de `PlacementResultScreen`; `aae3d727...` → #110 verde. Preferir patches estreitos e preservar fronteiras de funções.
-- Sempre validar CI do HEAD novo; não massificar conteúdo antes da infraestrutura.
-
-## 13. NÃO EXISTE AINDA — NÃO INVENTAR
-Mastery real; otimização personalizada dos parâmetros FSRS; desbloqueio por retenção; FREE_TEXT apropriado; listening/áudio real; speaking/ASR/pronúncia; writing real; histórias funcionais; tutor IA; gamificação completa; seis scores válidos no placement; integração binária final dos personagens; conteúdo A1–C2 completo.
-
-## 14. PRÓXIMO PASSO EXATO
-HEAD atual antes deste commit documental: `addf6ef8fdb480a9f4893ff1a2cb80c389cad211`, CI #139 / run `33670744666` SUCCESS.
-
-DECISÃO DE VOZ REGISTRADA:
-- a usuária rejeitou todas as três amostras robóticas produzidas pelo TTS do Android;
-- nenhuma delas é voz oficial e elas não devem ser usadas como identidade do Chiu;
-- a usuária gravou uma interpretação própria e autorizou criar variações privadas;
-- o estilo animado foi escolhido;
-- uma segunda gravação corrigiu uma palavra/plural;
-- o acabamento aprovado remove aproximadamente quatro segundos anteriores à fala, ruídos de manuseio, ruído contínuo e a sobra final;
-- a candidata final aprovada chama-se `Chiu-animada-recorte-final.m4a`, tem cerca de 15,4 segundos e permanece em armazenamento privado fora do GitHub;
-- esta aprovação define a identidade vocal candidata do Chiu, mas o binário ainda NÃO foi integrado ao APK;
-- não colocar a gravação original nem a voz derivada no repositório público;
-- não usar a gravação para outros personagens, clonagem externa ou treinamento sem nova autorização expressa.
-
-BLOQUEIO/DECISÃO REAL ANTES DA INTEGRAÇÃO:
-O repositório é público. Embutir o arquivo de voz diretamente em um commit tornaria o áudio publicamente baixável. A integração precisa escolher um caminho privado:
-1. armazenar no Supabase exclusivo do Chiu Know? com acesso privado/controlado; ou
-2. manter fora do backend e criar um processo de build privado que injete o áudio sem versioná-lo publicamente.
-
-Não tocar no Supabase do Chiu Player. Se a opção 1 for autorizada, usar SOMENTE `uskxabsodcnzlovuaurp`, ler a skill Supabase, conferir projeto real, desenhar bucket/políticas e não presumir autenticação existente. Não remover a prévia TTS nem criar conteúdo LISTEN_AND_RESPOND real até a estratégia privada estar decidida e testada.
-
-## 15. PRAZO
-Plus termina dia 13 segundo a usuária. Até lá, priorizar APK ponta a ponta cada vez mais utilizável, infraestrutura difícil e documentação para continuidade posterior. Não sacrificar pedagogia para fingir A1–C2 completo. Continuidade deve depender do GitHub, não memória do chat.
-
-## 16. PROTOCOLO OBRIGATÓRIO PARA PRÓXIMO CHAT
-1. Usar GitHub.
-2. Ler INTEIRO `PROJECT_STATE.md` + `PRODUCT_SPEC.md` antes de qualquer alteração.
-3. Arte → ler `VISUAL_BIBLE.md`; pesquisa → `RESEARCH.md`.
-4. Conferir main HEAD, commits e Actions reais; GitHub real vence docs.
-5. CI running/queued do HEAD: conferir antes de empilhar mudança estrutural.
-6. Falha: inspecionar job/log/diff e corrigir causa real estreitamente; sem rollback amplo.
-7. Usuária não programa: não mandar editar código/terminal/conflitos/ZIP.
-8. Fazer pelo GitHub tudo que as ferramentas permitirem.
-9. Mudanças pequenas, isoladas, reversíveis, testadas.
-10. Não publicar/distribuir/OTA automaticamente.
-11. Não tocar Supabase sem necessidade; se necessário, SOMENTE `uskxabsodcnzlovuaurp`.
-12. Não inventar estado/features/scores/mastery/conteúdo.
-13. Preservar placement adaptativo, trilha scroll-safe, DataStore, evidência, seletor e feedback congelado.
-14. Preservar regra dos dois Chius e personagens.
-15. Ao “Continue”, avançar por etapas seguras até decisão REAL da usuária; não parar a cada microcommit se CI/ferramentas permitirem; não alegar background.
-16. Atualizar este arquivo ao fim de frente relevante com HEAD/CI/próximo passo.
-
-## 17. ARQUIVOS-CHAVE
-`PROJECT_STATE.md`, `PRODUCT_SPEC.md`, `VISUAL_BIBLE.md`, `RESEARCH.md`, `.github/workflows/android-ci.yml`, `ChiuKnowApp.kt`, `LearningActivity.kt`, `StarterLearningActivities.kt`, `A1IntegratedLearningActivities.kt`, `A1ReadingActivities.kt`, `A1ReorderActivities.kt`, `A1MultipleChoiceActivities.kt`, `StarterReviewSelection.kt`, `LearningEvidence.kt`, `LearningEvidenceCodec.kt`, `LearningEvidenceSummary.kt`, `ReviewEvidenceSummary.kt`, `ReviewScheduleState.kt`, `PrivateFsrsScheduler.kt`, `ReviewScheduleCodec.kt`, `ReviewSchedulePersistence.kt`, `StarterReviewQueue.kt`, `LearningAudioPrompt.kt`; testes especialmente `StarterReviewSelectionTest.kt`, `StarterLearningActivitiesIntegrationTest.kt`, `LearningActivityTest.kt`, `A1ReorderActivitiesTest.kt`.
-
-## 18. MARCOS FINAIS DESTE HANDOFF
-- `b85e6c3...`: 7 atividades starter/idioma; CI #118 SUCCESS.
-- `5d44f438793408fbbbddbfc586f637585acc8a6e`: refresh anterior do handoff; CI #119 / run `33659861778` SUCCESS.
-- `73b734950aa2498e53a83bf71c2683a01bc9bb1b`: proteção da rotação FILL_IN/FILL_IN/REORDER e erro como tentativa; CI #120 / run `33660512925` SUCCESS.
-- `a407785b503c46e5c3d2fa017b65248e9e8b693b`: UI MULTIPLE_CHOICE dedicada; CI #122 / run `33662794556` SUCCESS.
-- `c386afff4d99fa9a3a08022ac1c60e7c0a6d06b9`: fatia A1 MULTIPLE_CHOICE nos cinco idiomas e testes; CI #123 / run `33663382962` SUCCESS.
-- `e0351805eca7ff35400cbeb76f50171f40850ab1`: evidência agregada por reviewKey sem mastery; CI #124 / run `33663675090` SUCCESS.
-- `824ecdd0c3b679277dc18e401474ef0657205ccc`: fronteira própria do scheduler; CI #126 SUCCESS.
-- `5b6b1eba9735aa11c3dba95049f8595999982678`: núcleo FSRS-6; CI #127 falhou por assinatura de assert no teste, sem regressão de produção.
-- `01a6b79ba85ed4376303a0595c2dd23428aeffe7`: correção estreita do teste; CI #128 SUCCESS.
-- `9829a95e4d42cfab51c9ae7c76954e306a85075e`: codec versionado; CI #129 SUCCESS.
-- `dfd7c7a54c02ade892a266e2bdbf9b096c8ea5a5`: persistência junto da evidência; CI #130 SUCCESS.
-- `a6c0b1ad996524efd3bd9a334fdb86302fb48c7a`: fila conservadora; CI #131 / run `33665698425` SUCCESS.
-- `802b22f5160d90d2ba22f5c5c7bded32b2e5d7f0`: documentação/licenças/decisão; CI #132 / run `33665991859` SUCCESS.
-- `e088f92bd6edda99895b1e5217b7d866b12146b6`: fila conectada + prática opcional localizada; CI #133 / run `33666462350` SUCCESS.
-- `387f8fde97b92a025aebdd477aad24b44519d277`: reconstrução de schedule por evidência histórica; CI #134 / run `33666723947` SUCCESS.
-- `12f47a176470f43439ded27a70708ee4ada5131d`: documentação da revisão ativa/migração e handoff de áudio; CI #135 / run `33666911683` SUCCESS.
-- `5dff578c2ae9e5d351b77935975fae4135899111`: contrato neutro de áudio, vínculo obrigatório em LISTEN_AND_RESPOND e estado determinístico de reprodução; CI #136 / run `33667291082` SUCCESS.
-- `b491a251b368ea431bdc160b547542e80724aa99`: documentação do contrato neutro e decisão de voz; CI #137 / run `33667581198` SUCCESS.
-- `6d67f9618d7a90683f9b9e4a6e5b22d07d9034e7`: prévia temporária com três estilos de voz do Android nos cinco idiomas; CI #138 / run `33670372566` SUCCESS; artifact `9862277634`.
-- `addf6ef8fdb480a9f4893ff1a2cb80c389cad211`: documentação da prévia TTS e handoff; CI #139 / run `33670744666` SUCCESS.
-- Voz privada aprovada fora do GitHub: `Chiu-animada-recorte-final.m4a`; não integrar no repo público.
-- O commit que grava este documento passa a ser o novo HEAD documental; conferir seu CI antes de prosseguir.
+## REGRAS OPERACIONAIS PERMANENTES
+- Ler `PROJECT_STATE.md` + `PRODUCT_SPEC.md` + `PEDAGOGY_ARCHITECTURE.md` antes de mudança pedagógica; arte exige `VISUAL_BIBLE.md`; pesquisa exige `RESEARCH.md`.
+- GitHub/Supabase reais vencem documentação stale.
+- Repo `Canumori/Chiu-Know`, branch `main`, público deliberadamente para Actions.
+- Supabase exclusivo Chiu Know: `uskxabsodcnzlovuaurp`, org `aeerqbmrwulxsawhjyvm`, região `sa-east-1`.
+- Supabase Chiu Player `hpcbkvbrlwjnwlikmbfb` é proibido.
+- Usuária não programa: não mandar terminal, edição de código, conflitos ou ZIP.
+- Mudanças pequenas, reversíveis, testadas; CI verde antes de próxima mudança estrutural.
+- Não publicar/distribuir/OTA automaticamente.
+- Placement: local/determinístico/adaptativo, começa B1; não voltar a porcentagem fixa; banco atual 12/idioma, 2 por A1–C2, 5 idiomas; insuficiente para lançamento; não inventar seis scores.
+- Preservar trilha, DataStore, evidência, feedback congelado, fila e FSRS-6 próprio separado de mastery.
+- Erro conta tentativa/exposição, não mastery; progresso visual/XP não é domínio.
+- Starter A1 existente usa FILL_IN, REORDER e MULTIPLE_CHOICE com reviewKeys compartilhados quando o conhecimento é o mesmo; formato diferente não cria mastery novo.
+- Ainda não existem mastery real, listening real em massa, speaking/ASR/pronúncia válida, writing livre avançado, histórias completas, tutor IA, conteúdo A1–C2 completo ou scores multidimensionais válidos.
+- Visual absoluto: Chiu realista branco/cabelo castanho SOMENTE logo/ícone; Chiu amarelo cartunesco SEMPRE no universo. Mosquito definitivo Jurandir. Não alterar masters aprovados.
+- Voz aprovada privada `Chiu-animada-recorte-final.m4a`: não GitHub público, não outro projeto/personagem, não fornecedor externo sem nova autorização, não Supabase até teste normal de Storage passar.
+- Ao comando “Continue”, avançar autonomamente até decisão REAL da usuária; não parar em microcommit se CI/ferramentas permitirem.
+- Ao fim de frente relevante, atualizar este arquivo com HEAD/CI/decisões/próximo passo.
