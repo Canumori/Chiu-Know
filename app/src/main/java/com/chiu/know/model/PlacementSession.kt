@@ -14,6 +14,11 @@ enum class PlacementSessionPhase {
     BANK_INSUFFICIENT
 }
 
+enum class PlacementTerminalReason {
+    BANK_INSUFFICIENT,
+    MAX_EVIDENCE_INCONCLUSIVE
+}
+
 data class PlacementSessionQuestion(
     val question: PlacementQuestion,
     val confirmationRole: PlacementConfirmationRole? = null
@@ -28,7 +33,8 @@ data class PlacementSessionState(
     val confirmationEvidence: List<PlacementConfirmationEvidence> = emptyList(),
     val provisionalLevel: CefrLevel? = null,
     val finalDecision: PlacementConfirmationDecision? = null,
-    val answeredQuestions: Int = 0
+    val answeredQuestions: Int = 0,
+    val terminalReason: PlacementTerminalReason? = null
 ) {
     val isFinished: Boolean
         get() = phase == PlacementSessionPhase.COMPLETE || phase == PlacementSessionPhase.BANK_INSUFFICIENT
@@ -43,7 +49,8 @@ fun startPlacementSession(
             adaptiveState = adaptive,
             phase = PlacementSessionPhase.BANK_INSUFFICIENT,
             current = null,
-            usedQuestionIds = emptySet()
+            usedQuestionIds = emptySet(),
+            terminalReason = PlacementTerminalReason.BANK_INSUFFICIENT
         )
 
     return PlacementSessionState(
@@ -105,7 +112,8 @@ private fun advanceLocating(
             adaptiveState = step.state,
             phase = PlacementSessionPhase.BANK_INSUFFICIENT,
             current = null,
-            answeredQuestions = answeredCount
+            answeredQuestions = answeredCount,
+            terminalReason = PlacementTerminalReason.BANK_INSUFFICIENT
         )
 
         return state.copy(
@@ -134,7 +142,8 @@ private fun advanceLocating(
             evidence = emptyList(),
             policy = policy,
             bankInsufficient = true
-        )
+        ),
+        terminalReason = PlacementTerminalReason.BANK_INSUFFICIENT
     )
 
     val first = queue.firstOrNull()
@@ -143,7 +152,8 @@ private fun advanceLocating(
             phase = PlacementSessionPhase.BANK_INSUFFICIENT,
             current = null,
             provisionalLevel = provisional,
-            answeredQuestions = answeredCount
+            answeredQuestions = answeredCount,
+            terminalReason = PlacementTerminalReason.BANK_INSUFFICIENT
         )
 
     return state.copy(
@@ -204,7 +214,8 @@ private fun advanceConfirmation(
             confirmationQueue = emptyList(),
             confirmationEvidence = evidence,
             finalDecision = decision,
-            answeredQuestions = answeredCount
+            answeredQuestions = answeredCount,
+            terminalReason = null
         )
     }
 
@@ -222,22 +233,29 @@ private fun advanceConfirmation(
                 confirmationQueue = emptyList(),
                 confirmationEvidence = evidence,
                 finalDecision = null,
-                answeredQuestions = answeredCount
+                answeredQuestions = answeredCount,
+                terminalReason = null
             )
         }
     }
 
+    val hitEvidenceCap = answeredCount >= policy.maximumAnsweredQuestions
     return state.copy(
         phase = PlacementSessionPhase.BANK_INSUFFICIENT,
         current = null,
         confirmationQueue = emptyList(),
         confirmationEvidence = evidence,
-        finalDecision = PlacementConfirmationDecision(
+        finalDecision = if (hitEvidenceCap) decision else PlacementConfirmationDecision(
             provisionalLevel = provisional,
             decidedLevel = null,
             status = PlacementDecisionStatus.BANK_INSUFFICIENT
         ),
-        answeredQuestions = answeredCount
+        answeredQuestions = answeredCount,
+        terminalReason = if (hitEvidenceCap) {
+            PlacementTerminalReason.MAX_EVIDENCE_INCONCLUSIVE
+        } else {
+            PlacementTerminalReason.BANK_INSUFFICIENT
+        }
     )
 }
 
