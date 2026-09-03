@@ -1,5 +1,6 @@
 package com.chiu.know.model
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -16,6 +17,7 @@ class SpanishPlacementSessionTest {
             assertTrue(state.isFinished)
             assertTrue(state.answeredQuestions <= policy.maximumAnsweredQuestions)
             assertNull(state.current)
+            assertEquals(state.answeredQuestions, state.usedQuestionIds.size)
         }
     }
 
@@ -40,7 +42,7 @@ class SpanishPlacementSessionTest {
     }
 
     @Test
-    fun activeSpanishSessionsAlwaysExposeAQuestion() {
+    fun activeSpanishSessionsAlwaysExposeExactlyOneUnansweredPresentedQuestion() {
         val policy = PlacementQualityPolicy()
         val seen = mutableSetOf<PlacementSessionState>()
 
@@ -48,10 +50,16 @@ class SpanishPlacementSessionTest {
             if (!seen.add(state)) return
             if (state.isFinished) {
                 assertNull(state.current)
+                assertEquals(state.answeredQuestions, state.usedQuestionIds.size)
                 return
             }
             assertNotNull(state.current)
             assertTrue(state.answeredQuestions < policy.maximumAnsweredQuestions)
+            assertEquals(state.answeredQuestions + 1, state.usedQuestionIds.size)
+            assertTrue(state.current?.question?.id in state.usedQuestionIds)
+            state.confirmationQueue.forEach { queued ->
+                assertTrue(queued.question.id !in state.usedQuestionIds)
+            }
             visit(advancePlacementSession(state, false, qualitySpanishPlacementQuestions, policy))
             visit(advancePlacementSession(state, true, qualitySpanishPlacementQuestions, policy))
         }
