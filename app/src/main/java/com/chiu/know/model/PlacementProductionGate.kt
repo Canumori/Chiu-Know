@@ -18,20 +18,22 @@ data class PlacementRuntimeSelection(
     val questions: List<PlacementQuestion>
 )
 
-fun placementRuntimeSelection(languageCode: String): PlacementRuntimeSelection {
-    return if (languageCode == "en") {
-        PlacementRuntimeSelection(
-            languageCode = languageCode,
-            mode = PlacementRuntimeMode.QUALITY_SESSION,
-            questions = qualityEnglishPlacementQuestions
-        )
-    } else {
-        PlacementRuntimeSelection(
-            languageCode = languageCode,
-            mode = PlacementRuntimeMode.LEGACY_FOUNDATION,
-            questions = starterPlacementQuestionsFor(languageCode)
-        )
-    }
+fun placementRuntimeSelection(languageCode: String): PlacementRuntimeSelection = when (languageCode) {
+    "en" -> PlacementRuntimeSelection(
+        languageCode = languageCode,
+        mode = PlacementRuntimeMode.QUALITY_SESSION,
+        questions = qualityEnglishPlacementQuestions
+    )
+    "pt" -> PlacementRuntimeSelection(
+        languageCode = languageCode,
+        mode = PlacementRuntimeMode.QUALITY_SESSION,
+        questions = qualityPortuguesePlacementQuestions
+    )
+    else -> PlacementRuntimeSelection(
+        languageCode = languageCode,
+        mode = PlacementRuntimeMode.LEGACY_FOUNDATION,
+        questions = starterPlacementQuestionsFor(languageCode)
+    )
 }
 
 fun isQualityPlacementEnabled(languageCode: String): Boolean =
