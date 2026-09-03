@@ -14,6 +14,10 @@
     <string name="correct_answers">%1$d réponses correctes sur %2$d dans ce prototype.</string>
     <string name="prototype_score_note">Le score de ce prototype n’est pas encore l’évaluation CECR calibrée finale.</string>
     <string name="try_again">Réessayer</string>
+    <string name="placement_inconclusive_title">Nous avons besoin d’éléments plus clairs</string>
+    <string name="placement_inconclusive_description">Vos réponses ont atteint la limite d’éléments du test sans permettre d’établir un niveau défendable. Aucun niveau CECR n’a été enregistré. Vous pouvez refaire le test.</string>
+    <string name="placement_bank_insufficient_title">Cette banque de questions ne permet pas de terminer l’estimation</string>
+    <string name="placement_bank_insufficient_description">Il n’y avait pas assez de nouvelles questions admissibles pour établir un niveau défendable. Aucun niveau CECR n’a été enregistré.</string>
     <string name="change_languages">Changer de langues</string>
     <string name="continue_to_path">Continuer vers mon parcours</string>
     <string name="learning_path_title">Votre parcours CECR</string>
