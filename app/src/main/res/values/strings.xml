@@ -47,4 +47,20 @@
     <string name="voice_samples_loading">Preparing the device voice…</string>
     <string name="voice_samples_unavailable">This device does not currently have a compatible voice for the selected language.</string>
     <string name="voice_samples_temporary_note">These samples are only for technical comparison and will not become official without approval.</string>
+    <string name="auth_title">Sign in to Chiu Know?</string>
+    <string name="auth_description">Use the email address authorized for your account.</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_sign_in">Sign in</string>
+    <string name="auth_reset_password">Set or reset password</string>
+    <string name="auth_reset_sent">Check your email. The link will open Chiu Know? to set your password.</string>
+    <string name="auth_choose_password">Choose your password</string>
+    <string name="auth_new_password">New password</string>
+    <string name="auth_confirm_password">Confirm password</string>
+    <string name="auth_save_password">Save password</string>
+    <string name="auth_password_minimum">Use at least 8 characters.</string>
+    <string name="auth_password_mismatch">The passwords do not match.</string>
+    <string name="auth_sign_in_error">We could not sign you in.</string>
+    <string name="auth_reset_error">We could not send the recovery email.</string>
+    <string name="auth_update_error">We could not save your password.</string>
 </resources>
