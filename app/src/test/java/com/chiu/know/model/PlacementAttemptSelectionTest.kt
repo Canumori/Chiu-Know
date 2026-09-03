@@ -41,19 +41,28 @@ class PlacementAttemptSelectionTest {
     }
 
     @Test
-    fun englishCandidateBankUsesValidatedExpansion() {
-        val questions = placementCandidateQuestionsFor("en")
+    fun validatedCandidateBanksUseExpandedQualityContent() {
+        val expectedBanks = mapOf(
+            "en" to qualityEnglishPlacementQuestions,
+            "pt" to qualityPortuguesePlacementQuestions,
+            "es" to qualitySpanishPlacementQuestions
+        )
 
-        assertEquals(24, questions.size)
-        CefrLevel.entries.forEach { level ->
-            assertEquals(4, questions.count { it.level == level })
+        expectedBanks.forEach { (languageCode, expected) ->
+            val questions = placementCandidateQuestionsFor(languageCode)
+
+            assertEquals(expected, questions)
+            assertEquals(24, questions.size)
+            CefrLevel.entries.forEach { level ->
+                assertEquals(4, questions.count { it.level == level })
+            }
+            assertEquals(questions.size, questions.map { it.id }.toSet().size)
         }
-        assertEquals(questions.size, questions.map { it.id }.toSet().size)
     }
 
     @Test
-    fun otherLanguagesStayOnStarterBankUntilReviewedExpansionExists() {
-        listOf("pt", "es", "fr", "ko").forEach { languageCode ->
+    fun unvalidatedLanguagesStayOnStarterBankUntilReviewedExpansionExists() {
+        listOf("fr", "ko").forEach { languageCode ->
             assertEquals(
                 starterPlacementQuestionsFor(languageCode),
                 placementCandidateQuestionsFor(languageCode)
@@ -62,17 +71,19 @@ class PlacementAttemptSelectionTest {
     }
 
     @Test
-    fun repeatedSelectionCanConsumeEnglishLevelWithoutDuplicateIds() {
-        val questions = placementCandidateQuestionsFor("en")
-        val used = linkedSetOf<String>()
+    fun repeatedSelectionCanConsumeQualityLevelWithoutDuplicateIds() {
+        listOf("en", "pt", "es").forEach { languageCode ->
+            val questions = placementCandidateQuestionsFor(languageCode)
+            val used = linkedSetOf<String>()
 
-        repeat(4) {
-            val selected = nextUnusedPlacementQuestion(questions, CefrLevel.C1, used)
-            requireNotNull(selected)
-            assertTrue(used.add(selected.id))
+            repeat(4) {
+                val selected = nextUnusedPlacementQuestion(questions, CefrLevel.C1, used)
+                requireNotNull(selected)
+                assertTrue(used.add(selected.id))
+            }
+
+            assertNull(nextUnusedPlacementQuestion(questions, CefrLevel.C1, used))
+            assertEquals(4, used.size)
         }
-
-        assertNull(nextUnusedPlacementQuestion(questions, CefrLevel.C1, used))
-        assertEquals(4, used.size)
     }
 }
