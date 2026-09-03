@@ -49,6 +49,41 @@ class AdaptivePlacementTest {
     }
 
     @Test
+    fun everyPossibleAnswerPathTerminatesQuicklyAndSafely() {
+        val finishedLevels = mutableSetOf<CefrLevel>()
+        val visited = mutableSetOf<Pair<AdaptivePlacementState, List<Boolean>>>()
+
+        fun explore(state: AdaptivePlacementState, answers: List<Boolean>) {
+            assertTrue("Adaptive placement exceeded six answers: $answers", answers.size <= CefrLevel.entries.size)
+
+            if (state.isFinished) {
+                finishedLevels += state.estimatedLevel
+                return
+            }
+
+            listOf(false, true).forEach { answer ->
+                val step = advanceAdaptivePlacement(state, answer)
+                val nextAnswers = answers + answer
+                assertEquals(nextAnswers.size, step.state.answeredQuestions)
+                assertTrue(step.state.lowerBoundIndex <= step.state.upperBoundIndex)
+                assertTrue(step.state.currentLevelIndex in step.state.lowerBoundIndex..step.state.upperBoundIndex)
+
+                if (step.finished) {
+                    assertNull(step.nextLevel)
+                    finishedLevels += step.estimatedLevel
+                } else {
+                    assertEquals(step.state.currentLevel, step.nextLevel)
+                    if (visited.add(step.state to nextAnswers)) explore(step.state, nextAnswers)
+                }
+            }
+        }
+
+        explore(startAdaptivePlacement(), emptyList())
+
+        assertEquals(CefrLevel.entries.toSet(), finishedLevels)
+    }
+
+    @Test
     fun finishedStateDoesNotAdvanceAgain() {
         val finished = AdaptivePlacementState(
             lowerBoundIndex = CefrLevel.entries.indexOf(CefrLevel.B2),
