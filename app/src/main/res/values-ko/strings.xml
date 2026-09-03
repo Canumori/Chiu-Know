@@ -14,6 +14,10 @@
     <string name="correct_answers">이 프로토타입에서 %2$d문제 중 %1$d문제를 맞혔습니다.</string>
     <string name="prototype_score_note">이 프로토타입 점수는 아직 최종 보정된 CEFR 평가가 아닙니다.</string>
     <string name="try_again">다시 시도</string>
+    <string name="placement_inconclusive_title">더 명확한 근거가 필요합니다</string>
+    <string name="placement_inconclusive_description">답변이 테스트의 근거 한도에 도달했지만 신뢰할 수 있는 수준을 정하기에는 충분하지 않았습니다. CEFR 수준은 저장되지 않았습니다. 테스트를 다시 시도할 수 있습니다.</string>
+    <string name="placement_bank_insufficient_title">이 문제 은행으로는 수준 추정을 완료할 수 없습니다</string>
+    <string name="placement_bank_insufficient_description">신뢰할 수 있는 수준을 정할 만큼 새로 제시할 수 있는 적절한 문제가 충분하지 않았습니다. CEFR 수준은 저장되지 않았습니다.</string>
     <string name="change_languages">언어 변경</string>
     <string name="continue_to_path">내 학습 경로로 계속</string>
     <string name="learning_path_title">나의 CEFR 학습 경로</string>
