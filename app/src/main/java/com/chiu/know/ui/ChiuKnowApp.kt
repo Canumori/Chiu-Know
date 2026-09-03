@@ -57,6 +57,7 @@ import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.PlacementRuntimeMode
 import com.chiu.know.model.PlacementSessionPhase
 import com.chiu.know.model.PlacementSessionState
+import com.chiu.know.model.PlacementTerminalReason
 import com.chiu.know.model.ResponseType
 import com.chiu.know.model.StarterQueueReason
 import com.chiu.know.model.TemporaryVoiceStyle
@@ -93,7 +94,7 @@ private fun estimatedLevelKey(languageCode: String) = stringPreferencesKey("esti
 private fun learningEvidenceKey(languageCode: String) = stringSetPreferencesKey("learning_evidence_$languageCode")
 private fun reviewScheduleKey(languageCode: String) = stringSetPreferencesKey("review_schedule_$languageCode")
 
-private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, LEARNING_TRAIL, LEARNING_ACTIVITY, VOICE_PREVIEW }
+private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, PLACEMENT_UNRESOLVED, LEARNING_TRAIL, LEARNING_ACTIVITY, VOICE_PREVIEW }
 
 @Composable
 fun ChiuKnowApp() {
@@ -151,7 +152,11 @@ fun ChiuKnowApp() {
                         } else null
                         estimatedLevel = CefrLevel.A1
                         correctAnswers = 0
-                        step = AppStep.PLACEMENT_TEST
+                        step = if (placementSession?.phase == PlacementSessionPhase.BANK_INSUFFICIENT) {
+                            AppStep.PLACEMENT_UNRESOLVED
+                        } else {
+                            AppStep.PLACEMENT_TEST
+                        }
                     },
                     { step = AppStep.LANGUAGE_SELECTION }
                 )
@@ -179,8 +184,7 @@ fun ChiuKnowApp() {
                                 }
                                 step = AppStep.PLACEMENT_RESULT
                             } else if (next.phase == PlacementSessionPhase.BANK_INSUFFICIENT) {
-                                placementSession = null
-                                step = AppStep.PLACEMENT_INTRO
+                                step = AppStep.PLACEMENT_UNRESOLVED
                             }
                         }
                     } else {
@@ -221,6 +225,18 @@ fun ChiuKnowApp() {
                         { step = AppStep.LANGUAGE_SELECTION }
                     )
                 }
+
+                AppStep.PLACEMENT_UNRESOLVED -> PlacementUnresolvedScreen(
+                    reason = placementSession?.terminalReason ?: PlacementTerminalReason.BANK_INSUFFICIENT,
+                    onRetry = {
+                        placementSession = null
+                        step = AppStep.PLACEMENT_INTRO
+                    },
+                    onChangeLanguage = {
+                        placementSession = null
+                        step = AppStep.LANGUAGE_SELECTION
+                    }
+                )
 
                 AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }, { step = AppStep.VOICE_PREVIEW }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
                 AppStep.VOICE_PREVIEW -> VoiceSampleScreen(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
