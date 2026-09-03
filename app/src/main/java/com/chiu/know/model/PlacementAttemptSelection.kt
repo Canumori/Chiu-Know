@@ -19,10 +19,13 @@ fun nextUnusedPlacementQuestion(
 /**
  * Production candidate bank by target language.
  *
- * English uses the expanded, CI-validated bank. Other languages deliberately
- * remain on their starter banks until they receive equivalent linguistic
- * expansion and validation.
+ * Languages already validated for the quality session use their expanded
+ * banks. Remaining languages deliberately stay on starter banks until they
+ * receive equivalent linguistic expansion and validation.
  */
-fun placementCandidateQuestionsFor(languageCode: String): List<PlacementQuestion> =
-    if (languageCode == "en") qualityEnglishPlacementQuestions
-    else starterPlacementQuestionsFor(languageCode)
+fun placementCandidateQuestionsFor(languageCode: String): List<PlacementQuestion> = when (languageCode) {
+    "en" -> qualityEnglishPlacementQuestions
+    "pt" -> qualityPortuguesePlacementQuestions
+    "es" -> qualitySpanishPlacementQuestions
+    else -> starterPlacementQuestionsFor(languageCode)
+}

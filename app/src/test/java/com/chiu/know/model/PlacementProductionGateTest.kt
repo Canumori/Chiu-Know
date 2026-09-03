@@ -34,10 +34,23 @@ class PlacementProductionGateTest {
     }
 
     @Test
+    fun spanishUsesQualitySessionWithExpandedValidatedBank() {
+        val selection = placementRuntimeSelection("es")
+
+        assertEquals(PlacementRuntimeMode.QUALITY_SESSION, selection.mode)
+        assertEquals(qualitySpanishPlacementQuestions, selection.questions)
+        assertEquals(24, selection.questions.size)
+        CefrLevel.entries.forEach { level ->
+            assertEquals(4, selection.questions.count { it.level == level })
+        }
+        assertTrue(isQualityPlacementEnabled("es"))
+    }
+
+    @Test
     fun remainingSupportedTargetsStayOnLegacyFoundationUntilEquivalentBankExists() {
         supportedTargetLanguages
             .map { it.code }
-            .filterNot { it in setOf("en", "pt") }
+            .filterNot { it in setOf("en", "pt", "es") }
             .forEach { languageCode ->
                 val selection = placementRuntimeSelection(languageCode)
 
@@ -51,6 +64,7 @@ class PlacementProductionGateTest {
     fun runtimeSelectionNeverCrossesLanguageBanks() {
         val englishIds = qualityEnglishPlacementQuestions.map { it.id }.toSet()
         val portugueseIds = qualityPortuguesePlacementQuestions.map { it.id }.toSet()
+        val spanishIds = qualitySpanishPlacementQuestions.map { it.id }.toSet()
 
         supportedTargetLanguages.forEach { language ->
             val selection = placementRuntimeSelection(language.code)
@@ -59,9 +73,10 @@ class PlacementProductionGateTest {
             assertTrue(selection.questions.isNotEmpty())
 
             when (language.code) {
-                "en" -> assertTrue(selection.questions.none { it.id in portugueseIds })
-                "pt" -> assertTrue(selection.questions.none { it.id in englishIds })
-                else -> assertTrue(selection.questions.none { it.id in englishIds || it.id in portugueseIds })
+                "en" -> assertTrue(selection.questions.none { it.id in portugueseIds || it.id in spanishIds })
+                "pt" -> assertTrue(selection.questions.none { it.id in englishIds || it.id in spanishIds })
+                "es" -> assertTrue(selection.questions.none { it.id in englishIds || it.id in portugueseIds })
+                else -> assertTrue(selection.questions.none { it.id in englishIds || it.id in portugueseIds || it.id in spanishIds })
             }
         }
     }

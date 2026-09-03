@@ -29,6 +29,11 @@ fun placementRuntimeSelection(languageCode: String): PlacementRuntimeSelection =
         mode = PlacementRuntimeMode.QUALITY_SESSION,
         questions = qualityPortuguesePlacementQuestions
     )
+    "es" -> PlacementRuntimeSelection(
+        languageCode = languageCode,
+        mode = PlacementRuntimeMode.QUALITY_SESSION,
+        questions = qualitySpanishPlacementQuestions
+    )
     else -> PlacementRuntimeSelection(
         languageCode = languageCode,
         mode = PlacementRuntimeMode.LEGACY_FOUNDATION,
