@@ -91,7 +91,7 @@ class PlacementConfirmationDecisionTest {
     }
 
     @Test
-    fun mixedEvidenceConfirmsProvisionalLevel() {
+    fun mixedProvisionalEvidenceNeedsMoreEvidence() {
         val result = decidePlacementFromConfirmation(
             provisionalLevel = CefrLevel.B1,
             evidence = listOf(
@@ -102,8 +102,8 @@ class PlacementConfirmationDecisionTest {
             )
         )
 
-        assertEquals(PlacementDecisionStatus.CONFIRMED, result.status)
-        assertEquals(CefrLevel.B1, result.decidedLevel)
+        assertEquals(PlacementDecisionStatus.NEEDS_MORE_EVIDENCE, result.status)
+        assertNull(result.decidedLevel)
     }
 
     @Test
