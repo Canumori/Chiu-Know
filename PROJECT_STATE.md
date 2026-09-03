@@ -1,5 +1,27 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-03 14:21 BRT — CI #170 VERDE; PLACEMENT ROBUSTO INTEGRADO À UI EM INGLÊS
+
+Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
+
+### Marco validado
+- Commit `5a2bd8e8407e01badf00ad393a391601de60dcc0` — `feat: wire validated English placement session into UI`.
+- Android CI #170, run `33783778642`: `COMPLETED / SUCCESS`.
+- A interface real do APK agora usa o novo motor `PlacementSession` quando o idioma-alvo é inglês.
+- Inglês usa o banco expandido de 24 questões, a seleção sem repetição, localização adaptativa, confirmação e decisão conservadora do nível.
+- O nível do inglês só é persistido quando a sessão retorna decisão válida e completa; estado de banco insuficiente não inventa nível final.
+- O progresso do placement de qualidade não deve fingir um total fixo de perguntas; o contrato continua quality-first, com mínimo 8 e máximo de segurança 14 como regra de engenharia atual.
+- Português, espanhol, francês e coreano continuam deliberadamente no fluxo `LEGACY_FOUNDATION` até que seus bancos sejam expandidos e validados de modo equivalente. Não apresentar equivalência de qualidade antes disso.
+- CI #169 passou para `032079c102f651c03ee48d5ab5554e1535dedb59`, protegendo a trava por idioma; CI #168 passou para `788094a2fe2745aa0092b848b84e52dc55d2ab9b`, que criou a trava de produção.
+- CI #167 passou para `64f2d3e9925c446e39d6d056189acc6ad486631c`, protegendo exaustivamente as sessões; CI #166 passou para `864b1bb55cfe53d572f6b1ecd65ce0e19a94d022`, que criou o motor único de sessão.
+- CI #165 passou para `e0accc9c9d1702c8de09f569ba42d12c1a9d8a3f`, protegendo a regra conservadora de decisão; CI #164 passou para `48fe9783d4f1418249a0a81381a95deb24713b66`.
+
+### Próximo passo exato
+1. Fazer revisão pós-integração do fluxo inglês na UI e dos estados de erro/retorno, sem alterar os demais idiomas.
+2. Preservar CI verde antes de nova mudança estrutural.
+3. Em seguida priorizar a expansão/validação dos bancos de português, espanhol, francês e coreano antes de habilitar o mesmo placement de qualidade para eles, salvo se uma revisão revelar bug crítico no fluxo inglês.
+4. Não voltar a pontuação percentual fixa, não inventar confiança psicométrica e não reciclar questões usadas.
+
 ## ESTADO AUTORITATIVO — 2026-09-03 — CI #162 VERDE; DIREÇÃO DE VOZES NATURAIS REGISTRADA
 
 Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
