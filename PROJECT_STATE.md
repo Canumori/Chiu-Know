@@ -1,5 +1,47 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-03 10:16 BRT — STORAGE PRIVADO RECONFIRMADO; TESTE DE OBJETO BLOQUEADO PELA FERRAMENTA
+
+Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub e do Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
+
+### GitHub/Android reconfirmados
+- Repositório `Canumori/Chiu-Know`, branch `main`, deliberadamente público; não mudar visibilidade por suposição.
+- HEAD observado antes deste commit documental: `3371b296473bc27ff70ef24fa5de1b735eeff866` — `docs: record validated email auth and private voice handoff`.
+- Android CI #144, run `33758178184`, job `100657596732`: `COMPLETED / SUCCESS`.
+- O job `build-debug` passou por unit tests, build debug, upload do APK e etapas finais.
+
+### Supabase correto reconfirmado
+- A conexão disponível mostrou somente o projeto Chiu Know `uskxabsodcnzlovuaurp`.
+- Organização: `aeerqbmrwulxsawhjyvm`; região `sa-east-1`; status `ACTIVE_HEALTHY`.
+- O Supabase do Chiu Player `hpcbkvbrlwjnwlikmbfb` não apareceu e não foi tocado.
+- Existe exatamente 1 autorização habilitada em `private.app_user_access`; nenhum e-mail, UUID ou dado pessoal foi registrado aqui.
+- Bucket `character-voices` reconfirmado com `public=false`, limite 2 MiB e allowlist `audio/mp4`, `audio/x-m4a`, `audio/m4a`.
+- Estado do bucket reconfirmado: 0 objetos.
+- Política real encontrada no bucket: somente SELECT `authorized_users_read_character_voices`, role `authenticated`, condicionada a linha própria habilitada em `private.app_user_access`.
+- Não há política INSERT/UPDATE/DELETE para usuários comuns do APK.
+- Advisor de performance: zero lints.
+- Advisor de segurança agora retorna 1 WARN: `auth_leaked_password_protection`, indicando proteção contra senhas vazadas desativada. Isto não foi criado nesta frente e não deve ser confundido com falha do Storage; avaliar habilitação separadamente quando houver ferramenta/configuração apropriada.
+
+### Resultado da tentativa do teste descartável
+- A skill Supabase atual foi lida integralmente e a documentação atual de Storage foi consultada.
+- Buckets privados exigem controle por RLS para download e não equivalem a URL pública permanente.
+- A conexão Supabase disponível neste chat NÃO expõe operação normal de upload/download/delete de objetos do Storage.
+- Também não foi encontrada integração adicional instalada que ofereça upload normal ao Supabase Storage.
+- Portanto o teste reversível com `storage-policy-test.m4a` NÃO foi executado.
+- Nenhum objeto temporário foi criado; nada precisou ser removido.
+- Não foi feita inserção direta em `storage.objects`, não foi pedido/usado `service_role`, não foi criado bypass, não foi criada política temporária de upload e nenhum segredo foi exposto.
+- A voz aprovada `Chiu-animada-recorte-final.m4a` permanece intocada, fora do GitHub e fora do Supabase.
+
+### Próximo passo exato
+1. Não enviar a voz aprovada enquanto o teste real de Storage não puder ser executado pelo mecanismo normal de objetos.
+2. Quando uma conexão/ferramenta com operações normais de Storage estiver disponível, reconfirmar primeiro o projeto `uskxabsodcnzlovuaurp`, bucket e políticas.
+3. Gerar/localizar áudio silencioso descartável sem dados pessoais e fazer upload normal; não manipular `storage.objects` via SQL.
+4. Confirmar caminho, tamanho, MIME, bucket privado e ausência de URL pública permanente.
+5. Testar download autenticado/autorizado e confirmar bloqueio anônimo/não autorizado.
+6. Remover o objeto descartável pelo mecanismo normal de Storage e confirmar 0 objetos novamente.
+7. Somente se todos os testes passarem, pedir confirmação imediata da usuária antes de enviar `Chiu-animada-recorte-final.m4a`.
+8. Até lá, não improvisar com Edge Function privilegiada, política anônima temporária, GitHub Action com segredo, service_role ou outro backend.
+
 ## ESTADO AUTORITATIVO — 2026-09-02 22:10 BRT — LOGIN POR E-MAIL VALIDADO FISICAMENTE; STORAGE PRIVADO AINDA SEM A VOZ
 
 Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub e do Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
@@ -24,7 +66,7 @@ Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado 
 - Migração versionada: `supabase/migrations/20260903000000_private_character_voice_access.sql`, commit `73b63229920a02bc460e1c02418362970f104798`, CI #141 / run `33698994933` SUCCESS.
 - Estrutura real: `private.app_user_access`, RLS ativa, leitura do próprio acesso apenas para autenticado autorizado; `anon` sem uso/leitura.
 - Bucket `character-voices`: privado (`public=false`), limite 2 MiB, MIME permitido `audio/mp4`, `audio/x-m4a`, `audio/m4a`.
-- Política SELECT `authorized_users_read_character_voices`: exige sessão autenticada e linha própria habilitada em `private.app_user_access`. Não existem políticas de upload/update/delete para usuários do APK.
+- Política SELECT `authorized_users_read_character_voices`: exige sessão authenticated e linha própria habilitada em `private.app_user_access`. Não existem políticas de upload/update/delete para usuários do APK.
 - Advisors de segurança e performance foram executados após as mudanças e retornaram zero lints.
 - Estado mais recente observado do bucket: vazio. Nenhum arquivo de voz foi enviado.
 
