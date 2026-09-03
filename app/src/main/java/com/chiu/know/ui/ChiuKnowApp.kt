@@ -53,29 +53,34 @@ import com.chiu.know.model.CefrLevel
 import com.chiu.know.model.CefrTrailStatus
 import com.chiu.know.model.LanguageOption
 import com.chiu.know.model.LearningActivity
-import com.chiu.know.model.TemporaryVoiceStyle
-import com.chiu.know.model.temporaryVoiceSamples
-import com.chiu.know.model.voiceSamplePhrase
 import com.chiu.know.model.PlacementQuestion
+import com.chiu.know.model.PlacementRuntimeMode
+import com.chiu.know.model.PlacementSessionPhase
+import com.chiu.know.model.PlacementSessionState
 import com.chiu.know.model.ResponseType
-import com.chiu.know.model.advanceAdaptivePlacement
-import com.chiu.know.model.buildCefrTrail
 import com.chiu.know.model.StarterQueueReason
+import com.chiu.know.model.TemporaryVoiceStyle
+import com.chiu.know.model.advanceAdaptivePlacement
+import com.chiu.know.model.advancePlacementSession
+import com.chiu.know.model.buildCefrTrail
 import com.chiu.know.model.decodeLearningEvidenceSet
 import com.chiu.know.model.decodeReviewScheduleStateSet
 import com.chiu.know.model.encodeLearningEvidence
-import com.chiu.know.model.updateReviewScheduleStateSet
 import com.chiu.know.model.isLearningAnswerCorrect
 import com.chiu.know.model.learningEvidenceFor
-import com.chiu.know.model.rebuildReviewScheduleStates
 import com.chiu.know.model.placementQuestionForLevel
+import com.chiu.know.model.placementRuntimeSelection
+import com.chiu.know.model.rebuildReviewScheduleStates
 import com.chiu.know.model.startAdaptivePlacement
+import com.chiu.know.model.startPlacementSession
 import com.chiu.know.model.starterLearningActivityFor
 import com.chiu.know.model.starterLearningActivityForEvidence
 import com.chiu.know.model.starterQueueSelection
-import com.chiu.know.model.starterPlacementQuestionsFor
 import com.chiu.know.model.supportedInterfaceLanguages
 import com.chiu.know.model.supportedTargetLanguages
+import com.chiu.know.model.temporaryVoiceSamples
+import com.chiu.know.model.updateReviewScheduleStateSet
+import com.chiu.know.model.voiceSamplePhrase
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.util.Date
@@ -111,11 +116,11 @@ fun ChiuKnowApp() {
                 else rebuildReviewScheduleStates(persistedLearningEvidence)
             }
             var adaptiveState by remember { mutableStateOf(startAdaptivePlacement()) }
+            var placementSession by remember(targetLanguage.code) { mutableStateOf<PlacementSessionState?>(null) }
             var estimatedLevel by remember(persistedEstimatedLevel) { mutableStateOf(persistedEstimatedLevel ?: CefrLevel.A1) }
             var correctAnswers by remember { mutableIntStateOf(0) }
             var trailOpenedFromResult by remember { mutableStateOf(false) }
-            val placementQuestions = starterPlacementQuestionsFor(targetLanguage.code)
-            val currentQuestion = placementQuestionForLevel(placementQuestions, adaptiveState.currentLevel, adaptiveState.answeredQuestions)
+            val placementRuntime = remember(targetLanguage.code) { placementRuntimeSelection(targetLanguage.code) }
 
             LaunchedEffect(persistedInterfaceCode) {
                 val code = persistedInterfaceCode ?: return@LaunchedEffect
@@ -131,20 +136,92 @@ fun ChiuKnowApp() {
                     }
                 }, { selected ->
                     targetLanguage = selected
+                    placementSession = null
                     coroutineScope.launch { context.languagePreferencesDataStore.edit { it[targetLanguageCodeKey] = selected.code } }
                 }) { step = AppStep.PLACEMENT_INTRO }
-                AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(targetLanguage, persistedEstimatedLevel, { level -> estimatedLevel = level; trailOpenedFromResult = false; step = AppStep.LEARNING_TRAIL }, { adaptiveState = startAdaptivePlacement(); estimatedLevel = CefrLevel.A1; correctAnswers = 0; step = AppStep.PLACEMENT_TEST }, { step = AppStep.LANGUAGE_SELECTION })
-                AppStep.PLACEMENT_TEST -> PlacementQuestionScreen(currentQuestion, adaptiveState.answeredQuestions + 1, placementQuestions.size) { selected ->
-                    val answeredCorrectly = selected == currentQuestion.correctIndex
-                    if (answeredCorrectly) correctAnswers++
-                    val result = advanceAdaptivePlacement(adaptiveState, answeredCorrectly)
-                    adaptiveState = result.state; estimatedLevel = result.estimatedLevel
-                    if (result.finished) {
-                        coroutineScope.launch { context.languagePreferencesDataStore.edit { it[estimatedLevelKey(targetLanguage.code)] = result.estimatedLevel.name } }
-                        step = AppStep.PLACEMENT_RESULT
+
+                AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(
+                    targetLanguage,
+                    persistedEstimatedLevel,
+                    { level -> estimatedLevel = level; trailOpenedFromResult = false; step = AppStep.LEARNING_TRAIL },
+                    {
+                        adaptiveState = startAdaptivePlacement()
+                        placementSession = if (placementRuntime.mode == PlacementRuntimeMode.QUALITY_SESSION) {
+                            startPlacementSession(placementRuntime.questions)
+                        } else null
+                        estimatedLevel = CefrLevel.A1
+                        correctAnswers = 0
+                        step = AppStep.PLACEMENT_TEST
+                    },
+                    { step = AppStep.LANGUAGE_SELECTION }
+                )
+
+                AppStep.PLACEMENT_TEST -> {
+                    if (placementRuntime.mode == PlacementRuntimeMode.QUALITY_SESSION) {
+                        val session = requireNotNull(placementSession)
+                        val sessionQuestion = requireNotNull(session.current).question
+                        PlacementQuestionScreen(sessionQuestion, session.answeredQuestions + 1, null) { selected ->
+                            val answeredCorrectly = selected == sessionQuestion.correctIndex
+                            if (answeredCorrectly) correctAnswers++
+                            val next = advancePlacementSession(
+                                state = session,
+                                answeredCorrectly = answeredCorrectly,
+                                questions = placementRuntime.questions
+                            )
+                            placementSession = next
+                            if (next.phase == PlacementSessionPhase.COMPLETE) {
+                                val decidedLevel = requireNotNull(next.finalDecision?.decidedLevel)
+                                estimatedLevel = decidedLevel
+                                coroutineScope.launch {
+                                    context.languagePreferencesDataStore.edit {
+                                        it[estimatedLevelKey(targetLanguage.code)] = decidedLevel.name
+                                    }
+                                }
+                                step = AppStep.PLACEMENT_RESULT
+                            } else if (next.phase == PlacementSessionPhase.BANK_INSUFFICIENT) {
+                                placementSession = null
+                                step = AppStep.PLACEMENT_INTRO
+                            }
+                        }
+                    } else {
+                        val placementQuestions = placementRuntime.questions
+                        val currentQuestion = placementQuestionForLevel(
+                            placementQuestions,
+                            adaptiveState.currentLevel,
+                            adaptiveState.answeredQuestions
+                        )
+                        PlacementQuestionScreen(currentQuestion, adaptiveState.answeredQuestions + 1, placementQuestions.size) { selected ->
+                            val answeredCorrectly = selected == currentQuestion.correctIndex
+                            if (answeredCorrectly) correctAnswers++
+                            val result = advanceAdaptivePlacement(adaptiveState, answeredCorrectly)
+                            adaptiveState = result.state
+                            estimatedLevel = result.estimatedLevel
+                            if (result.finished) {
+                                coroutineScope.launch {
+                                    context.languagePreferencesDataStore.edit {
+                                        it[estimatedLevelKey(targetLanguage.code)] = result.estimatedLevel.name
+                                    }
+                                }
+                                step = AppStep.PLACEMENT_RESULT
+                            }
+                        }
                     }
                 }
-                AppStep.PLACEMENT_RESULT -> PlacementResultScreen(estimatedLevel, correctAnswers, adaptiveState.answeredQuestions, { trailOpenedFromResult = true; step = AppStep.LEARNING_TRAIL }, { step = AppStep.PLACEMENT_INTRO }, { step = AppStep.LANGUAGE_SELECTION })
+
+                AppStep.PLACEMENT_RESULT -> {
+                    val answeredQuestions = if (placementRuntime.mode == PlacementRuntimeMode.QUALITY_SESSION) {
+                        placementSession?.answeredQuestions ?: 0
+                    } else adaptiveState.answeredQuestions
+                    PlacementResultScreen(
+                        estimatedLevel,
+                        correctAnswers,
+                        answeredQuestions,
+                        { trailOpenedFromResult = true; step = AppStep.LEARNING_TRAIL },
+                        { step = AppStep.PLACEMENT_INTRO },
+                        { step = AppStep.LANGUAGE_SELECTION }
+                    )
+                }
+
                 AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }, { step = AppStep.VOICE_PREVIEW }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
                 AppStep.VOICE_PREVIEW -> VoiceSampleScreen(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
                 AppStep.LEARNING_ACTIVITY -> {
@@ -211,8 +288,15 @@ private fun PlacementTestIntroScreen(targetLanguage: LanguageOption, previousLev
 }
 
 @Composable
-private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, total: Int, onAnswer: (Int) -> Unit) {
-    CenteredColumn { Text(stringResource(R.string.question_progress, number, total), style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(12.dp)); Text(question.level.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(20.dp)); Text(question.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(28.dp)); question.options.forEachIndexed { index, option -> OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { onAnswer(index) }) { Text(option) }; Spacer(Modifier.height(10.dp)) } }
+private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, total: Int?, onAnswer: (Int) -> Unit) {
+    CenteredColumn {
+        if (total != null) {
+            Text(stringResource(R.string.question_progress, number, total), style = MaterialTheme.typography.labelLarge)
+        } else {
+            Text("${stringResource(R.string.placement_title)} · $number", style = MaterialTheme.typography.labelLarge)
+        }
+        Spacer(Modifier.height(12.dp)); Text(question.level.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(20.dp)); Text(question.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(28.dp)); question.options.forEachIndexed { index, option -> OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { onAnswer(index) }) { Text(option) }; Spacer(Modifier.height(10.dp)) }
+    }
 }
 
 @Composable
