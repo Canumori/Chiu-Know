@@ -85,10 +85,13 @@ fun decidePlacementFromConfirmation(
     val lower = levels.getOrNull(index - 1)
     val upper = levels.getOrNull(index + 1)
 
-    // Mixed results at the provisional level are contradictory evidence. A
-    // quality-first placement must collect more fresh evidence rather than
-    // silently turning that ambiguity into a confirmed CEFR level.
-    if (passedEstimated > 0 && failedEstimated > 0) {
+    // A 1-1 split at the provisional level is contradictory and must not be
+    // silently converted into a CEFR decision. Fresh evidence can resolve that
+    // ambiguity later; confirmation becomes possible only once at least three
+    // provisional-level observations exist and correct answers form a majority.
+    if (passedEstimated > 0 && failedEstimated > 0 &&
+        (estimatedEvidence.size < 3 || passedEstimated <= failedEstimated)
+    ) {
         return PlacementConfirmationDecision(
             provisionalLevel = provisionalLevel,
             decidedLevel = null,
