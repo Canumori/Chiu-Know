@@ -1,5 +1,33 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-03 — PRIORIDADE DE CONTINUIDADE ATÉ 12/09; QUALIDADE NÃO NEGOCIÁVEL
+
+Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
+
+### Decisão operacional da usuária — prazo de 12 de setembro
+- A assinatura ChatGPT Plus da usuária termina em **12/09/2026** e depois ela pretende continuar no **ChatGPT Free**.
+- A importância de 12/09 NÃO é lançar às pressas. É aproveitar até essa data as capacidades/ferramentas atualmente disponíveis no Plus para deixar o projeto o mais autônomo, documentado, testado e recuperável possível.
+- **QUALIDADE NÃO PODE SER SACRIFICADA PARA CUMPRIR 12/09.** Se houver conflito entre qualidade/confiabilidade pedagógica e quantidade de funcionalidades, preservar qualidade e registrar claramente o que continuará depois.
+- Objetivo de produto permanece ambicioso: APK confiável em que a pessoa realmente aprenda de forma avançada e completa, buscando superar limitações das soluções atuais por arquitetura própria baseada em evidência, sem copiar concorrentes e sem fazer alegações não validadas.
+- Até 12/09, priorizar especialmente trabalho estrutural que possa ficar mais difícil com limites futuros: arquitetura principal, integração segura, testes automatizados, CI, contratos pedagógicos, placement robusto, persistência, documentação, decisões de segurança/privacidade, handoffs e um fluxo APK ponta a ponta tão completo quanto a qualidade permitir.
+- Depois de 12/09, continuar o desenvolvimento **com o ChatGPT**, usando as capacidades que estiverem disponíveis no plano Free naquele momento. Não pressupor antecipadamente quais ferramentas/limites existirão no Free; verificar o que estiver realmente disponível e adaptar o processo.
+- Preferência explícita da usuária: **não migrar o desenvolvimento para outra IA apenas por causa da mudança de plano**. Manter continuidade com ChatGPT dentro das capacidades disponíveis.
+- Portanto cada chat deve deixar handoff forte no repositório. Ao trocar de chat, o próximo deve ler este arquivo e os documentos obrigatórios, conferir GitHub real e continuar do ponto registrado, sem pedir que a usuária reconstrua o histórico.
+
+### Estado recente do placement
+- CI #159 (`db200e6e4920e1575c9c9a95dd88e2e14aa298e0`) passou: testes protegem seleção de questões sem repetição.
+- Inglês possui banco candidato expandido de 24 questões, 4 por nível A1–C2; demais idiomas permanecem nos bancos starter até expansão/revisão equivalente.
+- Commit `57a614ae12b1ee5e56cd387b300e866481373346` adicionou plano determinístico de confirmação do placement; CI #160 foi disparado e deve ser conferido no GitHub real antes de nova mudança estrutural.
+- Política quality-first permanece: duração do teste é consequência da evidência necessária, não meta de marketing. Contrato provisório: mínimo 8 respostas, máximo de segurança 14, com fase de localização e confirmação; isso não equivale a validação psicométrica e não autoriza porcentagem falsa de confiança.
+- Questões usadas numa tentativa não devem ser silenciosamente recicladas para simular nova evidência.
+
+### Próximo passo exato
+1. Conferir resultado real do CI #160.
+2. Se falhar, inspecionar job/log e corrigir somente a causa.
+3. Se verde, criar testes exaustivos do plano de confirmação, incluindo A1/C2, esgotamento de itens, ausência de repetição e limite máximo.
+4. Só depois integrar gradualmente banco ampliado/confirmation flow ao placement real.
+5. Manter CI verde entre mudanças estruturais e continuar autonomamente até surgir decisão real de produto/privacidade.
+
 ## ESTADO AUTORITATIVO — 2026-09-03 10:40 BRT — PESQUISA PEDAGÓGICA APROVADA; CI #146 VERDE
 
 Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
