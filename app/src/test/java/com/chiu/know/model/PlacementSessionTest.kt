@@ -10,16 +10,29 @@ import org.junit.Test
 class PlacementSessionTest {
 
     @Test
-    fun englishSessionNeverRepeatsQuestionsAndFinishesWithinPolicy() {
+    fun englishSessionTracksExactlyPresentedQuestionsAndFinishesWithinPolicy() {
         val policy = PlacementQualityPolicy()
         val bank = placementCandidateQuestionsFor("en")
+        val seen = mutableSetOf<PlacementSessionState>()
 
-        allTerminalEnglishSessions(bank, policy).forEach { terminal ->
-            assertTrue(terminal.isFinished)
-            assertTrue(terminal.answeredQuestions <= policy.maximumAnsweredQuestions)
-            assertEquals(terminal.usedQuestionIds.size, terminal.usedQuestionIds.toSet().size)
-            assertTrue(terminal.usedQuestionIds.size >= terminal.answeredQuestions)
+        fun visit(state: PlacementSessionState) {
+            if (!seen.add(state)) return
+            assertEquals(state.usedQuestionIds.size, state.usedQuestionIds.toSet().size)
+            if (state.isFinished) {
+                assertNull(state.current)
+                assertEquals(state.answeredQuestions, state.usedQuestionIds.size)
+                assertTrue(state.answeredQuestions <= policy.maximumAnsweredQuestions)
+                return
+            }
+            assertNotNull(state.current)
+            assertEquals(state.answeredQuestions + 1, state.usedQuestionIds.size)
+            assertTrue(state.current!!.question.id in state.usedQuestionIds)
+            visit(advancePlacementSession(state, false, bank, policy))
+            visit(advancePlacementSession(state, true, bank, policy))
         }
+
+        visit(startPlacementSession(bank))
+        assertFalse(seen.isEmpty())
     }
 
     @Test
@@ -33,6 +46,7 @@ class PlacementSessionTest {
                 assertTrue(terminal.answeredQuestions >= policy.minimumAnsweredQuestions)
                 assertNotNull(terminal.finalDecision)
                 assertNotNull(terminal.finalDecision?.decidedLevel)
+                assertNull(terminal.terminalReason)
                 assertTrue(
                     terminal.finalDecision?.status in setOf(
                         PlacementDecisionStatus.CONFIRMED,
@@ -82,8 +96,22 @@ class PlacementSessionTest {
         )
 
         assertEquals(PlacementSessionPhase.BANK_INSUFFICIENT, terminal.phase)
+        assertEquals(PlacementTerminalReason.BANK_INSUFFICIENT, terminal.terminalReason)
         assertTrue(terminal.isFinished)
         assertNull(terminal.current)
+        assertNull(terminal.finalDecision?.decidedLevel)
+    }
+
+    @Test
+    fun maximumEvidenceInconclusiveIsNotMisreportedAsBankExhaustion() {
+        val policy = PlacementQualityPolicy(maximumAnsweredQuestions = 8)
+        val bank = placementCandidateQuestionsFor("en")
+        val terminal = allTerminalEnglishSessions(bank, policy)
+            .firstOrNull { it.terminalReason == PlacementTerminalReason.MAX_EVIDENCE_INCONCLUSIVE }
+
+        assertNotNull(terminal)
+        assertEquals(policy.maximumAnsweredQuestions, terminal!!.answeredQuestions)
+        assertEquals(PlacementDecisionStatus.NEEDS_MORE_EVIDENCE, terminal.finalDecision?.status)
         assertNull(terminal.finalDecision?.decidedLevel)
     }
 
