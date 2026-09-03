@@ -50,10 +50,12 @@ class SpanishPlacementQualityBankTest {
     @Test
     fun spanishBankCanSatisfyDefaultConfirmationPlanFreshAtEveryLevel() {
         CefrLevel.entries.forEach { level ->
-            val selected = selectPlacementConfirmationQuestions(
-                questions = qualitySpanishPlacementQuestions,
-                targets = placementConfirmationTargets(level),
-                usedQuestionIds = emptySet()
+            val selected = requireNotNull(
+                selectPlacementConfirmationQuestions(
+                    questions = qualitySpanishPlacementQuestions,
+                    targets = placementConfirmationTargets(level),
+                    usedQuestionIds = emptySet()
+                )
             )
             assertEquals(4, selected.size)
         }
