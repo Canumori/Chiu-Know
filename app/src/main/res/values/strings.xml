@@ -14,6 +14,10 @@
     <string name="correct_answers">%1$d of %2$d answers correct in this prototype.</string>
     <string name="prototype_score_note">This prototype score is not yet the final calibrated CEFR assessment.</string>
     <string name="try_again">Try again</string>
+    <string name="placement_inconclusive_title">We need clearer evidence</string>
+    <string name="placement_inconclusive_description">Your answers reached the test’s evidence limit without supporting a defensible level. No CEFR level was saved. You can try the test again.</string>
+    <string name="placement_bank_insufficient_title">This test bank cannot finish the estimate</string>
+    <string name="placement_bank_insufficient_description">There were not enough eligible fresh questions to support a defensible level. No CEFR level was saved.</string>
     <string name="change_languages">Change languages</string>
     <string name="continue_to_path">Continue to my path</string>
     <string name="learning_path_title">Your CEFR path</string>
