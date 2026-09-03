@@ -14,6 +14,10 @@
     <string name="correct_answers">%1$d de %2$d respostas corretas neste protótipo.</string>
     <string name="prototype_score_note">A pontuação deste protótipo ainda não é a avaliação CEFR calibrada final.</string>
     <string name="try_again">Tentar novamente</string>
+    <string name="placement_inconclusive_title">Precisamos de evidências mais claras</string>
+    <string name="placement_inconclusive_description">Suas respostas chegaram ao limite de evidências do teste sem sustentar um nível defensável. Nenhum nível CEFR foi salvo. Você pode tentar o teste novamente.</string>
+    <string name="placement_bank_insufficient_title">Este banco de questões não consegue concluir a estimativa</string>
+    <string name="placement_bank_insufficient_description">Não havia perguntas novas elegíveis suficientes para sustentar um nível defensável. Nenhum nível CEFR foi salvo.</string>
     <string name="change_languages">Alterar idiomas</string>
     <string name="continue_to_path">Continuar para minha trilha</string>
     <string name="learning_path_title">Sua trilha CEFR</string>
