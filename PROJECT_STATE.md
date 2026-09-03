@@ -1,5 +1,64 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-02 22:10 BRT — LOGIN POR E-MAIL VALIDADO FISICAMENTE; STORAGE PRIVADO AINDA SEM A VOZ
+
+Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub e do Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
+
+### GitHub/Android confirmados
+- Repositório `Canumori/Chiu-Know`, branch `main`, deliberadamente público para GitHub Actions ilimitado; não mudar visibilidade por suposição.
+- HEAD funcional atual: `f26a01d2940d0d290658527eafbbbc820b8e0fca` — `feat: add authorized email login flow`.
+- Android CI #143, run `33701029682`, job `100480152685`: `COMPLETED / SUCCESS`.
+- Todas as etapas passaram: testes unitários, build debug e upload do artefato.
+- Artefato: `chiu-know-debug`, ID `9873538252`; APK extraído tem 13.655.538 bytes e SHA-256 `fefb25b4a351a39cd1346c7b4d81da358d0f2dc8968a4d783c86267ee5423c8e`.
+- A usuária instalou o APK candidato, solicitou a definição/recuperação de senha, abriu o novo link no Android, definiu a senha e confirmou expressamente: “Deu tudo certo”. A senha não foi solicitada, recebida nem registrada.
+- O app agora bloqueia o conteúdo até existir sessão Supabase autenticada, permite login por e-mail/senha, envia recuperação de senha, recebe `chiuknow://auth-callback` e mostra a tela de nova senha quando o callback é de recuperação.
+- Fundação anterior: `3dfce8d32834a2b91fb6bcee19579c574bb5a203`, CI #142 / run `33700180273` SUCCESS. Acrescentou somente URL pública do projeto, publishable key, Auth/Storage, INTERNET e deep link. Nenhum `service_role`/secret foi colocado no APK, repositório ou logs.
+
+### Supabase correto e alterações reais
+- ÚNICO projeto permitido: Chiu Know? `uskxabsodcnzlovuaurp`, organização `aeerqbmrwulxsawhjyvm`, região `sa-east-1`.
+- Chiu Player `hpcbkvbrlwjnwlikmbfb` permanece absolutamente proibido e não foi tocado.
+- Auth Site URL foi corrigida de `http://localhost:3000` para `chiuknow://auth-callback`.
+- `chiuknow://auth-callback` também foi incluída explicitamente na allowlist de Redirect URLs; total confirmado: 1.
+- O primeiro convite já havia confirmado a conta, apesar da página `localhost` falhar. O fluxo posterior pelo APK confirmou na prática o callback correto e a definição de senha.
+- Existe uma usuária autorizada ativa na tabela privada de acesso; não publicar e-mail, senha, token ou identificador pessoal no repositório.
+- Migração versionada: `supabase/migrations/20260903000000_private_character_voice_access.sql`, commit `73b63229920a02bc460e1c02418362970f104798`, CI #141 / run `33698994933` SUCCESS.
+- Estrutura real: `private.app_user_access`, RLS ativa, leitura do próprio acesso apenas para autenticado autorizado; `anon` sem uso/leitura.
+- Bucket `character-voices`: privado (`public=false`), limite 2 MiB, MIME permitido `audio/mp4`, `audio/x-m4a`, `audio/m4a`.
+- Política SELECT `authorized_users_read_character_voices`: exige sessão autenticada e linha própria habilitada em `private.app_user_access`. Não existem políticas de upload/update/delete para usuários do APK.
+- Advisors de segurança e performance foram executados após as mudanças e retornaram zero lints.
+- Estado mais recente observado do bucket: vazio. Nenhum arquivo de voz foi enviado.
+
+### Voz — preservação absoluta
+- Arquivo aprovado: `Chiu-animada-recorte-final.m4a`, aproximadamente 15,4 s e 309.196 bytes, preservado privadamente fora do GitHub.
+- Não está no repositório público, não está no APK e ainda não está no Storage.
+- Não criar commit com áudio original/derivado; não bucket público; não URL pública permanente; não usar para outros personagens; não usar em outro projeto; não tocar no Chiu Player.
+- A usuária escolheu a terceira estratégia vocal: criar uma voz privada do Chiu capaz de gerar as frases do personagem a partir da amostra aprovada. Os demais personagens terão vozes próprias pelo mesmo processo, com amostras próprias; nunca reutilizar a voz do Chiu neles.
+- A autorização de modelagem não autoriza envio arbitrário a serviço externo. Selecionar rota segura e pedir nova autorização expressa antes de qualquer fornecedor externo.
+- Uma amostra silenciosa descartável de 1 segundo (`storage-policy-test.m4a`, 1.184 bytes, `audio/x-m4a`) foi gerada apenas localmente para preparar o teste de política. Ela NÃO foi enviada ao Supabase e NÃO pertence ao produto.
+
+### Placement — decisão nova
+- Banco atual: 12 perguntas por idioma, 2 por nível A1–C2, 5 idiomas, 60 no total.
+- O motor adaptativo atualmente apresenta apenas 2 ou 3 perguntas conforme as respostas. Isso valida o mecanismo, mas é insuficiente como avaliação final confiável.
+- A usuária concordou expressamente em ampliar o banco antes do lançamento. Não voltar a porcentagem fixa, não massificar perguntas rasas e não inventar seis scores de habilidade sem evidência válida.
+
+### Próximo passo exato
+1. Reconfirmar o HEAD/CI e o projeto Supabase exato antes de qualquer operação.
+2. Não enviar ainda `Chiu-animada-recorte-final.m4a`.
+3. Fazer teste real do bucket privado com um objeto de áudio descartável, sem conteúdo pessoal: acesso autenticado/autorizado deve funcionar; acesso anônimo/não autorizado deve falhar; não pode existir URL pública permanente.
+4. Se o painel/MCP não permitir upload normal pelo Storage, não manipular `storage.objects` via SQL, não pedir/expor `service_role` e não improvisar. Explicar a permissão ausente e parar com a voz preservada.
+5. Remover o objeto descartável depois do teste e confirmar a remoção.
+6. Somente após os testes passarem, pedir confirmação imediata antes do envio do arquivo de voz aprovado ao bucket privado correto.
+7. Confirmar objeto real, caminho, tamanho, MIME e ausência de URL pública permanente; depois implementar download autenticado/cache/reprodução determinística no Android em patch pequeno.
+8. Não remover a prévia TTS até existir substituição segura validada. Não criar LISTEN_AND_RESPOND em massa.
+9. Em paralelo futuro, ampliar cuidadosamente o banco de placement por nível/competência, sem misturar esta frente de segurança da voz.
+
+### O que ainda NÃO existe
+- A voz aprovada não foi armazenada nem integrada.
+- Não houve teste real de download autorizado/anônimo de um objeto no bucket.
+- Não existe geração/clonagem operacional da voz do Chiu.
+- Não existe cache/download autenticado de voz no APK.
+- Não existe conteúdo listening real em massa, speaking/ASR/pronúncia, escrita livre avançada, banco completo de placement ou seis scores válidos.
+
 ## ESTADO AUTORITATIVO — 2026-09-02 20:45 BRT — VOZ DO CHIU APROVADA PRIVADAMENTE; CÓDIGO VALIDADO ATÉ CI #139
 
 Este arquivo é o handoff operacional autoritativo. Em qualquer novo chat: NÃO recomeçar, NÃO inferir estado apenas pela memória e NÃO alterar antes de conferir GitHub real. O estado real do GitHub vence documentação desatualizada.
