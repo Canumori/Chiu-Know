@@ -143,7 +143,7 @@ class StarterReviewQueueTest {
     @Test
     fun residenceInteractionRotatesFromRecognitionToReducedCueRetrieval() {
         val recognition = activities.first { it.id == "en-a1-interaction-residence-001" }
-        val retrieval = activities.first { it.id == "en-a1-interaction-residence-retrieval-001" }
+        val retrieval = activities.first { it.id == "en-a1-interaction-residence-002" }
 
         assertEquals(recognition.reviewKey, retrieval.reviewKey)
         assertEquals(ResponseType.MULTIPLE_CHOICE, recognition.responseType)
