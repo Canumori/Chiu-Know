@@ -4,9 +4,9 @@ Este checkpoint registra o estado real mais recente desta frente e complementa `
 
 ## HEAD funcional validado
 
-- HEAD funcional antes desta atualização documental: `6f87384d2974ae6d505f8265950ea495192b3e2e` — `feat: activate residence reading recognition`.
-- Android CI #267, run `33882152019`: `COMPLETED / SUCCESS`.
-- CI #267 confirmou: testes unitários verdes, build do debug APK verde e upload do artefato verde.
+- HEAD funcional antes desta atualização documental: `c67a6efec33844f409b0aa08cd2a2c514449ef77` — `feat: activate possession grammar target`.
+- Android CI #270, run `33889231623`: `COMPLETED / SUCCESS`.
+- CI #270 confirmou: testes unitários verdes, build do debug APK verde e upload do artefato verde.
 
 ## CIs desta sequência
 
@@ -20,6 +20,9 @@ Este checkpoint registra o estado real mais recente desta frente e complementa `
 - CI #265, run `33881738844`: SUCCESS para `89041d12052902049ee9a25d450b3923587939f3` — checkpoint anterior sincronizado.
 - CI #266, run `33881958140`: SUCCESS para `89e06e23ff8b32617d798280ad00420f70fba203` — formato MULTIPLE_CHOICE de leitura de residência criado isoladamente.
 - CI #267, run `33882152019`: SUCCESS para `6f87384d2974ae6d505f8265950ea495192b3e2e` — reconhecimento de residência ativado no banco starter.
+- CI #268, run `33882387929`: SUCCESS para `f880888fcadc960765899be1b412da9906108657` — checkpoint da transferência de leitura sincronizado.
+- CI #269, run `33889009829`: SUCCESS para `e0b30adf730c279ea3b5bb444df03836c7faf12e` — terceiro alvo gramatical A1, posse básica, criado isoladamente.
+- CI #270, run `33889231623`: SUCCESS para `c67a6efec33844f409b0aa08cd2a2c514449ef77` — alvo gramatical de posse ativado no banco starter.
 
 ## Estado pedagógico do banco starter A1
 
@@ -34,11 +37,14 @@ Há múltiplos alvos independentes, incluindo:
 Cada alvo recente foi implementado em mais de um contexto para favorecer recuperação e transferência, não memorização de uma única frase.
 
 ### Gramática
-Agora existem pelo menos dois alvos independentes:
+Agora existem três alvos independentes:
 1. cópula/apresentação em primeira pessoa;
-2. frase básica de residência em primeira pessoa (`I live`, `eu moro`, `yo vivo`, `j’habite`, `저는 ... 살아요`).
+2. frase básica de residência em primeira pessoa (`I live`, `eu moro`, `yo vivo`, `j’habite`, `저는 ... 살아요`);
+3. posse básica em primeira pessoa (`I have`, `eu tenho`, `yo tengo`, `j’ai`; em coreano, a construção natural com `있어요`).
 
 O alvo de residência possui dois contextos FILL_IN por idioma e um terceiro formato REORDER que compartilha o mesmo `reviewKey`. Assim, o mesmo conhecimento progride de recuperação com pista para reconstrução com menos pista sem criar um alvo artificial separado.
+
+O alvo de posse foi implementado com dois contextos FILL_IN por idioma e um `reviewKey` próprio. No coreano, a implementação usa a construção existencial de posse com `있어요`, em vez de impor uma tradução estrutural de “have”.
 
 ### Leitura
 Agora existem pelo menos dois alvos independentes:
@@ -69,7 +75,7 @@ A fundação starter mantém conteúdo em EN/PT/ES/FR/KO. Isso NÃO altera o gat
 
 ## Próximas frentes seguras
 
-1. Ampliar um terceiro alvo independente de gramática ou leitura somente em pequena fatia, mantendo CI verde entre criação e ativação.
-2. Depois, avaliar a cobertura A1 por função comunicativa e competência para evitar crescer de forma desequilibrada.
+1. Avaliar a cobertura A1 por função comunicativa e competência para evitar crescimento desequilibrado.
+2. A partir dessa análise, escolher o próximo alvo independente mais útil em vez de simplesmente adicionar exercícios.
 3. Quando houver cobertura suficiente, iniciar uma pequena unidade narrativa funcional com personagens oficiais, preservando `VISUAL_BIBLE.md` e sem fabricar mastery.
 4. Continuar aguardando resposta do voluntário para revisão humana do placement coreano; não bloquear outras frentes.
