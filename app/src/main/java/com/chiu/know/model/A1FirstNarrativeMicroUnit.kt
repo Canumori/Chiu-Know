@@ -101,7 +101,7 @@ private val a1FirstNarrativeMicroUnits = listOf(
             "es:a1:greeting:hola",
             "es:a1:grammar:pregunta:nombre",
             "es:a1:interaccion:pregunta-respuesta-residencia",
-            "es:a1:interaccion:pregunta-respuesta-preferencia"
+            "es:a1:interaccion:pregunta-resposta-preferencia"
         )
     ),
     NarrativeMicroUnit(
@@ -129,3 +129,18 @@ private val a1FirstNarrativeMicroUnits = listOf(
 
 fun a1FirstNarrativeMicroUnitFor(languageCode: String): NarrativeMicroUnit? =
     a1FirstNarrativeMicroUnits.firstOrNull { it.languageCode == languageCode }
+
+/**
+ * Starter-content entry point for narrative material.
+ *
+ * Narratives stay separate from the review queue: requesting a story does not
+ * create learning evidence, change FSRS state or imply mastery. Higher CEFR
+ * levels intentionally return null until real narrative content exists.
+ */
+fun starterNarrativeMicroUnitFor(
+    languageCode: String,
+    level: CefrLevel
+): NarrativeMicroUnit? = when (level) {
+    CefrLevel.A1 -> a1FirstNarrativeMicroUnitFor(languageCode)
+    else -> null
+}
