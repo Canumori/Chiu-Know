@@ -141,6 +141,48 @@ class StarterReviewQueueTest {
     }
 
     @Test
+    fun residenceInteractionRotatesFromRecognitionToReducedCueRetrieval() {
+        val recognition = activities.first { it.id == "en-a1-interaction-residence-001" }
+        val retrieval = activities.first { it.id == "en-a1-interaction-residence-retrieval-001" }
+
+        assertEquals(recognition.reviewKey, retrieval.reviewKey)
+        assertEquals(ResponseType.MULTIPLE_CHOICE, recognition.responseType)
+        assertEquals(ResponseType.FILL_IN, retrieval.responseType)
+
+        val selection = starterQueueSelection(
+            language,
+            level,
+            evidence = listOf(attempt(recognition, 10L)),
+            schedules = listOf(schedule(recognition.reviewKey, dueAt = 50L)),
+            nowEpochMillis = 100L
+        )
+
+        assertEquals(StarterQueueReason.DUE_REVIEW, selection.reason)
+        assertEquals(retrieval.id, selection.activity?.id)
+    }
+
+    @Test
+    fun preferenceInteractionRotatesFromRecognitionToReducedCueRetrieval() {
+        val recognition = activities.first { it.id == "en-a1-interaction-preference-001" }
+        val retrieval = activities.first { it.id == "en-a1-interaction-preference-retrieval-001" }
+
+        assertEquals(recognition.reviewKey, retrieval.reviewKey)
+        assertEquals(ResponseType.MULTIPLE_CHOICE, recognition.responseType)
+        assertEquals(ResponseType.FILL_IN, retrieval.responseType)
+
+        val selection = starterQueueSelection(
+            language,
+            level,
+            evidence = listOf(attempt(recognition, 10L)),
+            schedules = listOf(schedule(recognition.reviewKey, dueAt = 50L)),
+            nowEpochMillis = 100L
+        )
+
+        assertEquals(StarterQueueReason.DUE_REVIEW, selection.reason)
+        assertEquals(retrieval.id, selection.activity?.id)
+    }
+
+    @Test
     fun reportsNextDueTimeWhenAllKnownTargetsAreFuture() {
         val schedules = activities
             .distinctBy { it.reviewKey }
