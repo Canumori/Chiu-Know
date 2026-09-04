@@ -52,6 +52,7 @@ import com.chiu.know.R
 import com.chiu.know.model.CefrLevel
 import com.chiu.know.model.CefrTrailStatus
 import com.chiu.know.model.LanguageOption
+import com.chiu.know.model.LearnerPreferences
 import com.chiu.know.model.LearningActivity
 import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.PlacementRuntimeMode
@@ -69,9 +70,11 @@ import com.chiu.know.model.decodeReviewScheduleStateSet
 import com.chiu.know.model.encodeLearningEvidence
 import com.chiu.know.model.isLearningAnswerCorrect
 import com.chiu.know.model.learningEvidenceFor
+import com.chiu.know.model.persistedLearnerPreferences
 import com.chiu.know.model.placementQuestionForLevel
 import com.chiu.know.model.placementRuntimeSelection
 import com.chiu.know.model.rebuildReviewScheduleStates
+import com.chiu.know.model.restoredLearnerPreferences
 import com.chiu.know.model.startAdaptivePlacement
 import com.chiu.know.model.startPlacementSession
 import com.chiu.know.model.starterLearningActivityFor
@@ -91,10 +94,11 @@ private val Context.languagePreferencesDataStore by preferencesDataStore(name = 
 private val interfaceLanguageCodeKey = stringPreferencesKey("interface_language_code")
 private val targetLanguageCodeKey = stringPreferencesKey("target_language_code")
 private fun estimatedLevelKey(languageCode: String) = stringPreferencesKey("estimated_level_$languageCode")
+private fun learnerPreferencesKey(languageCode: String) = stringPreferencesKey("learner_preferences_$languageCode")
 private fun learningEvidenceKey(languageCode: String) = stringSetPreferencesKey("learning_evidence_$languageCode")
 private fun reviewScheduleKey(languageCode: String) = stringSetPreferencesKey("review_schedule_$languageCode")
 
-private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, PLACEMENT_UNRESOLVED, LEARNING_TRAIL, LEARNING_ACTIVITY, VOICE_PREVIEW }
+private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, PLACEMENT_UNRESOLVED, LEARNER_PREFERENCES, LEARNING_TRAIL, LEARNING_ACTIVITY, VOICE_PREVIEW }
 
 @Composable
 fun ChiuKnowApp() {
@@ -110,6 +114,8 @@ fun ChiuKnowApp() {
             var interfaceLanguage by remember(persistedInterfaceCode) { mutableStateOf(supportedInterfaceLanguages.firstOrNull { it.code == persistedInterfaceCode } ?: supportedInterfaceLanguages.first()) }
             var targetLanguage by remember(persistedTargetCode) { mutableStateOf(supportedTargetLanguages.firstOrNull { it.code == persistedTargetCode } ?: supportedTargetLanguages.first()) }
             val persistedEstimatedLevel = preferences[estimatedLevelKey(targetLanguage.code)]?.let { stored -> CefrLevel.entries.firstOrNull { it.name == stored } }
+            val restoredPreferences = remember(preferences, targetLanguage.code) { restoredLearnerPreferences(preferences[learnerPreferencesKey(targetLanguage.code)]) }
+            var learnerPreferences by remember(targetLanguage.code, restoredPreferences) { mutableStateOf(restoredPreferences) }
             val persistedLearningEvidence = remember(preferences, targetLanguage.code) { decodeLearningEvidenceSet(preferences[learningEvidenceKey(targetLanguage.code)].orEmpty()) }
             val persistedReviewSchedules = remember(preferences, targetLanguage.code) {
                 val stored = decodeReviewScheduleStateSet(preferences[reviewScheduleKey(targetLanguage.code)].orEmpty())
@@ -144,7 +150,11 @@ fun ChiuKnowApp() {
                 AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(
                     targetLanguage,
                     persistedEstimatedLevel,
-                    { level -> estimatedLevel = level; trailOpenedFromResult = false; step = AppStep.LEARNING_TRAIL },
+                    { level ->
+                        estimatedLevel = level
+                        trailOpenedFromResult = false
+                        step = if (learnerPreferences == null) AppStep.LEARNER_PREFERENCES else AppStep.LEARNING_TRAIL
+                    },
                     {
                         adaptiveState = startAdaptivePlacement()
                         placementSession = if (placementRuntime.mode == PlacementRuntimeMode.QUALITY_SESSION) {
@@ -220,7 +230,10 @@ fun ChiuKnowApp() {
                         estimatedLevel,
                         correctAnswers,
                         answeredQuestions,
-                        { trailOpenedFromResult = true; step = AppStep.LEARNING_TRAIL },
+                        {
+                            trailOpenedFromResult = true
+                            step = if (learnerPreferences == null) AppStep.LEARNER_PREFERENCES else AppStep.LEARNING_TRAIL
+                        },
                         { step = AppStep.PLACEMENT_INTRO },
                         { step = AppStep.LANGUAGE_SELECTION }
                     )
@@ -238,16 +251,33 @@ fun ChiuKnowApp() {
                     }
                 )
 
+                AppStep.LEARNER_PREFERENCES -> LearnerPreferencesScreen(
+                    initialPreferences = learnerPreferences ?: LearnerPreferences(),
+                    onContinue = { selectedPreferences ->
+                        learnerPreferences = selectedPreferences
+                        coroutineScope.launch {
+                            context.languagePreferencesDataStore.edit { stored ->
+                                persistedLearnerPreferences(selectedPreferences)?.let { encoded ->
+                                    stored[learnerPreferencesKey(targetLanguage.code)] = encoded
+                                }
+                            }
+                        }
+                        step = AppStep.LEARNING_TRAIL
+                    },
+                    onBack = { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
+                )
+
                 AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }, { step = AppStep.VOICE_PREVIEW }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
                 AppStep.VOICE_PREVIEW -> VoiceSampleScreen(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
                 AppStep.LEARNING_ACTIVITY -> {
-                    val queue = remember(targetLanguage.code, estimatedLevel) {
+                    val queue = remember(targetLanguage.code, estimatedLevel, learnerPreferences, persistedLearningEvidence, persistedReviewSchedules) {
                         starterQueueSelection(
                             languageCode = targetLanguage.code,
                             level = estimatedLevel,
                             evidence = persistedLearningEvidence,
                             schedules = persistedReviewSchedules,
-                            nowEpochMillis = System.currentTimeMillis()
+                            nowEpochMillis = System.currentTimeMillis(),
+                            preferences = learnerPreferences
                         )
                     }
                     var optionalPracticeRequested by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(false) }
