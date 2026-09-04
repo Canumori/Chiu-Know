@@ -1,5 +1,34 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-03 21:54 BRT — REVISÃO HUMANA DO COREANO É GATE OBRIGATÓRIO
+
+Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
+
+### Decisão explícita da usuária
+- A usuária aprovou exigir **revisão humana qualificada** antes de habilitar o coreano em `QUALITY_SESSION`.
+- Portanto o banco candidato coreano de 24 questões NÃO pode ser promovido à produção apenas por CI verde, revisão por IA ou comparação documental.
+- Gate mínimo: revisão das 24 questões por pessoa com proficiência alta/nativa em coreano e competência suficiente para julgar naturalidade, correção, ambiguidade, adequação das alternativas e progressão relativa de dificuldade.
+- Idealmente, quando possível, preferir professor(a) de coreano/L2 ou profissional com experiência em avaliação/ensino; não alegar validação psicométrica mesmo após essa revisão.
+- A revisão humana deve verificar pelo menos: coreano natural e correto; uma resposta inequivocamente defensável quando o item exigir resposta única; distratores plausíveis sem serem enganosos; ausência de pistas artificiais; adequação cultural; progressão de dificuldade; e se itens altos realmente exigem nuance/inferência/registro/relação lógica, não apenas gramática ou vocabulário raro.
+- Qualquer item reprovado deve ser corrigido/substituído e voltar aos testes automatizados antes do rollout.
+- Até o gate humano ser satisfeito e documentado, `ko` permanece em `LEGACY_FOUNDATION` e `isQualityPlacementEnabled("ko") == false`.
+
+### Referência externa preservada
+- King Sejong Institute organiza o currículo em Beginner 1–2, Intermediate 1–2 e Advanced 1–2; não tratar isso como equivalência automática A1–C2.
+- O próprio teste de nível público do King Sejong atualmente avalia Beginner/Intermediate em listening e reading e recomenda faixas 1A–4B; portanto não usá-lo como validação externa de um placement A1–C2 completo do CHIU KNOW?.
+- Cursos avançados King Sejong 5/6 são referência de complexidade linguística e temática, não calibração psicométrica do nosso banco.
+
+### Estado técnico preservado
+- Banco candidato coreano: 24 questões, 4 por rótulo de engenharia A1–C2; CI #214 (`33821961869`) verde para mecânica/testes/build/APK.
+- Inglês, português, espanhol e francês permanecem em `QUALITY_SESSION`.
+- Coreano permanece deliberadamente bloqueado no legado até revisão humana.
+
+### Próximo passo autônomo
+1. Não procurar atalhos para eliminar o gate humano.
+2. Preparar no projeto um protocolo/checklist de revisão do banco coreano que permita a um revisor humano avaliar cada item de forma consistente, sem exigir conhecimento de programação.
+3. Preservar as 24 questões candidatas e a trava de produção.
+4. Enquanto a revisão humana não estiver disponível/concluída, avançar em outras frentes estruturais de alta prioridade que não dependam dela, mantendo mudanças pequenas e CI verde.
+
 ## ESTADO AUTORITATIVO — 2026-09-03 21:31 BRT — FRANCÊS EM QUALITY_SESSION; COREANO CANDIDATO VERDE MAS BLOQUEADO PARA REVISÃO LINGUÍSTICA
 
 Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
@@ -37,187 +66,10 @@ Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado 
 
 ### Próximo ponto que exige decisão real de qualidade
 - NÃO habilitar coreano em `QUALITY_SESSION` por automatismo.
-- A próxima decisão de produto é qual padrão de revisão linguística será exigido antes do rollout coreano: aceitar revisão baseada apenas em IA/fontes oficiais ou exigir revisão humana qualificada/nativa das 24 perguntas e da adequação relativa dos níveis.
-- Até essa decisão, preservar o coreano em `LEGACY_FOUNDATION`; não desfazer a trava só porque CI #214 está verde.
-
-## ESTADO AUTORITATIVO — 2026-09-03 21:18 BRT — CI #203 VERDE; IDENTIDADE DO BANCO E TETO GLOBAL DO PLACEMENT ENDURECIDOS
-
-Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
-
-### HEAD / CI validado
-- HEAD funcional/testes: commit `1424f49c45c505e433bff7be1b3eea1a5a6a74ef` — `test: prove placement cap fails closed across phases`.
-- Commit funcional anterior: `67c6b062fa0d59a6461af530af55c9b9c0924ae0` — `fix: enforce placement evidence cap during locating`.
-- Identidade global do banco: `0dba5b39dff74c43205486af4e6675bbedfcfe3f` + testes em `75974adcab5d6c23ec657f0e0a4b9aad428e9735`.
-- Android CI #201, run `33820906914`: `COMPLETED / SUCCESS` para a validação de IDs.
-- Android CI #203, run `33821090943`: `COMPLETED / SUCCESS` para o teto global e regressões de falha fechada.
-- Em ambos os marcos: testes unitários, build debug APK e upload do APK concluíram com sucesso.
-
-### Placement — novas garantias estruturais
-- `startPlacementSession()` agora falha antes de apresentar qualquer pergunta se existir ID vazio/em branco ou ID duplicado em qualquer ponto do banco da sessão.
-- Essa garantia é global e independe dos validadores específicos dos bancos de inglês/português/espanhol.
-- O máximo de evidência agora é respeitado também durante `LOCATE`: ao atingir o teto sem terminar a localização adaptativa, a sessão encerra como `MAX_EVIDENCE_INCONCLUSIVE`, sem apresentar pergunta extra e sem inventar/persistir CEFR.
-- Teste direcionado prova que, no teto, uma fila obrigatória de confirmação ainda incompleta não produz nível decidido: o estado termina inconclusivo, `NEEDS_MORE_EVIDENCE`, `decidedLevel == null`.
-- Continua valendo a invariante de apresentação real: sessão terminal não mantém `current`; perguntas não apresentadas não entram artificialmente em `usedQuestionIds`.
-
-### Estado que permanece válido
-- Inglês, português e espanhol continuam em `QUALITY_SESSION`, 24 questões por idioma, 4 por nível A1–C2.
-- Francês e coreano continuam em `LEGACY_FOUNDATION`; NÃO ativar `QUALITY_SESSION` até expansão e validação equivalentes.
-- UX explícita de `MAX_EVIDENCE_INCONCLUSIVE` versus `BANK_INSUFFICIENT` permanece integrada e localizada; nenhum nível é salvo nos dois casos.
-- Política atual permanece mínimo 8 / máximo 14 como regra de engenharia, sem alegação psicométrica ou confidence calibrada.
-
-### Próximo passo exato
-1. Revisar a semântica da evidência suplementar por `PlacementConfirmationRole` para garantir que evidência extra não altere thresholds de modo acidental ou enviesado; preservar a capacidade deliberada de evidência fresca resolver empate 1–1 no nível provisório.
-2. Confirmar por testes direcionados quais observações devem contar para `CONFIRMED`, `REVISED_UP` e `REVISED_DOWN`, distinguindo contrato obrigatório de evidência suplementar.
-3. Preservar a regra de no máximo uma faixa CEFR por revisão, nenhum score/confidence inventado e falha fechada em ambiguidade.
-4. Depois de estabilizar essa semântica com CI verde, iniciar expansão/revisão do francês para 24 questões e só então avaliar habilitação de `QUALITY_SESSION`; coreano depois pelo mesmo processo.
-
-## ESTADO AUTORITATIVO — 2026-09-03 20:24 BRT — CI #198 VERDE; PLACEMENT EN/PT/ES ENDURECIDO E RESULTADO INCONCLUSIVO EXPLÍCITO NA UI
-
-Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
-
-### HEAD / CI validado
-- HEAD funcional: commit `fc904af7cd05439fc6a19a3dca5b2192036260bc` — `feat: show honest unresolved placement outcomes`.
-- Android CI #198, run `33817328846`: `COMPLETED / SUCCESS`.
-- Testes unitários passaram, APK debug compilou e o workflow concluiu verde.
-
-### Placement de qualidade — estado real
-- Inglês, português e espanhol estão habilitados em `QUALITY_SESSION` com bancos expandidos de 24 questões, 4 por nível A1–C2.
-- Francês e coreano continuam em `LEGACY_FOUNDATION`; NÃO alegar equivalência de qualidade antes da expansão/validação equivalente.
-- Política de engenharia atual permanece quality-first: mínimo 8 respostas e máximo de segurança 14. Isso NÃO é validação psicométrica, certificado nem porcentagem de confiança.
-- A decisão conservadora aceita evidência fresca para resolver ambiguidade: empate/mistura inicial pode pedir mais evidência; maioria positiva fresca pode confirmar o nível provisório; revisões para cima/baixo continuam limitadas à regra validada.
-- Commit `7e6a6891955503c2bee8998a72f26d66a8248a04`, CI #188 verde: distingue `BANK_INSUFFICIENT` de `MAX_EVIDENCE_INCONCLUSIVE` por `PlacementTerminalReason`.
-- Se o limite máximo é atingido ainda sem nível defensável, nenhum nível é inventado ou persistido.
-- Se não existem perguntas novas elegíveis suficientes antes do teto, o término é banco insuficiente, também sem nível inventado.
-
-### Não repetição / apresentação real — protegido exaustivamente
-- Commit `5258f600ba16b8db3ed21c0421fce77f82fe8418`, CI #189 verde: sessão ativa deve ter exatamente uma pergunta apresentada ainda não respondida; perguntas futuras da fila não podem ser pré-reservadas como apresentadas.
-- Commit `256b87b9fa233b73025e91bc33b3537f4358975a`, CI #190 verde: mesma invariante protegida em todos os caminhos exaustivos do português.
-- Commit `9628e4a89866f89c6928d797cfd1e4a7898243de`, CI #191 verde: mesma invariante protegida em todos os caminhos exaustivos do espanhol.
-- Sessão terminal deve ter `usedQuestionIds.size == answeredQuestions`; sessão ativa deve ter `usedQuestionIds.size == answeredQuestions + 1`; itens ainda na `confirmationQueue` não podem constar como usados/apresentados.
-
-### UI de término não conclusivo — agora explícita
-- Novo `PlacementUnresolvedScreen.kt`, criado em `e31917e758d7d707d6450e213848fe497a0e92a4`.
-- Cópia padrão e traduções adicionadas em inglês, português, espanhol, francês e coreano; commits finais dessa frente incluem `84069330...`, `2cc935ee...`, `fa95d0f9...`, `4287fafc...`, `d113f140...`.
-- `ChiuKnowApp.kt` agora possui `AppStep.PLACEMENT_UNRESOLVED`.
-- Se uma sessão de qualidade terminar sem decisão válida, a interface NÃO volta silenciosamente para a introdução e NÃO mostra nível provisório como resultado.
-- `MAX_EVIDENCE_INCONCLUSIVE`: tela explica que as respostas atingiram o limite de evidência sem sustentar um nível defensável.
-- `BANK_INSUFFICIENT`: tela explica que faltaram perguntas novas elegíveis suficientes para sustentar um nível defensável.
-- Em ambos os casos: nenhum CEFR novo é salvo; usuário pode tentar novamente ou mudar idioma.
-- O início da sessão também trata banco insuficiente imediato sem tentar abrir `current` nulo.
-
-### Próximo passo exato
-1. Endurecer a validação global do banco usado pela sessão: IDs devem ser não vazios e globalmente únicos antes do início; falhar fechado de forma testável, sem depender apenas dos validadores específicos de cada banco.
-2. Revisar a semântica global do teto durante `LOCATE` e a interação entre teto máximo e fila obrigatória de confirmação, garantindo que nenhuma evidência obrigatória seja avaliada parcialmente de forma enganosa.
-3. Preservar CI verde com testes exaustivos em en/pt/es após cada alteração estrutural.
-4. Depois desse núcleo estabilizado, expandir e validar o banco francês para 24 questões e só então considerar `QUALITY_SESSION`; repetir o processo para coreano.
-5. Não massificar conteúdo nem alegar placement psicometricamente validado antes de resolver essas dívidas estruturais.
-
-## ESTADO AUTORITATIVO — 2026-09-03 14:21 BRT — CI #170 VERDE; PLACEMENT ROBUSTO INTEGRADO À UI EM INGLÊS
-
-Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
-
-### Marco validado
-- Commit `5a2bd8e8407e01badf00ad393a391601de60dcc0` — `feat: wire validated English placement session into UI`.
-- Android CI #170, run `33783778642`: `COMPLETED / SUCCESS`.
-- A interface real do APK agora usa o novo motor `PlacementSession` quando o idioma-alvo é inglês.
-- Inglês usa o banco expandido de 24 questões, a seleção sem repetição, localização adaptativa, confirmação e decisão conservadora do nível.
-- O nível do inglês só é persistido quando a sessão retorna decisão válida e completa; estado de banco insuficiente não inventa nível final.
-- O progresso do placement de qualidade não deve fingir um total fixo de perguntas; o contrato continua quality-first, com mínimo 8 e máximo de segurança 14 como regra de engenharia atual.
-- Português, espanhol, francês e coreano continuam deliberadamente no fluxo `LEGACY_FOUNDATION` até que seus bancos sejam expandidos e validados de modo equivalente. Não apresentar equivalência de qualidade antes disso.
-- CI #169 passou para `032079c102f651c03ee48d5ab5554e1535dedb59`, protegendo a trava por idioma; CI #168 passou para `788094a2fe2745aa0092b848b84e52dc55d2ab9b`, que criou a trava de produção.
-- CI #167 passou para `64f2d3e9925c446e39d6d056189acc6ad486631c`, protegendo exaustivamente as sessões; CI #166 passou para `864b1bb55cfe53d572f6b1ecd65ce0e19a94d022`, que criou o motor único de sessão.
-- CI #165 passou para `e0accc9c9d1702c8de09f569ba42d12c1a9d8a3f`, protegendo a regra conservadora de decisão; CI #164 passou para `48fe9783d4f1418249a0a81381a95deb24713b66`.
-
-### Próximo passo exato
-1. Fazer revisão pós-integração do fluxo inglês na UI e dos estados de erro/retorno, sem alterar os demais idiomas.
-2. Preservar CI verde antes de nova mudança estrutural.
-3. Em seguida priorizar a expansão/validação dos bancos de português, espanhol, francês e coreano antes de habilitar o mesmo placement de qualidade para eles, salvo se uma revisão revelar bug crítico no fluxo inglês.
-4. Não voltar a pontuação percentual fixa, não inventar confiança psicométrica e não reciclar questões usadas.
-
-## ESTADO AUTORITATIVO — 2026-09-03 — CI #162 VERDE; DIREÇÃO DE VOZES NATURAIS REGISTRADA
-
-Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
-
-### Vozes dos personagens — decisão da usuária
-- Chiu mantém como identidade própria a voz-base já gravada/aprovada `Chiu-animada-recorte-final.m4a`; não reutilizar essa identidade para os demais personagens.
-- Para Mia, Jurandir, Barto, Lara, Caca, Onça, Perry e Lena, antes de pedir novas gravações definitivas, apresentar futuramente **amostras curtas de sugestões de voz** para aprovação da usuária.
-- Critério absoluto de qualidade: vozes devem soar **normais, naturais, humanas e expressivas**, comparáveis em naturalidade a vozes conversacionais modernas e à amostra aprovada do Chiu. Não aceitar TTS metálico, artificial ou claramente robótico como voz oficial.
-- As propostas podem variar identidade vocal, gênero/sexo percebido, idade aparente, ritmo, timbre, energia e personalidade conforme o personagem, mas sem caricatura que prejudique naturalidade ou inteligibilidade pedagógica.
-- Nenhuma voz sugerida se torna oficial sem aprovação explícita da usuária. Se nenhuma sugestão servir para um personagem, considerar gravação-base própria como foi feito com Chiu.
-- Antes de incorporar qualquer provedor/tecnologia de síntese/clonagem ao APK, verificar privacidade, retenção de áudio, direitos/licença e uso comercial. Não enviar amostras pessoais/vozes aprovadas a serviço externo sem autorização específica após essa verificação.
-- Esta decisão é direção futura; **não interromper a frente atual de placement para produzir vozes agora**.
-
-### Placement — estado validado
-- CI #160 passou para `57a614ae12b1ee5e56cd387b300e866481373346`: plano determinístico de confirmação.
-- CI #161 passou para `ce92c76520efe0eb7cebc4f990cbf3a428766077`: documentação da prioridade de continuidade até 12/09.
-- CI #162, run `33778682639`, passou para `a68b569002d10ef5ed8dcbead48fcc9fb124993c`: testes exaustivos protegem o plano de confirmação, incluindo A1/C2, fronteiras adjacentes, ausência de repetição, esgotamento seguro e contagens configuráveis.
-- Inglês possui banco candidato de 24 questões, 4 por nível A1–C2. Outros idiomas permanecem nos starter banks até expansão/revisão equivalente.
-- Próximo passo: construir regra conservadora e testável que use a evidência de confirmação para confirmar/revisar o nível provisório, sem porcentagem falsa de confiança nem alegação psicométrica não validada; depois integrar gradualmente ao fluxo real.
-
-## ESTADO AUTORITATIVO — 2026-09-03 — PRIORIDADE DE CONTINUIDADE ATÉ 12/09; QUALIDADE NÃO NEGOCIÁVEL
-
-Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
-
-### Decisão operacional da usuária — prazo de 12 de setembro
-- A assinatura ChatGPT Plus da usuária termina em **12/09/2026** e depois ela pretende continuar no **ChatGPT Free**.
-- A importância de 12/09 NÃO é lançar às pressas. É aproveitar até essa data as capacidades/ferramentas atualmente disponíveis no Plus para deixar o projeto o mais autônomo, documentado, testado e recuperável possível.
-- **QUALIDADE NÃO PODE SER SACRIFICADA PARA CUMPRIR 12/09.** Se houver conflito entre qualidade/confiabilidade pedagógica e quantidade de funcionalidades, preservar qualidade e registrar claramente o que continuará depois.
-- Objetivo de produto permanece ambicioso: APK confiável em que a pessoa realmente aprenda de forma avançada e completa, buscando superar limitações das soluções atuais por arquitetura própria baseada em evidência, sem copiar concorrentes e sem fazer alegações não validadas.
-- Até 12/09, priorizar especialmente trabalho estrutural que possa ficar mais difícil com limites futuros: arquitetura principal, integração segura, testes automatizados, CI, contratos pedagógicos, placement robusto, persistência, documentação, decisões de segurança/privacidade, handoffs e um fluxo APK ponta a ponta tão completo quanto a qualidade permitir.
-- Depois de 12/09, continuar o desenvolvimento **com o ChatGPT**, usando as capacidades que estiverem disponíveis no plano Free naquele momento. Não pressupor antecipadamente quais ferramentas/limites existirão no Free; verificar o que estiver realmente disponível e adaptar o processo.
-- Preferência explícita da usuária: **não migrar o desenvolvimento para outra IA apenas por causa da mudança de plano**. Manter continuidade com ChatGPT dentro das capacidades disponíveis.
-- Portanto cada chat deve deixar handoff forte no repositório. Ao trocar de chat, o próximo deve ler este arquivo e os documentos obrigatórios, conferir GitHub real e continuar do ponto registrado, sem pedir que a usuária reconstrua o histórico.
-
-### Estado recente do placement
-- CI #159 (`db200e6e4920e1575c9c9a95dd88e2e14aa298e0`) passou: testes protegem seleção de questões sem repetição.
-- Inglês possui banco candidato expandido de 24 questões, 4 por nível A1–C2; demais idiomas permanecem nos bancos starter até expansão/revisão equivalente.
-- Commit `57a614ae12b1ee5e56cd387b300e866481373346` adicionou plano determinístico de confirmação do placement; CI #160 passou.
-- Política quality-first permanece: duração do teste é consequência da evidência necessária, não meta de marketing. Contrato provisório: mínimo 8 respostas, máximo de segurança 14, com fase de localização e confirmação; isso não equivale a validação psicométrica e não autoriza porcentagem falsa de confiança.
-- Questões usadas numa tentativa não devem ser silenciosamente recicladas para simular nova evidência.
-
-## ESTADO AUTORITATIVO — 2026-09-03 10:40 BRT — PESQUISA PEDAGÓGICA APROVADA; CI #146 VERDE
-
-Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
-
-### GitHub/Android
-- Repositório `Canumori/Chiu-Know`, branch `main`, deliberadamente público; não mudar visibilidade por suposição.
-- Commit funcional/testes `f3668338884aca5b1dc46598cd34f70943049575` — `test: exhaustively verify adaptive placement paths`.
-- Android CI #146, run `33761545918`: `COMPLETED / SUCCESS`.
-- Documento pedagógico aprovado criado em `PEDAGOGY_ARCHITECTURE.md`, commit `79c3cbbf3affd85edd2166d9927a8fab871f2777`.
-
-### Pesquisa comparativa aprovada pela usuária
-Foram estudadas abordagens públicas de Duolingo, Babbel, Busuu, Memrise, Rosetta Stone, LingQ, Pimsleur, ELSA Speak e HelloTalk, além do CEFR/CEFR Companion Volume e evidências sobre spacing/retrieval practice. A decisão é combinar princípios úteis em arquitetura própria, sem copiar conteúdo, assets, marca, interface ou implementação.
-
-Direção aprovada:
-- hábito/gamificação servem engajamento, nunca mastery;
-- conteúdo deve evoluir de compreensão/reconhecimento para recuperação com menos pistas, produção, transferência a novo contexto e revisão espaçada;
-- preservar FSRS-6 próprio separado da evidência; erro = tentativa/exposição, não domínio;
-- futuramente personalizar por objetivo, disponibilidade e prioridade sem remover competências CEFR essenciais;
-- CEFR deve evoluir para evidência multidimensional honesta, sem inventar scores por habilidade;
-- listening deve progredir de fala controlada para natural; não fingir listening sem áudio real;
-- conversação deve começar guiada já em A1 e ganhar abertura/complexidade até C2;
-- ASR/transcrição não equivale a pronúncia;
-- gramática/vocabulário devem reaparecer em contextos e formatos diferentes;
-- histórias com os personagens devem conectar input, compreensão, produção e recuperação posterior, preservando `VISUAL_BIBLE.md`;
-- métricas prioritárias são aprendizagem/retenção/transferência, não XP/streak como mastery.
-
-Modelo-alvo aprovado:
-`PLACEMENT → DIAGNÓSTICO HONESTO → OBJETIVO/PREFERÊNCIAS → CONTEÚDO CEFR → INPUT COMPREENSÍVEL → PRÁTICA ATIVA → FEEDBACK → RETRIEVAL COM MENOS PISTAS → FSRS → TRANSFERÊNCIA → INTERAÇÃO/CONVERSAÇÃO → CHECKPOINT → REAJUSTE`.
-
-### Voz/Storage — permanece congelado com segurança
-`Chiu-animada-recorte-final.m4a` continua privada, fora do GitHub/Supabase/APK. Não usar `storage.objects` via SQL, service_role, bucket público, Edge Function privilegiada ou outro bypass. Quando houver operação normal de Storage, executar primeiro o teste descartável registrado no histórico e só depois pedir confirmação imediata para a voz aprovada.
-
-## ESTADO AUTORITATIVO — 2026-09-03 10:16 BRT — STORAGE PRIVADO RECONFIRMADO; TESTE DE OBJETO BLOQUEADO PELA FERRAMENTA
-
-### Supabase correto
-- Projeto Chiu Know `uskxabsodcnzlovuaurp`; organização `aeerqbmrwulxsawhjyvm`; região `sa-east-1`.
-- Supabase Chiu Player `hpcbkvbrlwjnwlikmbfb` é proibido e não deve ser tocado.
-- Bucket `character-voices` privado, limite 2 MiB, allowlist `audio/mp4`, `audio/x-m4a`, `audio/m4a`, sem objeto aprovado enviado.
-- Política de leitura somente para usuário autenticado/autorizado; sem upload/update/delete normal do APK.
-- A conexão disponível não expunha operação normal de upload/download/delete de Storage; não improvisar bypass.
+- A próxima decisão de produto era qual padrão de revisão linguística seria exigido antes do rollout coreano. Essa decisão foi tomada no bloco autoritativo acima: **revisão humana qualificada é obrigatória**.
 
 ## NOTA DE PRESERVAÇÃO DO HISTÓRICO
-O histórico operacional detalhado permanece no Git e nos commits anteriores. Em caso de auditoria, consultar versões anteriores do arquivo e commits registrados.
+Os blocos autoritativos anteriores e o histórico operacional detalhado permanecem no Git e nos commits anteriores. Em caso de auditoria, consultar versões anteriores do arquivo e commits registrados.
 
 ## REGRAS OPERACIONAIS PERMANENTES
 - Ler `PROJECT_STATE.md` + `PRODUCT_SPEC.md` + `PEDAGOGY_ARCHITECTURE.md` antes de mudança pedagógica; arte exige `VISUAL_BIBLE.md`; pesquisa exige `RESEARCH.md`.
