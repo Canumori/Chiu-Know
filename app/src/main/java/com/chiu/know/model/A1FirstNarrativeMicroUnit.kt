@@ -9,8 +9,9 @@ package com.chiu.know.model
  * reuses already introduced A1 functions: greeting, name, residence and
  * preference. Visual assets are intentionally out of scope at this stage.
  *
- * Korean is not included in this first narrative slice because its placement and
- * content progression remain under the stricter Korean review policy.
+ * Korean is included only after a documented rigorous second AI content review.
+ * This does not imply human validation, psychometric validation, official CEFR
+ * certification or automatic promotion of Korean placement to QUALITY_SESSION.
  */
 data class NarrativeBeat(
     val speaker: String,
@@ -123,6 +124,27 @@ private val a1FirstNarrativeMicroUnits = listOf(
             "fr:a1:grammar:question:nom",
             "fr:a1:interaction:question-reponse-residence",
             "fr:a1:interaction:question-reponse-preference"
+        )
+    ),
+    NarrativeMicroUnit(
+        id = "ko-a1-narrative-coffee-001",
+        languageCode = "ko",
+        level = CefrLevel.A1,
+        title = "카페에서 처음 만나요",
+        setting = "미아와 치우가 작은 카페에서 처음 만나요.",
+        beats = listOf(
+            NarrativeBeat("Mia", "안녕하세요! 저는 미아예요. 이름이 뭐예요?"),
+            NarrativeBeat("Chiu", "제 이름은 치우예요."),
+            NarrativeBeat("Mia", "어디에 살아요?"),
+            NarrativeBeat("Chiu", "리우에 살아요."),
+            NarrativeBeat("Mia", "무엇을 좋아해요?"),
+            NarrativeBeat("Chiu", "커피를 좋아해요.")
+        ),
+        linkedReviewKeys = listOf(
+            "ko:a1:greeting:annyeonghaseyo",
+            "ko:a1:grammar:question:ask-name",
+            "ko:a1:interaction:residence-question-answer",
+            "ko:a1:interaction:preference-question-answer"
         )
     )
 )
