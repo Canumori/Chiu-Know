@@ -4,39 +4,42 @@ Este checkpoint registra o estado real mais recente desta frente e complementa `
 
 ## HEAD funcional validado
 
-- HEAD funcional antes desta atualização documental: `596ecbd2c12bf997fd9cdbeb4bf8a81a49b36d86` — `feat: activate basic name question target`.
-- Android CI #276, run `33890579764`: `COMPLETED / SUCCESS`.
-- CI #276 confirmou: testes unitários verdes, build do debug APK verde e upload do artefato verde.
+- HEAD funcional antes desta atualização documental: `181113c45ec1b58ab15c97b66be4209c7e3e49cd` — `feat: activate first A1 text microinteraction`.
+- Android CI #281, run `33910429099`: `COMPLETED / SUCCESS`.
+- CI #281 confirmou testes unitários, build do debug APK e upload do artefato verdes.
 
 ## CIs desta sequência
 
-- CI #258, run `33880047922`: SUCCESS para `ff27b0cba2145cd26334ff7420a8d981e8b4b8e0` — novo segundo alvo gramatical A1 criado isoladamente.
-- CI #259, run `33880279702`: SUCCESS para `ad5e9042c3b707cb117ddc7accce0a12cbc77e43` — alvo gramatical de residência integrado ao banco starter.
-- CI #260, run `33880493707`: SUCCESS para `f2af7f497da158efd5682639cec7e9ae90817ebd` — novo segundo alvo de leitura A1 criado isoladamente.
-- CI #261, run `33880739956`: SUCCESS para `60f8054eda9351724fe17841b879d8992728ffc7` — alvo de leitura de residência integrado ao banco starter.
-- CI #262, run `33881040200`: SUCCESS para `08da1c89117e292c56255ca19b52c2c4b7e2ec39` — checkpoint da expansão A1 registrado.
-- CI #263, run `33881261574`: SUCCESS para `883265bd10ed8112d77df52c7fb7a86d649f9e83` — formato REORDER do alvo gramatical de residência criado isoladamente.
-- CI #264, run `33881493837`: SUCCESS para `2f0a34ee8bfd4ba78679c759a15784bb5cbd26ea` — formato REORDER de residência ativado no banco starter.
-- CI #265, run `33881738844`: SUCCESS para `89041d12052902049ee9a25d450b3923587939f3` — checkpoint anterior sincronizado.
-- CI #266, run `33881958140`: SUCCESS para `89e06e23ff8b32617d798280ad00420f70fba203` — formato MULTIPLE_CHOICE de leitura de residência criado isoladamente.
-- CI #267, run `33882152019`: SUCCESS para `6f87384d2974ae6d505f8265950ea495192b3e2e` — reconhecimento de residência ativado no banco starter.
-- CI #268, run `33882387929`: SUCCESS para `f880888fcadc960765899be1b412da9906108657` — checkpoint da transferência de leitura sincronizado.
-- CI #269, run `33889009829`: SUCCESS para `e0b30adf730c279ea3b5bb444df03836c7faf12e` — terceiro alvo gramatical A1, posse básica, criado isoladamente.
-- CI #270, run `33889231623`: SUCCESS para `c67a6efec33844f409b0aa08cd2a2c514449ef77` — alvo gramatical de posse ativado no banco starter.
-- CI #271, run `33889468438`: SUCCESS para `6bbf64c9bca7cd6e2626f120add53f7ed8b91ade` — checkpoint do terceiro alvo gramatical sincronizado.
-- CI #272, run `33889680073`: SUCCESS para `029b511890c5d35f80d0425e41f06476caf0483b` — terceiro alvo de leitura A1, preferência explícita, criado isoladamente.
-- CI #273, run `33889902199`: SUCCESS para `03487674dac0402d566ac4e771d813310339128e` — leitura de preferência ativada no banco starter.
-- CI #274, run `33890131864`: SUCCESS para `aaddfe5ba22d746120eafa5fba7b0646ab596cb0` — cobertura A1 balanceada 3×3 registrada.
-- CI #275, run `33890364263`: SUCCESS para `61caa84d5a37f69a1a8f7e78d55f5debdfc78e3a` — primeira pergunta básica A1 criada isoladamente.
-- CI #276, run `33890579764`: SUCCESS para `596ecbd2c12bf997fd9cdbeb4bf8a81a49b36d86` — pergunta básica de nome ativada no banco starter.
+- CI #258, run `33880047922`: SUCCESS — segundo alvo gramatical A1 criado isoladamente.
+- CI #259, run `33880279702`: SUCCESS — residência gramatical integrada.
+- CI #260, run `33880493707`: SUCCESS — segundo alvo de leitura criado isoladamente.
+- CI #261, run `33880739956`: SUCCESS — leitura de residência integrada.
+- CI #262, run `33881040200`: SUCCESS — checkpoint registrado.
+- CI #263, run `33881261574`: SUCCESS — REORDER de residência criado isoladamente.
+- CI #264, run `33881493837`: SUCCESS — REORDER de residência ativado.
+- CI #265, run `33881738844`: SUCCESS — checkpoint sincronizado.
+- CI #266, run `33881958140`: SUCCESS — MULTIPLE_CHOICE de leitura de residência criado isoladamente.
+- CI #267, run `33882152019`: SUCCESS — reconhecimento de residência ativado.
+- CI #268, run `33882387929`: SUCCESS — checkpoint sincronizado.
+- CI #269, run `33889009829`: SUCCESS — posse básica criada isoladamente.
+- CI #270, run `33889231623`: SUCCESS — posse básica ativada.
+- CI #271, run `33889468438`: SUCCESS — checkpoint sincronizado.
+- CI #272, run `33889680073`: SUCCESS — leitura de preferência criada isoladamente.
+- CI #273, run `33889902199`: SUCCESS — leitura de preferência ativada.
+- CI #274, run `33890131864`: SUCCESS — cobertura A1 3×3 registrada.
+- CI #275, run `33890364263`: SUCCESS — pergunta de nome criada isoladamente.
+- CI #276, run `33890579764`: SUCCESS — pergunta de nome ativada.
+- CI #277: SUCCESS — checkpoint posterior da frente A1.
+- CI #278: SUCCESS — pergunta de residência criada isoladamente.
+- CI #279: SUCCESS — pergunta de residência ativada.
+- CI #280, run `33891460910`: SUCCESS para `8882ced5a223a9a10dccf1b1725bbd567f763bc1` — primeira microinteração textual criada isoladamente.
+- CI #281, run `33910429099`: SUCCESS para `181113c45ec1b58ab15c97b66be4209c7e3e49cd` — primeira microinteração textual ativada no banco starter.
 
 ## Estado pedagógico do banco starter A1
 
 A expansão continua pequena, determinística e baseada em `reviewKey`, sem fabricar mastery, confidence ou proficiência.
 
 ### Fundação balanceada 3×3
-
-A base inicial permanece equilibrada em três alvos independentes para cada competência atualmente válida no starter sem depender de áudio/ASR:
 
 **Vocabulário**
 1. saudação básica;
@@ -45,67 +48,84 @@ A base inicial permanece equilibrada em três alvos independentes para cada comp
 
 **Gramática declarativa**
 1. cópula/apresentação em primeira pessoa;
-2. residência em primeira pessoa (`I live`, `eu moro`, `yo vivo`, `j’habite`, `저는 ... 살아요`);
-3. posse básica em primeira pessoa (`I have`, `eu tenho`, `yo tengo`, `j’ai`; em coreano, construção natural com `있어요`).
+2. residência em primeira pessoa;
+3. posse básica em primeira pessoa.
 
 **Leitura**
-1. identificar nome explícito em uma apresentação curta;
-2. identificar local de residência explícito em texto muito curto;
-3. identificar preferência explícita em texto muito curto.
+1. identificar nome explícito em apresentação curta;
+2. identificar local de residência explícito;
+3. identificar preferência explícita.
 
-### Primeira função de interação textual controlada
+### Perguntas A1 controladas
 
-Além da fundação 3×3, agora existe um primeiro alvo interrogativo A1 para **perguntar o nome de alguém**.
+Existem agora dois alvos interrogativos independentes, ambos como `REORDER` determinístico:
 
-- EN: `What is your name?`
-- PT: `Qual é o seu nome?`
-- ES: `¿Cómo te llamas?`
-- FR: `Comment tu t’appelles ?`
-- KO: `이름이 뭐예요?`
+1. perguntar o nome de alguém;
+2. perguntar onde alguém mora.
 
-A atividade usa `REORDER` e `reviewKey` próprio por idioma. Ela treina formulação textual controlada de pergunta; NÃO é SPEAKING, pronúncia, diálogo livre ou conversação validada.
+Exemplos de residência:
+- EN: `Where do you live?`
+- PT: `Onde você mora?`
+- ES: `¿Dónde vives?`
+- FR: `Où est-ce que tu habites ?`
+- KO: `어디에 살아요?`
+
+Essas atividades treinam formulação textual controlada. NÃO são SPEAKING, pronúncia, diálogo livre nem prova de competência conversacional.
+
+### Primeira microinteração textual ativa
+
+O banco starter agora contém uma primeira troca curta entre personagens oficiais: Mia pergunta onde Chiu mora e o aluno reconhece a resposta contextualmente adequada.
+
+- Tipo: `MULTIPLE_CHOICE`.
+- Skill registrada: `READING`.
+- `reviewKey` próprio de interação por idioma.
+- Objetivo: reconhecer relação pergunta → resposta adequada em contexto.
+- Não é tratada como speaking, produção livre, avaliação de conversação ou mastery interativo.
+- A atividade reutiliza apenas os nomes/personagens no texto; nenhum novo asset visual foi incorporado ao APK.
 
 ### Transferência entre formatos
 
-- O alvo gramatical de residência possui dois contextos FILL_IN e um REORDER com o mesmo `reviewKey`.
-- O alvo de leitura de residência possui dois contextos FILL_IN e um MULTIPLE_CHOICE com o mesmo `reviewKey`.
-- MULTIPLE_CHOICE é tratado como reconhecimento/variação contextual, não como evidência de mastery ou como etapa automaticamente mais difícil.
-- O alvo de posse possui dois contextos FILL_IN por idioma com um `reviewKey` próprio.
-- O alvo de preferência possui dois contextos FILL_IN por idioma com um `reviewKey` próprio.
+- Residência gramatical: dois FILL_IN + um REORDER no mesmo `reviewKey`.
+- Leitura de residência: dois FILL_IN + um MULTIPLE_CHOICE no mesmo `reviewKey`.
+- MULTIPLE_CHOICE é reconhecimento/variação, não evidência automática de dificuldade maior ou mastery.
+- Posse: dois FILL_IN por idioma no mesmo alvo.
+- Preferência: dois FILL_IN por idioma no mesmo alvo.
 
-## Idiomas
+## Idiomas e coreano
 
-A fundação starter mantém conteúdo em EN/PT/ES/FR/KO. Isso NÃO altera o gate do placement coreano.
+A fundação starter mantém EN/PT/ES/FR/KO. Isso NÃO promove o placement coreano.
 
 - EN/PT/ES/FR continuam `QUALITY_SESSION` no placement.
 - Coreano continua `LEGACY_FOUNDATION` no placement.
-- O placement coreano continua proibido de promoção até revisão humana qualificada documentada das 24 questões candidatas.
-- Conteúdo A1 coreano existente/novo não deve ser apresentado como validação humana do banco de placement nem como validação psicométrica.
+- A política mais recente do projeto torna revisão humana coreana fortemente preferível, mas não um bloqueio eterno: se não houver voluntário, somente a rota de segunda revisão AI estrita e documentada prevista em `KOREAN_PLACEMENT_POLICY.md` pode avançar a análise.
+- Em qualquer rota, não alegar revisão humana, certificação CEFR, equivalência King Sejong ou validação psicométrica inexistentes.
+- Conteúdo A1 coreano não valida automaticamente o banco de placement.
 
-## Limites e lacunas honestas
+## Limites honestos
 
 - LISTENING real ainda depende de áudio real validado; não fabricar listening por texto.
 - SPEAKING/pronúncia continuam bloqueados até existir captura/análise honesta e critérios válidos.
-- WRITING livre ainda não deve ser tratado como competência avaliada enquanto não houver tarefas e avaliação adequadas.
-- O A1 ainda NÃO é um currículo completo; a cobertura atual é uma fundação balanceada com início de interação textual controlada.
-- Perguntas básicas foram iniciadas, mas ainda faltam outros tipos úteis, como perguntar localização e preferência.
-- Outras funções ainda pouco cobertas: necessidades/pedidos, números/horas, família/pessoas, comida/compra e produção própria de preferências.
+- WRITING livre ainda não deve ser tratado como competência avaliada sem tarefas e avaliação adequadas.
+- O A1 ainda NÃO é currículo completo.
+- A microinteração atual é reconhecimento textual; produção de resposta ainda é uma lacuna.
+- Funções ainda pouco cobertas: necessidades/pedidos, números/horas, família/pessoas, comida/compra e produção própria de preferências.
 
 ## Regras preservadas
 
 - Revisões FSRS vencidas continuam prioritárias sobre personalização.
-- Preferências declaradas do aluno são planejamento, não evidência.
-- Erros recentes observados podem orientar a escolha entre NOVOS alvos quando houver alternativas reais, mas não podem passar na frente de revisão vencida.
+- Preferências declaradas são planejamento, não evidência.
+- Erros recentes repetidos podem orientar apenas a escolha entre NOVOS alvos; nunca passam na frente de revisão vencida.
 - Um acerto isolado nunca equivale a domínio.
-- A fila deve continuar equilibrando alvos por `reviewKey` e girando contextos/formatos dentro do mesmo alvo.
-- Não expor níveis superiores sem conteúdo real implementado.
+- A fila continua equilibrando por `reviewKey` e girando contextos/formatos dentro do alvo.
+- Não expor níveis superiores sem conteúdo real.
 - Não tocar no Supabase do CHIU PLAYER.
-- Voz oficial do Chiu continua fora de GitHub/Supabase/APK até autorização específica.
+- Voz oficial do Chiu permanece fora de GitHub/Supabase/APK até autorização específica.
+- Antes de trabalho visual, ler `VISUAL_BIBLE.md`; Chiu branco realista é só logo/ícone e Chiu amarelo cartunesco é o personagem interno.
 
 ## Próxima frente recomendada
 
-1. Expandir perguntas básicas de modo funcional, não por quantidade: próximo candidato forte é perguntar **onde alguém mora** ou **do que alguém gosta**.
-2. Manter perguntas como prática textual determinística por enquanto; não chamar de speaking ou conversação livre.
-3. Depois conectar pergunta + resposta numa primeira microinteração textual entre personagens, sem alegar avaliação de conversação.
-4. Avaliar então uma primeira unidade narrativa funcional curta com personagens oficiais, preservando `VISUAL_BIBLE.md` e sem fabricar mastery.
-5. Continuar aguardando resposta do voluntário para revisão humana do placement coreano; não bloquear outras frentes.
+1. Não saltar diretamente para uma grande história visual: os binários canônicos ainda não estão no repo e novas poses exigem amostra/aprovação conforme `VISUAL_BIBLE.md`.
+2. Primeiro fortalecer a microinteração com uma etapa de recuperação/produção textual controlada, reduzindo pistas após o reconhecimento.
+3. Depois criar uma segunda microinteração sobre preferência, conectando conteúdo já existente em vez de adicionar vocabulário aleatório.
+4. Só então estruturar uma primeira micro-unidade narrativa curta em texto/modelo, antes de qualquer integração de novos assets visuais.
+5. Continuar aguardando eventual voluntário coreano sem bloquear as demais frentes; se não houver resposta, seguir a política de fallback AI documentado em `KOREAN_PLACEMENT_POLICY.md`.
