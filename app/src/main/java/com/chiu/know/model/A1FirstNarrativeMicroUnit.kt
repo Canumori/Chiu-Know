@@ -101,7 +101,7 @@ private val a1FirstNarrativeMicroUnits = listOf(
             "es:a1:greeting:hola",
             "es:a1:grammar:pregunta:nombre",
             "es:a1:interaccion:pregunta-respuesta-residencia",
-            "es:a1:interaccion:pregunta-resposta-preferencia"
+            "es:a1:interaccion:pregunta-respuesta-preferencia"
         )
     ),
     NarrativeMicroUnit(
