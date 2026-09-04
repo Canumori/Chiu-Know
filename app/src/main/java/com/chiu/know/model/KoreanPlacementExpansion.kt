@@ -44,7 +44,7 @@ val additionalKoreanPlacementQuestions = listOf(
         "ko-b1-003",
         CefrLevel.B1,
         "저는 제주도에 가 본 적이 ___.",
-        listOf("갈까요", "가겠지만", "있어요", "가느라고"),
+        listOf("있을 거예요", "있다면", "있어요", "있어서"),
         2
     ),
     PlacementQuestion(
@@ -65,8 +65,8 @@ val additionalKoreanPlacementQuestions = listOf(
     PlacementQuestion(
         "ko-b2-004",
         CefrLevel.B2,
-        "회의가 취소될 줄 알았더라면 이렇게 일찍 ___.",
-        listOf("오지 않았어요", "오지 못했어요", "오려고 했어요", "오지 않았을 거예요"),
+        "그는 잘못을 인정하기는커녕 오히려 책임을 다른 사람에게 ___.",
+        listOf("돌리더라도", "돌릴까 봐", "돌렸더라면", "돌렸어요"),
         3
     ),
 
