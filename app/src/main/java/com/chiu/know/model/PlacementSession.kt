@@ -115,6 +115,16 @@ private fun advanceLocating(
     val step = advanceAdaptivePlacement(state.adaptiveState, answeredCorrectly)
 
     if (!step.finished) {
+        if (answeredCount >= policy.maximumAnsweredQuestions) {
+            return state.copy(
+                adaptiveState = step.state,
+                phase = PlacementSessionPhase.BANK_INSUFFICIENT,
+                current = null,
+                answeredQuestions = answeredCount,
+                terminalReason = PlacementTerminalReason.MAX_EVIDENCE_INCONCLUSIVE
+            )
+        }
+
         val next = nextUnusedPlacementQuestion(
             questions = questions,
             level = requireNotNull(step.nextLevel),
