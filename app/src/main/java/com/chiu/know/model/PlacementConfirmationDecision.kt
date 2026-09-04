@@ -74,11 +74,13 @@ fun decidePlacementFromConfirmation(
     val estimatedEvidence = evidenceByRole[PlacementConfirmationRole.ESTIMATED_LEVEL].orEmpty()
     val lowerEvidence = evidenceByRole[PlacementConfirmationRole.LOWER_BOUNDARY].orEmpty()
     val upperEvidence = evidenceByRole[PlacementConfirmationRole.UPPER_BOUNDARY].orEmpty()
+    val requiredLowerCount = expectedByRole[PlacementConfirmationRole.LOWER_BOUNDARY] ?: 0
+    val requiredLowerEvidence = lowerEvidence.take(requiredLowerCount)
 
     val failedEstimated = estimatedEvidence.count { !it.correct }
     val passedEstimated = estimatedEvidence.count { it.correct }
     val passedUpper = upperEvidence.count { it.correct }
-    val failedLower = lowerEvidence.count { !it.correct }
+    val failedRequiredLower = requiredLowerEvidence.count { !it.correct }
 
     val levels = CefrLevel.entries
     val index = levels.indexOf(provisionalLevel)
@@ -99,10 +101,13 @@ fun decidePlacementFromConfirmation(
         )
     }
 
-    // Downward revision requires weak performance at the provisional level and,
-    // when a lower boundary exists, failure there as corroborating evidence.
+    // Downward revision requires weak performance at the provisional level and
+    // failure inside the mandatory lower-boundary contract. Supplemental lower
+    // evidence may corroborate or block confidence later, but must never create
+    // a downward revision merely because extra items were collected to satisfy
+    // the session-length contract.
     if (lower != null && failedEstimated == estimatedEvidence.size &&
-        lowerEvidence.isNotEmpty() && failedLower > 0
+        requiredLowerEvidence.isNotEmpty() && failedRequiredLower > 0
     ) {
         return PlacementConfirmationDecision(
             provisionalLevel = provisionalLevel,
@@ -112,7 +117,8 @@ fun decidePlacementFromConfirmation(
     }
 
     // Upward revision is intentionally stricter: all provisional evidence and
-    // all available upper-boundary evidence must be correct.
+    // all available upper-boundary evidence must be correct. Supplemental upper
+    // evidence can therefore block an upward move but can never manufacture one.
     if (upper != null && passedEstimated == estimatedEvidence.size &&
         upperEvidence.isNotEmpty() && passedUpper == upperEvidence.size
     ) {
