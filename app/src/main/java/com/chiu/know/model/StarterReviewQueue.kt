@@ -30,9 +30,9 @@ data class StarterQueueSelection(
  * 2. knowledge targets that do not have scheduler state yet;
  * 3. no activity when every known target is scheduled for the future.
  *
- * Learner preferences may reorder only unscheduled new targets. They never
- * override due review, alter CEFR level, create mastery evidence or remove a
- * skill from the queue.
+ * Learner preferences and repeated observed difficulty may reorder only
+ * unscheduled new targets. They never override due review, pull a future review
+ * forward, alter CEFR level, create mastery evidence or remove a skill.
  */
 fun starterQueueSelection(
     languageCode: String,
@@ -71,16 +71,27 @@ fun starterQueueSelection(
     }
 
     val unscheduledTargets = groups.keys.filter { it !in compatibleSchedules }
-    val newTarget = if (preferences == null) {
+    val observedSkillPriority = observedPracticeNeeds(compatibleEvidence)
+        .filter { it.warrantsExtraPractice() }
+        .sortedWith(
+            compareByDescending<ObservedPracticeNeed> { it.incorrectAttempts }
+                .thenByDescending { it.latestAttemptAtEpochMillis }
+        )
+        .map { it.skill }
+        .mapIndexed { index, skill -> skill to (LearningSkill.entries.size - index) }
+        .toMap()
+    val mix = preferences?.let(::learnerPracticeMix)
+
+    val newTarget = if (mix == null && observedSkillPriority.isEmpty()) {
         unscheduledTargets.firstOrNull()
     } else {
-        val mix = learnerPracticeMix(preferences)
         unscheduledTargets.maxWithOrNull(
             compareBy<String> { reviewKey ->
-                skillPlanningWeight(
-                    groups.getValue(reviewKey).first().primarySkill,
-                    mix
-                )
+                val skill = groups.getValue(reviewKey).first().primarySkill
+                observedSkillPriority[skill] ?: 0
+            }.thenBy { reviewKey ->
+                val skill = groups.getValue(reviewKey).first().primarySkill
+                if (mix == null) 0 else skillPlanningWeight(skill, mix)
             }.thenByDescending { reviewKey -> groups.keys.indexOf(reviewKey) }
         )
     }
