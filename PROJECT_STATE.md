@@ -1,5 +1,48 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-04 — PERFIL DE APRENDIZ INTEGRADO E CI #231 VERDE
+
+Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
+
+### HEAD / CI validado
+- Integração funcional do perfil de aprendiz: commit `e6a9cef15b7bf2c97540421f62828219a112a0d9` — `feat: integrate learner preferences into learning flow`.
+- Android CI #231, run `33835575532`: `COMPLETED / SUCCESS`; testes unitários, build debug APK e upload do artefato concluíram com sucesso.
+- Tela isolada criada em `LearnerPreferencesScreen.kt`: commit `4726569a5fd6cb1b2cead7165b79687293486158`.
+- Strings base EN: commit `b339aff25f9d43efc177345d89ae73d1f130937b`.
+- Localização PT: commit `a9f57fcff767b70d935dbdb129db9d7295a562dd`, CI #227 verde.
+- Localizações ES/FR/KO: commits `32efb5b8981174cdc57b7917b0ce7349a5e81379`, `829f01beaef2f523e63050a80fcfcc6b65fdb562`, `0ea4b1577e5773bf95a6ad0fc30536ac6b02c8f8`; CI #230 verde.
+
+### Perfil de aprendiz — estado real
+- Modelo canônico permanece `LearnerPreferences(goal, priority, dailyMinutes)` em `LearnerProfile.kt`.
+- Objetivos: GENERAL, CONVERSATION, TRAVEL, WORK, STUDY_OR_EXAM, LIVING_ABROAD, CULTURE_AND_MEDIA.
+- Prioridades: BALANCED, LISTENING, SPEAKING, READING, WRITING.
+- Minutos diários válidos: 5–180; padrão 15.
+- Persistência local usa codec versionado `v1|GOAL|PRIORITY|minutes` e falha fechada para formato inválido/obsoleto/fora do intervalo.
+- O DataStore agora salva preferências por idioma-alvo na chave `learner_preferences_<languageCode>`.
+- Dados inválidos restauram `null`, sem fabricar perfil.
+- Fluxo novo: após resultado válido do placement, se ainda não houver preferências daquele idioma, abrir `LEARNER_PREFERENCES`; depois seguir para `LEARNING_TRAIL`.
+- Usuário com nível já salvo entra na tela de preferências apenas se aquele idioma ainda não tiver perfil salvo; perfil existente evita loop de onboarding.
+- Preferências são mantidas separadamente por idioma-alvo.
+
+### Limites pedagógicos protegidos
+- Preferências são apenas insumos de planejamento; NÃO alteram CEFR, placement, mastery, evidência, confidence ou desbloqueio.
+- Alterar preferência NÃO apaga evidência, agenda FSRS, placement ou nível estimado.
+- A fila usa preferências somente para reordenar alvos NOVOS ainda não agendados.
+- Revisão explicitamente vencida continua com prioridade absoluta sobre qualquer preferência.
+- Todas as competências continuam presentes; prioridade não remove competência essencial.
+- `dailyMinutes` é planejamento de carga, nunca evidência de proficiência ou domínio.
+
+### Interface/localização
+- A tela de preferências possui recursos localizados em inglês, português, espanhol, francês e coreano.
+- A disponibilidade da interface coreana NÃO altera o gate do placement coreano: `ko` permanece `LEGACY_FOUNDATION` até revisão humana qualificada.
+
+### Próximos passos seguros
+1. Não reabrir a arquitetura já integrada sem motivo real.
+2. Revisar separadamente textos antigos de UI que ainda chamam placement/score de “protótipo”, mantendo linguagem honesta: nível estimado, não certificado, sem alegar calibração/validação psicométrica inexistente.
+3. Continuar fortalecendo pequenas fatias ponta a ponta do conteúdo e da personalização sem fabricar mastery ou scores multidimensionais.
+4. Coreano continua bloqueado para `QUALITY_SESSION` até documentação de revisão humana qualificada das 24 questões candidatas.
+5. Voz oficial do Chiu continua privada e fora de GitHub/Supabase/APK até autorização específica para a etapa de voz.
+
 ## ESTADO AUTORITATIVO — 2026-09-03 21:54 BRT — REVISÃO HUMANA DO COREANO É GATE OBRIGATÓRIO
 
 Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
