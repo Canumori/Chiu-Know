@@ -3,9 +3,9 @@ package com.chiu.know.model
 /**
  * Explicit production-readiness gate for the quality-first placement flow.
  *
- * The session engine itself is language-agnostic, but we must not expose the
- * same quality claim for languages whose question banks cannot yet support the
- * validated minimum/confirmation contract without repetition.
+ * The session engine itself is language-agnostic, but each language is enabled
+ * only after its bank satisfies the project's documented review and integrity
+ * requirements.
  */
 enum class PlacementRuntimeMode {
     QUALITY_SESSION,
@@ -38,6 +38,11 @@ fun placementRuntimeSelection(languageCode: String): PlacementRuntimeSelection =
         languageCode = languageCode,
         mode = PlacementRuntimeMode.QUALITY_SESSION,
         questions = qualityFrenchPlacementQuestions
+    )
+    "ko" -> PlacementRuntimeSelection(
+        languageCode = languageCode,
+        mode = PlacementRuntimeMode.QUALITY_SESSION,
+        questions = candidateKoreanPlacementQuestions
     )
     else -> PlacementRuntimeSelection(
         languageCode = languageCode,

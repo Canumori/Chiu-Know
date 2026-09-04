@@ -66,11 +66,11 @@ class KoreanPlacementCandidateBankTest {
     }
 
     @Test
-    fun candidateExpansionPreservesStarterItemsWithoutEnablingProduction() {
+    fun candidateExpansionPreservesStarterItemsAndFeedsKoreanQualityRuntime() {
         assertTrue(candidateKoreanPlacementQuestions.containsAll(starterKoreanPlacementQuestions))
         assertTrue(candidateKoreanPlacementQuestions.containsAll(additionalKoreanPlacementQuestions))
         assertEquals(24, candidateKoreanPlacementQuestions.size)
-        assertFalse(isQualityPlacementEnabled("ko"))
-        assertEquals(starterKoreanPlacementQuestions, placementRuntimeSelection("ko").questions)
+        assertTrue(isQualityPlacementEnabled("ko"))
+        assertEquals(candidateKoreanPlacementQuestions, placementRuntimeSelection("ko").questions)
     }
 }
