@@ -41,6 +41,25 @@
     <string name="practice_more">Practicar más</string>
     <string name="optional_practice_note">La práctica opcional ofrece explicaciones, pero todavía no cambia tu calendario de revisiones.</string>
 
+    <string name="learner_preferences_title">Personaliza tu aprendizaje</string>
+    <string name="learner_preferences_description">Cuéntanos qué quieres conseguir y qué quieres practicar más. Estas preferencias orientan tu plan y no cambian tu nivel estimado.</string>
+    <string name="learning_goal_label">Objetivo principal</string>
+    <string name="learning_priority_label">Prioridad de práctica</string>
+    <string name="daily_minutes_label">Minutos por día</string>
+    <string name="daily_minutes_hint">Elige entre %1$d y %2$d minutos.</string>
+    <string name="learning_goal_general">Aprendizaje general</string>
+    <string name="learning_goal_conversation">Conversación</string>
+    <string name="learning_goal_travel">Viajes</string>
+    <string name="learning_goal_living_abroad">Vivir en el extranjero</string>
+    <string name="learning_goal_work">Trabajo</string>
+    <string name="learning_goal_study_exam">Estudio o examen</string>
+    <string name="learning_goal_culture_media">Cultura y medios</string>
+    <string name="learning_priority_balanced">Equilibrado</string>
+    <string name="learning_priority_listening">Comprensión auditiva</string>
+    <string name="learning_priority_speaking">Expresión oral</string>
+    <string name="learning_priority_reading">Lectura</string>
+    <string name="learning_priority_writing">Escritura</string>
+
     <string name="preview_temporary_voices">Escuchar voces temporales</string>
     <string name="voice_samples_title">Muestras de voz temporales</string>
     <string name="voice_samples_description">Escucha tres estilos de prueba del dispositivo. Estas no son las voces oficiales de los personajes.</string>
