@@ -1,7 +1,6 @@
 package com.chiu.know.model
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -10,59 +9,38 @@ import org.junit.Test
 class StarterLearningActivitiesIntegrationTest {
 
     @Test
-    fun providesIntegratedA1VocabularyGrammarReadingReorderAndMultipleChoiceForEveryLanguage() {
+    fun providesIntegratedA1TargetsAndTransferFormatsForEveryLanguage() {
         supportedTargetLanguages.forEach { language ->
             val activities = starterLearningActivitiesFor(language.code)
-            assertEquals(8, activities.size)
+            assertEquals(10, activities.size)
             assertTrue(activities.all { it.level == CefrLevel.A1 })
             assertEquals(
                 setOf(LearningSkill.VOCABULARY, LearningSkill.GRAMMAR, LearningSkill.READING),
                 activities.map { it.primarySkill }.toSet()
             )
-            assertEquals(3, activities.map { it.reviewKey }.distinct().size)
+            assertEquals(4, activities.map { it.reviewKey }.distinct().size)
+            assertEquals(2, activities.map { it.reviewKey }.distinct().count { reviewKey ->
+                activities.first { it.reviewKey == reviewKey }.primarySkill == LearningSkill.VOCABULARY
+            })
             assertEquals(1, activities.count { it.responseType == ResponseType.REORDER })
             assertEquals(1, activities.count { it.responseType == ResponseType.MULTIPLE_CHOICE })
         }
     }
 
     @Test
-    fun rotatesThroughVocabularyGrammarReadingAndReorderTransfer() {
+    fun rawRotationTraversesEntireCurrentBankBeforeWrapping() {
         supportedTargetLanguages.forEach { language ->
-            val first = starterLearningActivityFor(language.code, CefrLevel.A1, 0)
-            val second = starterLearningActivityFor(language.code, CefrLevel.A1, 1)
-            val third = starterLearningActivityFor(language.code, CefrLevel.A1, 2)
-            val fourth = starterLearningActivityFor(language.code, CefrLevel.A1, 3)
-            val fifth = starterLearningActivityFor(language.code, CefrLevel.A1, 4)
-            val sixth = starterLearningActivityFor(language.code, CefrLevel.A1, 5)
-            val seventh = starterLearningActivityFor(language.code, CefrLevel.A1, 6)
-            val eighth = starterLearningActivityFor(language.code, CefrLevel.A1, 7)
-            val ninth = starterLearningActivityFor(language.code, CefrLevel.A1, 8)
+            val activities = starterLearningActivitiesFor(language.code)
+            val rotated = activities.indices.map { index ->
+                starterLearningActivityFor(language.code, CefrLevel.A1, index)
+            }
 
-            listOf(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth).forEach { assertNotNull(it) }
-
-            assertNotEquals(first?.id, second?.id)
-            assertEquals(first?.reviewKey, second?.reviewKey)
-            assertEquals(LearningSkill.VOCABULARY, first?.primarySkill)
-
-            assertNotEquals(third?.id, fourth?.id)
-            assertEquals(third?.reviewKey, fourth?.reviewKey)
-            assertEquals(LearningSkill.GRAMMAR, third?.primarySkill)
-            assertNotEquals(first?.reviewKey, third?.reviewKey)
-
-            assertNotEquals(fifth?.id, sixth?.id)
-            assertEquals(fifth?.reviewKey, sixth?.reviewKey)
-            assertEquals(LearningSkill.READING, fifth?.primarySkill)
-            assertNotEquals(fourth?.reviewKey, fifth?.reviewKey)
-
-            assertEquals(LearningSkill.GRAMMAR, seventh?.primarySkill)
-            assertEquals(ResponseType.REORDER, seventh?.responseType)
-            assertEquals(third?.reviewKey, seventh?.reviewKey)
-
-            assertEquals(LearningSkill.READING, eighth?.primarySkill)
-            assertEquals(ResponseType.MULTIPLE_CHOICE, eighth?.responseType)
-            assertEquals(fifth?.reviewKey, eighth?.reviewKey)
-
-            assertEquals(first?.id, ninth?.id)
+            rotated.forEach { assertNotNull(it) }
+            assertEquals(activities.map { it.id }, rotated.map { it?.id })
+            assertEquals(
+                activities.first().id,
+                starterLearningActivityFor(language.code, CefrLevel.A1, activities.size)?.id
+            )
         }
     }
 
