@@ -37,10 +37,10 @@ val starterFrenchPlacementQuestions = listOf(
     PlacementQuestion("fr-c2-001", CefrLevel.C2, "La mesure a été adoptée pour ___ les effets de la crise.", listOf("atténuer", "abroger", "éluder", "omettre"), 0), PlacementQuestion("fr-c2-002", CefrLevel.C2, "La formulation du rapport était délibérément ___, autorisant plusieurs interprétations.", listOf("équivoque", "obsolète", "obligatoire", "sporadique"), 0)
 )
 val starterKoreanPlacementQuestions = listOf(
-    PlacementQuestion("ko-a1-001", CefrLevel.A1, "저는 학생___.", listOf("입니다", "이 있어요", "을 해요", "에 가요"), 0),
-    PlacementQuestion("ko-a1-002", CefrLevel.A1, "저는 브라질 사람___.", listOf("이 있어요", "을 만나요", "입니다", "에 가요"), 2),
+    PlacementQuestion("ko-a1-001", CefrLevel.A1, "저는 학생___.", listOf("입니다", "입니까", "이에요", "이었어요"), 0),
+    PlacementQuestion("ko-a1-002", CefrLevel.A1, "저는 브라질 사람___.", listOf("입니까", "이었어요", "입니다", "일 거예요"), 2),
     PlacementQuestion("ko-a2-001", CefrLevel.A2, "어제 친구를 ___.", listOf("만나요", "만났어요", "만날 거예요", "만나고 있어요"), 1),
-    PlacementQuestion("ko-a2-002", CefrLevel.A2, "지금 비가 오니까 우산을 ___.", listOf("두고 가세요", "버리세요", "잃어버리세요", "가져가세요"), 3),
+    PlacementQuestion("ko-a2-002", CefrLevel.A2, "지금 비가 오니까 우산을 ___.", listOf("챙겼어요", "챙길 거예요", "챙기고 있어요", "챙기세요"), 3),
     PlacementQuestion("ko-b1-001", CefrLevel.B1, "시간이 있으면 같이 영화를 ___.", listOf("봤어요", "봐요", "봤었어요", "보지 않았어요"), 1),
     PlacementQuestion("ko-b1-002", CefrLevel.B1, "한국에 가게 되면 한복을 꼭 ___.", listOf("입어 본 적이 있어요", "입고 있었어요", "입어 보고 싶어요", "입지 않았어요"), 2),
     PlacementQuestion("ko-b2-001", CefrLevel.B2, "집에 도착했을 때 동생은 이미 ___.", listOf("자요", "잘 거예요", "자고 싶어요", "잠들어 있었어요"), 3),
