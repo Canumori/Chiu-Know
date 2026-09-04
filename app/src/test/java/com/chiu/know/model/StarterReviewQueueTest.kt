@@ -22,6 +22,47 @@ class StarterReviewQueueTest {
     }
 
     @Test
+    fun learnerPreferencesMayReorderOnlyNewTargets() {
+        val preferences = LearnerPreferences(
+            goal = LearningGoal.STUDY_OR_EXAM,
+            priority = LearningPriority.READING,
+            dailyMinutes = 35
+        )
+
+        val selection = starterQueueSelection(
+            language,
+            level,
+            evidence = emptyList(),
+            schedules = emptyList(),
+            nowEpochMillis = 100L,
+            preferences = preferences
+        )
+
+        assertEquals(StarterQueueReason.NEW_TARGET, selection.reason)
+        assertEquals(LearningSkill.READING, selection.activity?.primarySkill)
+    }
+
+    @Test
+    fun dueReviewStillWinsOverLearnerPreference() {
+        val preferences = LearnerPreferences(
+            goal = LearningGoal.STUDY_OR_EXAM,
+            priority = LearningPriority.READING,
+            dailyMinutes = 35
+        )
+        val selection = starterQueueSelection(
+            language,
+            level,
+            evidence = listOf(attempt(vocabulary, 10L)),
+            schedules = listOf(schedule(vocabulary.reviewKey, dueAt = 90L)),
+            nowEpochMillis = 100L,
+            preferences = preferences
+        )
+
+        assertEquals(StarterQueueReason.DUE_REVIEW, selection.reason)
+        assertEquals(vocabulary.reviewKey, selection.activity?.reviewKey)
+    }
+
+    @Test
     fun selectsDueReviewBeforeIntroducingAnotherTarget() {
         val selection = starterQueueSelection(
             language,
