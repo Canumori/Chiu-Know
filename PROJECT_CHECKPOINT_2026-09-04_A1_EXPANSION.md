@@ -4,9 +4,9 @@ Este checkpoint registra o estado real mais recente desta frente e complementa `
 
 ## HEAD funcional validado
 
-- HEAD funcional antes desta atualização documental: `c67a6efec33844f409b0aa08cd2a2c514449ef77` — `feat: activate possession grammar target`.
-- Android CI #270, run `33889231623`: `COMPLETED / SUCCESS`.
-- CI #270 confirmou: testes unitários verdes, build do debug APK verde e upload do artefato verde.
+- HEAD funcional antes desta atualização documental: `03487674dac0402d566ac4e771d813310339128e` — `feat: activate preference reading target`.
+- Android CI #273, run `33889902199`: `COMPLETED / SUCCESS`.
+- CI #273 confirmou: testes unitários verdes, build do debug APK verde e upload do artefato verde.
 
 ## CIs desta sequência
 
@@ -23,35 +23,40 @@ Este checkpoint registra o estado real mais recente desta frente e complementa `
 - CI #268, run `33882387929`: SUCCESS para `f880888fcadc960765899be1b412da9906108657` — checkpoint da transferência de leitura sincronizado.
 - CI #269, run `33889009829`: SUCCESS para `e0b30adf730c279ea3b5bb444df03836c7faf12e` — terceiro alvo gramatical A1, posse básica, criado isoladamente.
 - CI #270, run `33889231623`: SUCCESS para `c67a6efec33844f409b0aa08cd2a2c514449ef77` — alvo gramatical de posse ativado no banco starter.
+- CI #271, run `33889468438`: SUCCESS para `6bbf64c9bca7cd6e2626f120add53f7ed8b91ade` — checkpoint do terceiro alvo gramatical sincronizado.
+- CI #272, run `33889680073`: SUCCESS para `029b511890c5d35f80d0425e41f06476caf0483b` — terceiro alvo de leitura A1, preferência explícita, criado isoladamente.
+- CI #273, run `33889902199`: SUCCESS para `03487674dac0402d566ac4e771d813310339128e` — leitura de preferência ativada no banco starter.
 
 ## Estado pedagógico do banco starter A1
 
 A expansão continua pequena, determinística e baseada em `reviewKey`, sem fabricar mastery, confidence ou proficiência.
 
-### Vocabulário
-Há múltiplos alvos independentes, incluindo:
-- saudação básica;
-- agradecimento;
-- despedida.
+### Cobertura atual equilibrada
 
-Cada alvo recente foi implementado em mais de um contexto para favorecer recuperação e transferência, não memorização de uma única frase.
+Há agora três alvos independentes em cada uma das competências atualmente válidas no starter sem depender de áudio/ASR:
 
-### Gramática
-Agora existem três alvos independentes:
+**Vocabulário**
+1. saudação básica;
+2. agradecimento;
+3. despedida.
+
+**Gramática**
 1. cópula/apresentação em primeira pessoa;
-2. frase básica de residência em primeira pessoa (`I live`, `eu moro`, `yo vivo`, `j’habite`, `저는 ... 살아요`);
-3. posse básica em primeira pessoa (`I have`, `eu tenho`, `yo tengo`, `j’ai`; em coreano, a construção natural com `있어요`).
+2. residência em primeira pessoa (`I live`, `eu moro`, `yo vivo`, `j’habite`, `저는 ... 살아요`);
+3. posse básica em primeira pessoa (`I have`, `eu tenho`, `yo tengo`, `j’ai`; em coreano, construção natural com `있어요`).
 
-O alvo de residência possui dois contextos FILL_IN por idioma e um terceiro formato REORDER que compartilha o mesmo `reviewKey`. Assim, o mesmo conhecimento progride de recuperação com pista para reconstrução com menos pista sem criar um alvo artificial separado.
-
-O alvo de posse foi implementado com dois contextos FILL_IN por idioma e um `reviewKey` próprio. No coreano, a implementação usa a construção existencial de posse com `있어요`, em vez de impor uma tradução estrutural de “have”.
-
-### Leitura
-Agora existem pelo menos dois alvos independentes:
+**Leitura**
 1. identificar nome explícito em uma apresentação curta;
-2. identificar local de residência explícito em um texto muito curto.
+2. identificar local de residência explícito em texto muito curto;
+3. identificar preferência explícita em texto muito curto.
 
-O alvo de leitura de residência possui dois contextos FILL_IN por idioma e um terceiro contexto MULTIPLE_CHOICE que compartilha o mesmo `reviewKey`. A múltipla escolha é tratada explicitamente como prática de reconhecimento/variação contextual, NÃO como uma etapa com menos pistas ou como evidência de mastery. O avaliador continua determinístico; não há julgamento por IA.
+### Transferência entre formatos
+
+- O alvo gramatical de residência possui dois contextos FILL_IN e um REORDER com o mesmo `reviewKey`.
+- O alvo de leitura de residência possui dois contextos FILL_IN e um MULTIPLE_CHOICE com o mesmo `reviewKey`.
+- MULTIPLE_CHOICE é tratado como reconhecimento/variação contextual, não como evidência de mastery ou como etapa automaticamente mais difícil.
+- O alvo de posse possui dois contextos FILL_IN por idioma com um `reviewKey` próprio.
+- O alvo de preferência possui dois contextos FILL_IN por idioma com um `reviewKey` próprio.
 
 ## Idiomas
 
@@ -61,6 +66,14 @@ A fundação starter mantém conteúdo em EN/PT/ES/FR/KO. Isso NÃO altera o gat
 - Coreano continua `LEGACY_FOUNDATION` no placement.
 - O placement coreano continua proibido de promoção até revisão humana qualificada documentada das 24 questões candidatas.
 - Conteúdo A1 coreano existente/novo não deve ser apresentado como validação humana do banco de placement nem como validação psicométrica.
+
+## Limites e lacunas honestas
+
+- LISTENING real ainda depende de áudio real validado; não fabricar listening por texto.
+- SPEAKING/pronúncia continuam bloqueados até existir captura/análise honesta e critérios válidos.
+- WRITING livre ainda não deve ser tratado como competência avaliada enquanto não houver tarefas e avaliação adequadas.
+- O A1 ainda NÃO é um currículo completo; a cobertura atual é uma fundação balanceada.
+- Funções comunicativas ainda pouco cobertas incluem perguntas básicas, necessidades/pedidos, números/horas, família/pessoas, comida/compra e preferências produzidas pelo próprio aluno.
 
 ## Regras preservadas
 
@@ -73,9 +86,10 @@ A fundação starter mantém conteúdo em EN/PT/ES/FR/KO. Isso NÃO altera o gat
 - Não tocar no Supabase do CHIU PLAYER.
 - Voz oficial do Chiu continua fora de GitHub/Supabase/APK até autorização específica.
 
-## Próximas frentes seguras
+## Próxima frente recomendada
 
-1. Avaliar a cobertura A1 por função comunicativa e competência para evitar crescimento desequilibrado.
-2. A partir dessa análise, escolher o próximo alvo independente mais útil em vez de simplesmente adicionar exercícios.
-3. Quando houver cobertura suficiente, iniciar uma pequena unidade narrativa funcional com personagens oficiais, preservando `VISUAL_BIBLE.md` e sem fabricar mastery.
-4. Continuar aguardando resposta do voluntário para revisão humana do placement coreano; não bloquear outras frentes.
+1. Parar de expandir apenas por contagem: a base 3×3 de VOCABULARY/GRAMMAR/READING já está equilibrada.
+2. Próximo alvo funcional recomendado: **perguntas básicas A1** (por exemplo, perguntar nome/local/preferência) porque isso começa a transformar conhecimento declarativo em interação.
+3. Implementar primeiro como pequena fatia textual determinística; não chamar isso de SPEAKING nem conversação livre.
+4. Depois avaliar uma primeira unidade narrativa funcional curta com personagens oficiais, preservando `VISUAL_BIBLE.md` e sem fabricar mastery.
+5. Continuar aguardando resposta do voluntário para revisão humana do placement coreano; não bloquear outras frentes.
