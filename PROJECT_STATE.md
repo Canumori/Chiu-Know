@@ -1,5 +1,44 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-04 — TEXTO DO PLACEMENT CORRIGIDO; PROTOCOLO HUMANO COREANO PRONTO; CI #238 VERDE
+
+Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar estas frentes.
+
+### HEAD / CI validado
+- Limpeza da linguagem antiga de “protótipo” no placement concluída em EN/PT/ES/FR/KO, preservando linguagem epistemicamente honesta.
+- Commits da limpeza de UI: EN `30ee2e2f4e8518cf2d51bb951011e847d3ec6ca1`, PT `e5c214d74208f0a6f345bba883b1c907b99a3109`, ES `9cb1e89ab30728d33a095451d20105a7a752a9f0`, FR `10a82142358ee770f30f2d79c2bc7b22f4895a2c`, KO `26ebdfda35082f38c3a3ea4635ceef74bfad39ea`.
+- Android CI #237, run `33835829402`: `COMPLETED / SUCCESS`; testes unitários, build debug APK e upload do artefato concluídos com sucesso para o HEAD da limpeza de strings.
+- Criado `KOREAN_PLACEMENT_REVIEW.md` no commit `14aeb3b60850104e30a4276191ef11a8728ad6cd` — `docs: add Korean placement human review protocol`.
+- Android CI #238, run `33835985430`: `COMPLETED / SUCCESS`; testes unitários, build debug APK e upload do artefato concluídos com sucesso.
+
+### Placement — linguagem de UI agora
+- A interface não chama mais o teste/resultado de “primeiro protótipo” ou “pontuação de protótipo”.
+- O texto informa que o teste fornece uma **estimativa de nível CEFR** com o banco atual específico do idioma.
+- O texto afirma explicitamente que o resultado NÃO é certificado oficial e NÃO é avaliação/score CEFR psicometricamente validado ou validado de forma independente.
+- Contagem de acertos continua podendo ser mostrada como dado bruto da sessão, sem convertê-la em falsa precisão de proficiência.
+- As chaves internas `placement_prototype_note` e `prototype_score_note` continuam com nomes antigos apenas para evitar churn técnico; os valores visíveis estão corrigidos.
+
+### Coreano — protocolo humano agora existe
+- `KOREAN_PLACEMENT_REVIEW.md` contém as 24 questões candidatas completas, organizadas por rótulo interno A1–C2.
+- Para cada item o documento mostra ID, enunciado, alternativas, resposta atualmente indicada e campos de decisão humana `APROVAR / CORRIGIR / SUBSTITUIR`.
+- Checklist obrigatório cobre naturalidade/correção, resposta única defensável, resposta indicada, qualidade dos distratores, pistas artificiais, adequação cultural/registro, dificuldade relativa e demanda linguística/cognitiva nos níveis altos.
+- Há também revisão global do banco e identificação/qualificação do revisor.
+- O próprio documento declara **PENDENTE DE REVISÃO HUMANA QUALIFICADA** e deixa todos os campos de aprovação em branco.
+- IA, CI verde, tradução automática ou este documento NÃO satisfazem o gate humano.
+- `ko` permanece `LEGACY_FOUNDATION`; NÃO habilitar `QUALITY_SESSION` até a revisão humana das 24 questões, correções exigidas e novo CI verde.
+
+### Dependência humana real desta frente
+- Para avançar especificamente o rollout do placement coreano, agora é necessário um revisor humano qualificado conforme o protocolo.
+- Perfil mínimo: proficiência alta/nativa em coreano e competência para julgar naturalidade, ambiguidade, alternativas, registro, adequação cultural e progressão relativa; idealmente professor(a) de coreano/L2 ou profissional de avaliação/ensino.
+- A revisão humana não deve ser apresentada como validação psicométrica.
+- Enquanto o revisor não estiver disponível, outras frentes independentes podem continuar, mas não existe ação técnica legítima que substitua este gate.
+
+### Regras que permanecem inalteradas
+- EN/PT/ES/FR continuam em `QUALITY_SESSION`; coreano continua bloqueado no legado.
+- Preferências do aprendiz continuam sendo planejamento, nunca CEFR/mastery/evidência.
+- Revisões vencidas continuam prioritárias sobre personalização.
+- Voz oficial do Chiu continua privada e fora de GitHub/Supabase/APK até autorização específica.
+
 ## ESTADO AUTORITATIVO — 2026-09-04 — PERFIL DE APRENDIZ INTEGRADO E CI #231 VERDE
 
 Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
@@ -128,5 +167,5 @@ Os blocos autoritativos anteriores e o histórico operacional detalhado permanec
 - Ainda não existem mastery real, speaking/ASR/pronúncia válida, writing livre avançado, histórias completas, tutor IA, conteúdo A1–C2 completo ou scores multidimensionais válidos.
 - Visual absoluto: Chiu realista branco/cabelo castanho SOMENTE logo/ícone; Chiu amarelo cartunesco SEMPRE no universo. Mosquito definitivo Jurandir. Não alterar masters aprovados.
 - Voz aprovada privada `Chiu-animada-recorte-final.m4a`: não GitHub público, não outro projeto/personagem, não fornecedor externo sem autorização e verificação.
-- Ao comando “Continue”, avançar autonomamente até decisão REAL da usuária; não parar em microcommit se CI/ferramentas permitirem.
+- Ao comando “Continue”, avançar autonomously até decisão REAL da usuária; não parar em microcommit se CI/ferramentas permitirem.
 - Ao fim de frente relevante, atualizar este arquivo com HEAD/CI/decisões/próximo passo.
