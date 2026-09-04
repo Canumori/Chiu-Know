@@ -7,14 +7,14 @@ package com.chiu.know.model
  * Korean remains behind the production quality gate. The labels are internal
  * placement targets, not a claimed equivalence between CEFR and the six-level
  * Korean curricula used by external institutions. Linguistic/level calibration
- * must be reviewed before production rollout.
+ * must be independently reviewed before production rollout.
  */
 val additionalKoreanPlacementQuestions = listOf(
     PlacementQuestion(
         "ko-a1-003",
         CefrLevel.A1,
         "저는 매일 아침 커피를 ___.",
-        listOf("마셔요", "마셔서", "마시면", "마셨지만"),
+        listOf("마셔요", "읽어요", "입어요", "만나요"),
         0
     ),
     PlacementQuestion(
@@ -36,7 +36,7 @@ val additionalKoreanPlacementQuestions = listOf(
         "ko-a2-004",
         CefrLevel.A2,
         "한국어를 더 잘하고 싶어서 매일 ___.",
-        listOf("공부해요", "공부했더라면", "공부하기는커녕", "공부할 리가 없어요"),
+        listOf("공부해요", "운동해요", "요리해요", "쇼핑해요"),
         0
     ),
 
@@ -66,7 +66,7 @@ val additionalKoreanPlacementQuestions = listOf(
         "ko-b2-004",
         CefrLevel.B2,
         "회의가 취소될 줄 알았더라면 이렇게 일찍 ___.",
-        listOf("오지 않았을 거예요", "오지 않아요", "오지 않을까요", "오지 못해요"),
+        listOf("오지 않았을 거예요", "오지 않았어요", "오지 못했어요", "오려고 했어요"),
         0
     ),
 
@@ -74,7 +74,7 @@ val additionalKoreanPlacementQuestions = listOf(
         "ko-c1-003",
         CefrLevel.C1,
         "새로운 근거가 추가된 것이 아니라 기존 주장을 반복한 것에 ___.",
-        listOf("불과하다", "따라서다", "비롯한다", "마련이다가"),
+        listOf("불과하다", "기인한다", "해당한다", "비롯된다"),
         0
     ),
     PlacementQuestion(
@@ -96,7 +96,7 @@ val additionalKoreanPlacementQuestions = listOf(
         "ko-c2-004",
         CefrLevel.C2,
         "위원회의 표현은 책임 소재를 분명히 하기보다 오히려 핵심 쟁점을 ___.",
-        listOf("흐리는 데 가까웠다", "흐리게 될 뻔만 했다", "흐리도록만 있었다", "흐린 적으로 삼았다"),
+        listOf("흐리는 결과를 낳았다", "확정하는 데 그쳤다", "부각하는 셈이었다", "해명하는 데 기여했다"),
         0
     )
 )
