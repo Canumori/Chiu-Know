@@ -4,9 +4,9 @@ Este checkpoint registra o estado real mais recente desta frente e complementa `
 
 ## HEAD funcional validado
 
-- HEAD funcional antes deste documento: `60f8054eda9351724fe17841b879d8992728ffc7` — `feat: include residence reading target in starter bank`.
-- Android CI #261, run `33880739956`: `COMPLETED / SUCCESS`.
-- CI #261 confirmou: testes unitários verdes, build do debug APK verde e upload do artefato verde.
+- HEAD funcional antes desta atualização documental: `2f0a34ee8bfd4ba78679c759a15784bb5cbd26ea` — `feat: activate residence grammar transfer`.
+- Android CI #264, run `33881493837`: `COMPLETED / SUCCESS`.
+- CI #264 confirmou: testes unitários verdes, build do debug APK verde e upload do artefato verde.
 
 ## CIs desta sequência
 
@@ -14,6 +14,9 @@ Este checkpoint registra o estado real mais recente desta frente e complementa `
 - CI #259, run `33880279702`: SUCCESS para `ad5e9042c3b707cb117ddc7accce0a12cbc77e43` — alvo gramatical de residência integrado ao banco starter.
 - CI #260, run `33880493707`: SUCCESS para `f2af7f497da158efd5682639cec7e9ae90817ebd` — novo segundo alvo de leitura A1 criado isoladamente.
 - CI #261, run `33880739956`: SUCCESS para `60f8054eda9351724fe17841b879d8992728ffc7` — alvo de leitura de residência integrado ao banco starter.
+- CI #262, run `33881040200`: SUCCESS para `08da1c89117e292c56255ca19b52c2c4b7e2ec39` — checkpoint da expansão A1 registrado.
+- CI #263, run `33881261574`: SUCCESS para `883265bd10ed8112d77df52c7fb7a86d649f9e83` — formato REORDER do alvo gramatical de residência criado isoladamente.
+- CI #264, run `33881493837`: SUCCESS para `2f0a34ee8bfd4ba78679c759a15784bb5cbd26ea` — formato REORDER de residência ativado no banco starter.
 
 ## Estado pedagógico do banco starter A1
 
@@ -32,7 +35,7 @@ Agora existem pelo menos dois alvos independentes:
 1. cópula/apresentação em primeira pessoa;
 2. frase básica de residência em primeira pessoa (`I live`, `eu moro`, `yo vivo`, `j’habite`, `저는 ... 살아요`).
 
-O novo alvo de residência possui dois contextos por idioma e `reviewKey` próprio.
+O alvo de residência possui dois contextos FILL_IN por idioma e um terceiro formato REORDER que compartilha o mesmo `reviewKey`. Assim, o mesmo conhecimento progride de recuperação com pista para reconstrução com menos pista sem criar um alvo artificial separado.
 
 ### Leitura
 Agora existem pelo menos dois alvos independentes:
@@ -56,14 +59,14 @@ A fundação starter mantém conteúdo em EN/PT/ES/FR/KO. Isso NÃO altera o gat
 - Preferências declaradas do aluno são planejamento, não evidência.
 - Erros recentes observados podem orientar a escolha entre NOVOS alvos quando houver alternativas reais, mas não podem passar na frente de revisão vencida.
 - Um acerto isolado nunca equivale a domínio.
-- A fila deve continuar equilibrando alvos por `reviewKey` e girando contextos dentro do mesmo alvo.
+- A fila deve continuar equilibrando alvos por `reviewKey` e girando contextos/formatos dentro do mesmo alvo.
 - Não expor níveis superiores sem conteúdo real implementado.
 - Não tocar no Supabase do CHIU PLAYER.
 - Voz oficial do Chiu continua fora de GitHub/Supabase/APK até autorização específica.
 
 ## Próximas frentes seguras
 
-1. Ampliar mais um alvo independente de gramática e/ou leitura somente em pequenas fatias, mantendo CI verde entre mudanças estruturais.
-2. Começar a conectar os mesmos alvos entre formatos (por exemplo, leitura -> recuperação -> REORDER) sem criar falso mastery.
+1. Dar ao segundo alvo de leitura uma transferência adicional de formato, preservando o mesmo `reviewKey`, sem confundir reconhecimento com mastery.
+2. Ampliar mais um alvo independente de gramática e/ou leitura somente em pequenas fatias, mantendo CI verde entre mudanças estruturais.
 3. Avaliar quando o A1 tiver cobertura suficiente para iniciar uma pequena unidade narrativa funcional com personagens oficiais, preservando `VISUAL_BIBLE.md`.
 4. Continuar aguardando resposta do voluntário para revisão humana do placement coreano; não bloquear outras frentes.
