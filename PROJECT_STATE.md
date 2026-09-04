@@ -1,5 +1,45 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-03 21:31 BRT — FRANCÊS EM QUALITY_SESSION; COREANO CANDIDATO VERDE MAS BLOQUEADO PARA REVISÃO LINGUÍSTICA
+
+Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
+
+### HEAD / CI validado
+- HEAD funcional/testes: commit `68766894d8153e276a8204051850ed5148546054` — `test: exhaustively verify Korean candidate sessions`.
+- Android CI #214, run `33821961869`: `COMPLETED / SUCCESS`; testes unitários, build debug APK e upload do artefato concluíram com sucesso.
+- Rollout francês protegido por commit `bf690c7fc4d7ed13f7f2a90837dcb709486dd6f1` — `test: protect French quality placement rollout`.
+- Android CI #211, run `33821741917`: `COMPLETED / SUCCESS`; testes unitários, build debug APK e upload do artefato concluíram com sucesso.
+- Banco/sessões franceses antes do rollout: commit `745456c6d1a2a16dcad63721edbfeeb2a0f03c12`, Android CI #209, run `33821612606`: `COMPLETED / SUCCESS`.
+- Semântica conservadora de evidência suplementar: commit `4c93bfd60b1e6e47fbca5c348e28c4b75ac90da1`, Android CI #206, run `33821351838`: `COMPLETED / SUCCESS`.
+
+### Placement — estado real por idioma
+- Inglês, português, espanhol e agora francês estão em `QUALITY_SESSION`.
+- Cada um desses quatro idiomas possui 24 questões de engenharia, 4 por rótulo CEFR A1–C2, validação estrutural e exploração exaustiva de caminhos da sessão.
+- Francês foi expandido em `FrenchPlacementExpansion.kt`, validado estruturalmente e por caminhos exaustivos antes de ser habilitado em `PlacementProductionGate.kt`.
+- Coreano continua deliberadamente em `LEGACY_FOUNDATION` na produção.
+- Foi criado `candidateKoreanPlacementQuestions` com 24 itens e testes estruturais/exaustivos; CI #214 verde comprova a mecânica do candidato, NÃO sua calibração linguística/CEFR.
+- O teste da trava de produção comprova explicitamente que `ko` continua usando `starterKoreanPlacementQuestions` e `isQualityPlacementEnabled("ko") == false`.
+
+### Referência externa usada para a decisão coreana
+- A progressão oficial do King Sejong Institute utiliza seis níveis próprios: Beginner 1–2, Intermediate 1–2 e Advanced 1–2.
+- Essa progressão foi usada apenas como referência de aumento de complexidade. NÃO registrar nem alegar equivalência automática entre esses seis níveis e CEFR A1–C2.
+- Cursos avançados oficiais trabalham com temas abstratos e discursivos (educação, mudanças sociais, ciência, clima, IA, mercado, cultura, opinião pública, literatura) e integração de habilidades; portanto itens altos do CHIU KNOW? não devem se limitar a “gramática rara”.
+- Antes de habilitar o coreano em `QUALITY_SESSION`, é necessária revisão linguística/calibração de dificuldade das 24 perguntas candidatas. CI verde sozinho não satisfaz esse requisito.
+
+### Placement — endurecimentos já concluídos nesta frente
+- IDs de perguntas são validados globalmente como não vazios e únicos antes do início da sessão.
+- O teto máximo de evidência vale também durante `LOCATE`; nenhuma pergunta extra é apresentada após o teto.
+- Fila obrigatória incompleta no teto termina inconclusiva sem nível decidido.
+- Evidência suplementar de fronteira inferior não pode fabricar revisão para baixo apenas por ter sido coletada para completar o contrato de duração.
+- Evidência superior suplementar não pode resgatar uma fronteira obrigatória superior que falhou; movimento para cima continua estrito.
+- Evidência fresca no nível provisório continua podendo resolver ambiguidade 1–1 de forma conservadora.
+- `MAX_EVIDENCE_INCONCLUSIVE` e `BANK_INSUFFICIENT` permanecem distintos na UI, sem salvar CEFR nem mostrar confidence falsa.
+
+### Próximo ponto que exige decisão real de qualidade
+- NÃO habilitar coreano em `QUALITY_SESSION` por automatismo.
+- A próxima decisão de produto é qual padrão de revisão linguística será exigido antes do rollout coreano: aceitar revisão baseada apenas em IA/fontes oficiais ou exigir revisão humana qualificada/nativa das 24 perguntas e da adequação relativa dos níveis.
+- Até essa decisão, preservar o coreano em `LEGACY_FOUNDATION`; não desfazer a trava só porque CI #214 está verde.
+
 ## ESTADO AUTORITATIVO — 2026-09-03 21:18 BRT — CI #203 VERDE; IDENTIDADE DO BANCO E TETO GLOBAL DO PLACEMENT ENDURECIDOS
 
 Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
