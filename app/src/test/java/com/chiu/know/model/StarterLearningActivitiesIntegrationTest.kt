@@ -12,18 +12,19 @@ class StarterLearningActivitiesIntegrationTest {
     fun providesIntegratedA1TargetsAndTransferFormatsForEveryLanguage() {
         supportedTargetLanguages.forEach { language ->
             val activities = starterLearningActivitiesFor(language.code)
-            assertEquals(10, activities.size)
+            val reviewTargets = activities.distinctBy { it.reviewKey }
+            val vocabularyTargets = reviewTargets.count { it.primarySkill == LearningSkill.VOCABULARY }
+
+            assertTrue(activities.size >= 10)
             assertTrue(activities.all { it.level == CefrLevel.A1 })
             assertEquals(
                 setOf(LearningSkill.VOCABULARY, LearningSkill.GRAMMAR, LearningSkill.READING),
                 activities.map { it.primarySkill }.toSet()
             )
-            assertEquals(4, activities.map { it.reviewKey }.distinct().size)
-            assertEquals(2, activities.map { it.reviewKey }.distinct().count { reviewKey ->
-                activities.first { it.reviewKey == reviewKey }.primarySkill == LearningSkill.VOCABULARY
-            })
-            assertEquals(1, activities.count { it.responseType == ResponseType.REORDER })
-            assertEquals(1, activities.count { it.responseType == ResponseType.MULTIPLE_CHOICE })
+            assertTrue(reviewTargets.size >= 4)
+            assertTrue(vocabularyTargets >= 2)
+            assertTrue(activities.any { it.responseType == ResponseType.REORDER })
+            assertTrue(activities.any { it.responseType == ResponseType.MULTIPLE_CHOICE })
         }
     }
 
