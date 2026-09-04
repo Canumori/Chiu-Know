@@ -25,12 +25,12 @@
     <string name="daily_minutes_hint">Choose between %1$d and %2$d minutes.</string>
     <string name="placement_title">Let’s find your level</string>
     <string name="placement_description">We’ll estimate your current %1$s level from A1 to C2.</string>
-    <string name="placement_prototype_note">This first local prototype checks the test flow. The final calibrated adaptive bank will be language-specific. Your result is an estimated proficiency level, not an official certificate.</string>
+    <string name="placement_prototype_note">This test provides an estimated CEFR level using the current language-specific question bank. It is not an official certificate or a psychometrically validated CEFR assessment.</string>
     <string name="start_level_test">Start level test</string>
     <string name="question_progress">Question %1$d of %2$d</string>
     <string name="estimated_level">Estimated level</string>
-    <string name="correct_answers">%1$d of %2$d answers correct in this prototype.</string>
-    <string name="prototype_score_note">This prototype score is not yet the final calibrated CEFR assessment.</string>
+    <string name="correct_answers">%1$d of %2$d answers correct in this test.</string>
+    <string name="prototype_score_note">Use this result as a learning-path estimate, not as an official certification or independently validated CEFR score.</string>
     <string name="try_again">Try again</string>
     <string name="placement_inconclusive_title">We need clearer evidence</string>
     <string name="placement_inconclusive_description">Your answers reached the test’s evidence limit without supporting a defensible level. No CEFR level was saved. You can try the test again.</string>
