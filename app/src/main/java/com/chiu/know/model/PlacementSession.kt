@@ -43,6 +43,7 @@ data class PlacementSessionState(
 fun startPlacementSession(
     questions: List<PlacementQuestion>
 ): PlacementSessionState {
+    requireValidPlacementSessionQuestionIds(questions)
     val adaptive = startAdaptivePlacement()
     val first = nextUnusedPlacementQuestion(questions, adaptive.currentLevel, emptySet())
         ?: return PlacementSessionState(
@@ -59,6 +60,16 @@ fun startPlacementSession(
         current = PlacementSessionQuestion(first),
         usedQuestionIds = setOf(first.id)
     )
+}
+
+private fun requireValidPlacementSessionQuestionIds(questions: List<PlacementQuestion>) {
+    require(questions.none { it.id.isBlank() }) {
+        "Placement session question IDs must be non-blank"
+    }
+    val ids = questions.map { it.id }
+    require(ids.distinct().size == ids.size) {
+        "Placement session question IDs must be globally unique"
+    }
 }
 
 fun advancePlacementSession(
