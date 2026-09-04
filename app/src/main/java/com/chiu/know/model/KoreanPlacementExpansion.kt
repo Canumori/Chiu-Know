@@ -13,15 +13,15 @@ val additionalKoreanPlacementQuestions = listOf(
     PlacementQuestion(
         "ko-a1-003",
         CefrLevel.A1,
-        "저는 매일 아침 커피를 ___.",
-        listOf("읽어요", "마셔요", "입어요", "만나요"),
+        "저는 매일 아침 커피__ 마셔요.",
+        listOf("가", "를", "에", "는"),
         1
     ),
     PlacementQuestion(
         "ko-a1-004",
         CefrLevel.A1,
-        "책상 위에 책이 ___.",
-        listOf("먹어요", "가요", "있어요", "만나요"),
+        "책상 위__ 책이 있어요.",
+        listOf("를", "가", "에", "는"),
         2
     ),
 
@@ -35,8 +35,8 @@ val additionalKoreanPlacementQuestions = listOf(
     PlacementQuestion(
         "ko-a2-004",
         CefrLevel.A2,
-        "한국어를 더 잘하고 싶어서 매일 ___.",
-        listOf("공부해요", "운동해요", "요리해요", "쇼핑해요"),
+        "한국어를 더 잘하고 싶어서 매일 한 시간씩 ___.",
+        listOf("공부해요", "공부했어요", "공부할 거예요", "공부하고 싶어요"),
         0
     ),
 
