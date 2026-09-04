@@ -41,6 +41,25 @@
     <string name="practice_more">Pratiquer davantage</string>
     <string name="optional_practice_note">La pratique facultative fournit des explications, mais ne modifie pas encore votre calendrier de révision.</string>
 
+    <string name="learner_preferences_title">Personnalisez votre apprentissage</string>
+    <string name="learner_preferences_description">Indiquez-nous votre objectif et ce que vous souhaitez pratiquer davantage. Ces préférences orientent votre parcours sans modifier votre niveau estimé.</string>
+    <string name="learning_goal_label">Objectif principal</string>
+    <string name="learning_priority_label">Priorité de pratique</string>
+    <string name="daily_minutes_label">Minutes par jour</string>
+    <string name="daily_minutes_hint">Choisissez entre %1$d et %2$d minutes.</string>
+    <string name="learning_goal_general">Apprentissage général</string>
+    <string name="learning_goal_conversation">Conversation</string>
+    <string name="learning_goal_travel">Voyage</string>
+    <string name="learning_goal_living_abroad">Vivre à l’étranger</string>
+    <string name="learning_goal_work">Travail</string>
+    <string name="learning_goal_study_exam">Études ou examen</string>
+    <string name="learning_goal_culture_media">Culture et médias</string>
+    <string name="learning_priority_balanced">Équilibré</string>
+    <string name="learning_priority_listening">Compréhension orale</string>
+    <string name="learning_priority_speaking">Expression orale</string>
+    <string name="learning_priority_reading">Lecture</string>
+    <string name="learning_priority_writing">Écriture</string>
+
     <string name="preview_temporary_voices">Écouter les voix temporaires</string>
     <string name="voice_samples_title">Échantillons de voix temporaires</string>
     <string name="voice_samples_description">Écoutez trois styles de test de l’appareil. Ce ne sont pas les voix officielles des personnages.</string>
