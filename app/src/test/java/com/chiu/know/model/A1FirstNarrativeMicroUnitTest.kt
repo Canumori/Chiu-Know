@@ -31,4 +31,21 @@ class A1FirstNarrativeMicroUnitTest {
     fun koreanNarrativeRemainsUnavailableUnderCurrentReviewPolicy() {
         assertNull(a1FirstNarrativeMicroUnitFor("ko"))
     }
+
+    @Test
+    fun starterNarrativeSelectorExposesOnlyExistingA1Narratives() {
+        listOf("en", "pt", "es", "fr").forEach { languageCode ->
+            val narrative = starterNarrativeMicroUnitFor(languageCode, CefrLevel.A1)
+            assertNotNull(narrative)
+            assertEquals(languageCode, narrative!!.languageCode)
+            assertEquals(CefrLevel.A1, narrative.level)
+        }
+
+        assertNull(starterNarrativeMicroUnitFor("ko", CefrLevel.A1))
+        assertNull(starterNarrativeMicroUnitFor("en", CefrLevel.A2))
+        assertNull(starterNarrativeMicroUnitFor("en", CefrLevel.B1))
+        assertNull(starterNarrativeMicroUnitFor("en", CefrLevel.B2))
+        assertNull(starterNarrativeMicroUnitFor("en", CefrLevel.C1))
+        assertNull(starterNarrativeMicroUnitFor("en", CefrLevel.C2))
+    }
 }
