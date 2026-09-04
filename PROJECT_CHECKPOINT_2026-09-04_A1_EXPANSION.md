@@ -4,9 +4,9 @@ Este checkpoint registra o estado real mais recente desta frente e complementa `
 
 ## HEAD funcional validado
 
-- HEAD funcional antes desta atualização documental: `2f0a34ee8bfd4ba78679c759a15784bb5cbd26ea` — `feat: activate residence grammar transfer`.
-- Android CI #264, run `33881493837`: `COMPLETED / SUCCESS`.
-- CI #264 confirmou: testes unitários verdes, build do debug APK verde e upload do artefato verde.
+- HEAD funcional antes desta atualização documental: `6f87384d2974ae6d505f8265950ea495192b3e2e` — `feat: activate residence reading recognition`.
+- Android CI #267, run `33882152019`: `COMPLETED / SUCCESS`.
+- CI #267 confirmou: testes unitários verdes, build do debug APK verde e upload do artefato verde.
 
 ## CIs desta sequência
 
@@ -17,6 +17,9 @@ Este checkpoint registra o estado real mais recente desta frente e complementa `
 - CI #262, run `33881040200`: SUCCESS para `08da1c89117e292c56255ca19b52c2c4b7e2ec39` — checkpoint da expansão A1 registrado.
 - CI #263, run `33881261574`: SUCCESS para `883265bd10ed8112d77df52c7fb7a86d649f9e83` — formato REORDER do alvo gramatical de residência criado isoladamente.
 - CI #264, run `33881493837`: SUCCESS para `2f0a34ee8bfd4ba78679c759a15784bb5cbd26ea` — formato REORDER de residência ativado no banco starter.
+- CI #265, run `33881738844`: SUCCESS para `89041d12052902049ee9a25d450b3923587939f3` — checkpoint anterior sincronizado.
+- CI #266, run `33881958140`: SUCCESS para `89e06e23ff8b32617d798280ad00420f70fba203` — formato MULTIPLE_CHOICE de leitura de residência criado isoladamente.
+- CI #267, run `33882152019`: SUCCESS para `6f87384d2974ae6d505f8265950ea495192b3e2e` — reconhecimento de residência ativado no banco starter.
 
 ## Estado pedagógico do banco starter A1
 
@@ -42,7 +45,7 @@ Agora existem pelo menos dois alvos independentes:
 1. identificar nome explícito em uma apresentação curta;
 2. identificar local de residência explícito em um texto muito curto.
 
-O novo alvo de residência possui dois contextos por idioma e `reviewKey` próprio. O avaliador continua determinístico; não há julgamento por IA.
+O alvo de leitura de residência possui dois contextos FILL_IN por idioma e um terceiro contexto MULTIPLE_CHOICE que compartilha o mesmo `reviewKey`. A múltipla escolha é tratada explicitamente como prática de reconhecimento/variação contextual, NÃO como uma etapa com menos pistas ou como evidência de mastery. O avaliador continua determinístico; não há julgamento por IA.
 
 ## Idiomas
 
@@ -66,7 +69,7 @@ A fundação starter mantém conteúdo em EN/PT/ES/FR/KO. Isso NÃO altera o gat
 
 ## Próximas frentes seguras
 
-1. Dar ao segundo alvo de leitura uma transferência adicional de formato, preservando o mesmo `reviewKey`, sem confundir reconhecimento com mastery.
-2. Ampliar mais um alvo independente de gramática e/ou leitura somente em pequenas fatias, mantendo CI verde entre mudanças estruturais.
-3. Avaliar quando o A1 tiver cobertura suficiente para iniciar uma pequena unidade narrativa funcional com personagens oficiais, preservando `VISUAL_BIBLE.md`.
+1. Ampliar um terceiro alvo independente de gramática ou leitura somente em pequena fatia, mantendo CI verde entre criação e ativação.
+2. Depois, avaliar a cobertura A1 por função comunicativa e competência para evitar crescer de forma desequilibrada.
+3. Quando houver cobertura suficiente, iniciar uma pequena unidade narrativa funcional com personagens oficiais, preservando `VISUAL_BIBLE.md` e sem fabricar mastery.
 4. Continuar aguardando resposta do voluntário para revisão humana do placement coreano; não bloquear outras frentes.
