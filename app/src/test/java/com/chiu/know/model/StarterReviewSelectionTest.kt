@@ -7,52 +7,46 @@ import org.junit.Test
 class StarterReviewSelectionTest {
 
     @Test
-    fun balancesReviewTargetsBeforeRepeatingContexts() {
+    fun balancesAllReviewTargetsBeforeRepeatingContexts() {
         val language = "en"
-        val vocabulary = starterLearningActivityForEvidence(language, CefrLevel.A1, emptyList())!!
-        assertEquals("en-a1-greeting-001", vocabulary.id)
+        val all = starterLearningActivitiesFor(language)
+        val targetOrder = all.distinctBy { it.reviewKey }
 
-        val afterVocabulary = listOf(attempt(vocabulary, 1L))
-        val grammar = starterLearningActivityForEvidence(language, CefrLevel.A1, afterVocabulary)!!
-        assertEquals(LearningSkill.GRAMMAR, grammar.primarySkill)
+        var evidence = emptyList<LearningEvidence>()
+        targetOrder.forEachIndexed { index, expectedTarget ->
+            val selected = starterLearningActivityForEvidence(language, CefrLevel.A1, evidence)!!
+            assertEquals(expectedTarget.reviewKey, selected.reviewKey)
+            evidence = evidence + attempt(selected, (index + 1).toLong())
+        }
 
-        val afterGrammar = afterVocabulary + attempt(grammar, 2L)
-        val reading = starterLearningActivityForEvidence(language, CefrLevel.A1, afterGrammar)!!
-        assertEquals(LearningSkill.READING, reading.primarySkill)
-
-        val afterReading = afterGrammar + attempt(reading, 3L)
-        val secondVocabularyContext = starterLearningActivityForEvidence(language, CefrLevel.A1, afterReading)!!
-        assertEquals("en-a1-greeting-002", secondVocabularyContext.id)
+        val firstTargetSecondContext = starterLearningActivityForEvidence(language, CefrLevel.A1, evidence)!!
+        assertEquals(targetOrder.first().reviewKey, firstTargetSecondContext.reviewKey)
+        assertEquals("en-a1-greeting-002", firstTargetSecondContext.id)
     }
 
     @Test
     fun rotatesVariantsWithinSameReviewTargetFromAttemptCount() {
         val language = "en"
         val all = starterLearningActivitiesFor(language)
-        val vocabularyFirst = all.first { it.id == "en-a1-greeting-001" }
-        val grammarFirst = all.first { it.primarySkill == LearningSkill.GRAMMAR }
-        val readingFirst = all.first { it.primarySkill == LearningSkill.READING }
+        val targetGroups = all.groupBy { it.reviewKey }
+        val firstTarget = targetGroups.keys.first()
 
-        val evidence = listOf(
-            attempt(vocabularyFirst, 1L),
-            attempt(grammarFirst, 2L),
-            attempt(readingFirst, 3L),
-            attempt(vocabularyFirst, 4L),
-            attempt(grammarFirst, 5L),
-            attempt(readingFirst, 6L)
-        )
+        val evidence = targetGroups.keys.flatMapIndexed { targetIndex, reviewKey ->
+            val firstVariant = targetGroups.getValue(reviewKey).first()
+            List(2) { attempt(firstVariant, (targetIndex * 10 + it + 1).toLong()) }
+        }
 
         val next = starterLearningActivityForEvidence(language, CefrLevel.A1, evidence)!!
-        assertEquals("en-a1-greeting-001", next.id)
+        assertEquals(firstTarget, next.reviewKey)
+        assertEquals(targetGroups.getValue(firstTarget)[0].id, next.id)
     }
 
     @Test
     fun reachesReorderAsThirdGrammarVariantWithoutCreatingANewReviewTarget() {
         val language = "en"
         val all = starterLearningActivitiesFor(language)
-        val vocabulary = all.first { it.primarySkill == LearningSkill.VOCABULARY }
-        val reading = all.first { it.primarySkill == LearningSkill.READING }
-        val grammarVariants = all.filter { it.reviewKey == "en:a1:grammar:copula:first-person" }
+        val grammarReviewKey = "en:a1:grammar:copula:first-person"
+        val grammarVariants = all.filter { it.reviewKey == grammarReviewKey }
 
         assertEquals(3, grammarVariants.size)
         assertEquals(ResponseType.FILL_IN, grammarVariants[0].responseType)
@@ -60,10 +54,7 @@ class StarterReviewSelectionTest {
         assertEquals(ResponseType.REORDER, grammarVariants[2].responseType)
         assertEquals("en-a1-copula-reorder-001", grammarVariants[2].id)
 
-        val evidenceBeforeGrammar = listOf(
-            attempt(vocabulary, 1L), attempt(vocabulary, 2L), attempt(vocabulary, 3L),
-            attempt(reading, 4L), attempt(reading, 5L), attempt(reading, 6L)
-        )
+        val evidenceBeforeGrammar = evidenceGivingOtherTargetsThreeAttempts(all, grammarReviewKey)
 
         val firstGrammar = starterLearningActivityForEvidence(language, CefrLevel.A1, evidenceBeforeGrammar)!!
         assertEquals(grammarVariants[0].id, firstGrammar.id)
@@ -71,14 +62,14 @@ class StarterReviewSelectionTest {
         val secondGrammar = starterLearningActivityForEvidence(
             language,
             CefrLevel.A1,
-            evidenceBeforeGrammar + attempt(firstGrammar, 7L)
+            evidenceBeforeGrammar + attempt(firstGrammar, 100L)
         )!!
         assertEquals(grammarVariants[1].id, secondGrammar.id)
 
         val reorderGrammar = starterLearningActivityForEvidence(
             language,
             CefrLevel.A1,
-            evidenceBeforeGrammar + attempt(firstGrammar, 7L) + attempt(secondGrammar, 8L)
+            evidenceBeforeGrammar + attempt(firstGrammar, 100L) + attempt(secondGrammar, 101L)
         )!!
         assertEquals(ResponseType.REORDER, reorderGrammar.responseType)
         assertEquals("en-a1-copula-reorder-001", reorderGrammar.id)
@@ -89,30 +80,26 @@ class StarterReviewSelectionTest {
     fun reachesMultipleChoiceAsThirdReadingVariantWithoutCreatingANewReviewTarget() {
         val language = "en"
         val all = starterLearningActivitiesFor(language)
-        val vocabulary = all.first { it.primarySkill == LearningSkill.VOCABULARY }
-        val grammar = all.first { it.primarySkill == LearningSkill.GRAMMAR }
-        val readingVariants = all.filter { it.reviewKey == "en:a1:reading:introduction-name" }
+        val readingReviewKey = "en:a1:reading:introduction-name"
+        val readingVariants = all.filter { it.reviewKey == readingReviewKey }
 
         assertEquals(3, readingVariants.size)
         assertEquals(ResponseType.FILL_IN, readingVariants[0].responseType)
         assertEquals(ResponseType.FILL_IN, readingVariants[1].responseType)
         assertEquals(ResponseType.MULTIPLE_CHOICE, readingVariants[2].responseType)
 
-        val evidenceBeforeReading = listOf(
-            attempt(vocabulary, 1L), attempt(vocabulary, 2L), attempt(vocabulary, 3L),
-            attempt(grammar, 4L), attempt(grammar, 5L), attempt(grammar, 6L)
-        )
+        val evidenceBeforeReading = evidenceGivingOtherTargetsThreeAttempts(all, readingReviewKey)
 
         val firstReading = starterLearningActivityForEvidence(language, CefrLevel.A1, evidenceBeforeReading)!!
         val secondReading = starterLearningActivityForEvidence(
             language,
             CefrLevel.A1,
-            evidenceBeforeReading + attempt(firstReading, 7L)
+            evidenceBeforeReading + attempt(firstReading, 100L)
         )!!
         val multipleChoiceReading = starterLearningActivityForEvidence(
             language,
             CefrLevel.A1,
-            evidenceBeforeReading + attempt(firstReading, 7L) + attempt(secondReading, 8L)
+            evidenceBeforeReading + attempt(firstReading, 100L) + attempt(secondReading, 101L)
         )!!
 
         assertEquals(readingVariants[0].id, firstReading.id)
@@ -157,6 +144,16 @@ class StarterReviewSelectionTest {
         assertEquals("en-a1-greeting-001", starterLearningActivityForEvidence("en", CefrLevel.A1, listOf(unrelated))?.id)
         assertNull(starterLearningActivityForEvidence("en", CefrLevel.B1, emptyList()))
     }
+
+    private fun evidenceGivingOtherTargetsThreeAttempts(
+        all: List<LearningActivity>,
+        excludedReviewKey: String
+    ): List<LearningEvidence> = all
+        .distinctBy { it.reviewKey }
+        .filter { it.reviewKey != excludedReviewKey }
+        .flatMapIndexed { targetIndex, activity ->
+            List(3) { attempt(activity, (targetIndex * 10 + it + 1).toLong()) }
+        }
 
     private fun attempt(
         activity: LearningActivity,
