@@ -29,13 +29,18 @@ data class StarterQueueSelection(
  * 1. review targets whose explicit schedule is due;
  * 2. knowledge targets that do not have scheduler state yet;
  * 3. no activity when every known target is scheduled for the future.
+ *
+ * Learner preferences may reorder only unscheduled new targets. They never
+ * override due review, alter CEFR level, create mastery evidence or remove a
+ * skill from the queue.
  */
 fun starterQueueSelection(
     languageCode: String,
     level: CefrLevel,
     evidence: List<LearningEvidence>,
     schedules: List<ReviewScheduleState>,
-    nowEpochMillis: Long
+    nowEpochMillis: Long,
+    preferences: LearnerPreferences? = null
 ): StarterQueueSelection {
     require(nowEpochMillis >= 0L) { "Queue time must not be negative" }
 
@@ -65,7 +70,21 @@ fun starterQueueSelection(
         )
     }
 
-    val newTarget = groups.keys.firstOrNull { it !in compatibleSchedules }
+    val unscheduledTargets = groups.keys.filter { it !in compatibleSchedules }
+    val newTarget = if (preferences == null) {
+        unscheduledTargets.firstOrNull()
+    } else {
+        val mix = learnerPracticeMix(preferences)
+        unscheduledTargets.maxWithOrNull(
+            compareBy<String> { reviewKey ->
+                skillPlanningWeight(
+                    groups.getValue(reviewKey).first().primarySkill,
+                    mix
+                )
+            }.thenByDescending { reviewKey -> groups.keys.indexOf(reviewKey) }
+        )
+    }
+
     if (newTarget != null) {
         return StarterQueueSelection(
             activity = rotatedVariant(groups.getValue(newTarget), compatibleEvidence),
@@ -78,6 +97,15 @@ fun starterQueueSelection(
         reason = StarterQueueReason.NONE_DUE,
         nextDueAtEpochMillis = compatibleSchedules.values.minOfOrNull { it.dueAtEpochMillis }
     )
+}
+
+private fun skillPlanningWeight(skill: LearningSkill, mix: LearnerPracticeMix): Int = when (skill) {
+    LearningSkill.GRAMMAR -> mix.grammarWeight
+    LearningSkill.VOCABULARY -> mix.vocabularyWeight
+    LearningSkill.LISTENING -> mix.listeningWeight
+    LearningSkill.READING -> mix.readingWeight
+    LearningSkill.WRITING -> mix.writingWeight
+    LearningSkill.SPEAKING -> mix.speakingWeight
 }
 
 private fun rotatedVariant(
