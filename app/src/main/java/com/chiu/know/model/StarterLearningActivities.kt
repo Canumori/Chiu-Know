@@ -134,7 +134,8 @@ fun starterLearningActivitiesFor(languageCode: String): List<LearningActivity> =
         a1ResidenceGrammarActivitiesFor(languageCode) +
         a1ResidenceReadingActivitiesFor(languageCode) +
         a1ResidenceReorderActivitiesFor(languageCode) +
-        a1ResidenceReadingChoiceActivitiesFor(languageCode)
+        a1ResidenceReadingChoiceActivitiesFor(languageCode) +
+        a1PossessionGrammarActivitiesFor(languageCode)
 
 fun starterLearningActivityFor(
     languageCode: String,
