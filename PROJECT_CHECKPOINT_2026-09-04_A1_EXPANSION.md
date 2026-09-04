@@ -4,9 +4,9 @@ Este checkpoint registra o estado real mais recente desta frente e complementa `
 
 ## HEAD funcional validado
 
-- HEAD funcional antes desta atualização documental: `03487674dac0402d566ac4e771d813310339128e` — `feat: activate preference reading target`.
-- Android CI #273, run `33889902199`: `COMPLETED / SUCCESS`.
-- CI #273 confirmou: testes unitários verdes, build do debug APK verde e upload do artefato verde.
+- HEAD funcional antes desta atualização documental: `596ecbd2c12bf997fd9cdbeb4bf8a81a49b36d86` — `feat: activate basic name question target`.
+- Android CI #276, run `33890579764`: `COMPLETED / SUCCESS`.
+- CI #276 confirmou: testes unitários verdes, build do debug APK verde e upload do artefato verde.
 
 ## CIs desta sequência
 
@@ -26,21 +26,24 @@ Este checkpoint registra o estado real mais recente desta frente e complementa `
 - CI #271, run `33889468438`: SUCCESS para `6bbf64c9bca7cd6e2626f120add53f7ed8b91ade` — checkpoint do terceiro alvo gramatical sincronizado.
 - CI #272, run `33889680073`: SUCCESS para `029b511890c5d35f80d0425e41f06476caf0483b` — terceiro alvo de leitura A1, preferência explícita, criado isoladamente.
 - CI #273, run `33889902199`: SUCCESS para `03487674dac0402d566ac4e771d813310339128e` — leitura de preferência ativada no banco starter.
+- CI #274, run `33890131864`: SUCCESS para `aaddfe5ba22d746120eafa5fba7b0646ab596cb0` — cobertura A1 balanceada 3×3 registrada.
+- CI #275, run `33890364263`: SUCCESS para `61caa84d5a37f69a1a8f7e78d55f5debdfc78e3a` — primeira pergunta básica A1 criada isoladamente.
+- CI #276, run `33890579764`: SUCCESS para `596ecbd2c12bf997fd9cdbeb4bf8a81a49b36d86` — pergunta básica de nome ativada no banco starter.
 
 ## Estado pedagógico do banco starter A1
 
 A expansão continua pequena, determinística e baseada em `reviewKey`, sem fabricar mastery, confidence ou proficiência.
 
-### Cobertura atual equilibrada
+### Fundação balanceada 3×3
 
-Há agora três alvos independentes em cada uma das competências atualmente válidas no starter sem depender de áudio/ASR:
+A base inicial permanece equilibrada em três alvos independentes para cada competência atualmente válida no starter sem depender de áudio/ASR:
 
 **Vocabulário**
 1. saudação básica;
 2. agradecimento;
 3. despedida.
 
-**Gramática**
+**Gramática declarativa**
 1. cópula/apresentação em primeira pessoa;
 2. residência em primeira pessoa (`I live`, `eu moro`, `yo vivo`, `j’habite`, `저는 ... 살아요`);
 3. posse básica em primeira pessoa (`I have`, `eu tenho`, `yo tengo`, `j’ai`; em coreano, construção natural com `있어요`).
@@ -49,6 +52,18 @@ Há agora três alvos independentes em cada uma das competências atualmente vá
 1. identificar nome explícito em uma apresentação curta;
 2. identificar local de residência explícito em texto muito curto;
 3. identificar preferência explícita em texto muito curto.
+
+### Primeira função de interação textual controlada
+
+Além da fundação 3×3, agora existe um primeiro alvo interrogativo A1 para **perguntar o nome de alguém**.
+
+- EN: `What is your name?`
+- PT: `Qual é o seu nome?`
+- ES: `¿Cómo te llamas?`
+- FR: `Comment tu t’appelles ?`
+- KO: `이름이 뭐예요?`
+
+A atividade usa `REORDER` e `reviewKey` próprio por idioma. Ela treina formulação textual controlada de pergunta; NÃO é SPEAKING, pronúncia, diálogo livre ou conversação validada.
 
 ### Transferência entre formatos
 
@@ -72,8 +87,9 @@ A fundação starter mantém conteúdo em EN/PT/ES/FR/KO. Isso NÃO altera o gat
 - LISTENING real ainda depende de áudio real validado; não fabricar listening por texto.
 - SPEAKING/pronúncia continuam bloqueados até existir captura/análise honesta e critérios válidos.
 - WRITING livre ainda não deve ser tratado como competência avaliada enquanto não houver tarefas e avaliação adequadas.
-- O A1 ainda NÃO é um currículo completo; a cobertura atual é uma fundação balanceada.
-- Funções comunicativas ainda pouco cobertas incluem perguntas básicas, necessidades/pedidos, números/horas, família/pessoas, comida/compra e preferências produzidas pelo próprio aluno.
+- O A1 ainda NÃO é um currículo completo; a cobertura atual é uma fundação balanceada com início de interação textual controlada.
+- Perguntas básicas foram iniciadas, mas ainda faltam outros tipos úteis, como perguntar localização e preferência.
+- Outras funções ainda pouco cobertas: necessidades/pedidos, números/horas, família/pessoas, comida/compra e produção própria de preferências.
 
 ## Regras preservadas
 
@@ -88,8 +104,8 @@ A fundação starter mantém conteúdo em EN/PT/ES/FR/KO. Isso NÃO altera o gat
 
 ## Próxima frente recomendada
 
-1. Parar de expandir apenas por contagem: a base 3×3 de VOCABULARY/GRAMMAR/READING já está equilibrada.
-2. Próximo alvo funcional recomendado: **perguntas básicas A1** (por exemplo, perguntar nome/local/preferência) porque isso começa a transformar conhecimento declarativo em interação.
-3. Implementar primeiro como pequena fatia textual determinística; não chamar isso de SPEAKING nem conversação livre.
-4. Depois avaliar uma primeira unidade narrativa funcional curta com personagens oficiais, preservando `VISUAL_BIBLE.md` e sem fabricar mastery.
+1. Expandir perguntas básicas de modo funcional, não por quantidade: próximo candidato forte é perguntar **onde alguém mora** ou **do que alguém gosta**.
+2. Manter perguntas como prática textual determinística por enquanto; não chamar de speaking ou conversação livre.
+3. Depois conectar pergunta + resposta numa primeira microinteração textual entre personagens, sem alegar avaliação de conversação.
+4. Avaliar então uma primeira unidade narrativa funcional curta com personagens oficiais, preservando `VISUAL_BIBLE.md` e sem fabricar mastery.
 5. Continuar aguardando resposta do voluntário para revisão humana do placement coreano; não bloquear outras frentes.
