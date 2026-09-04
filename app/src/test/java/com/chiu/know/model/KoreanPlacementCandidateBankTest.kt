@@ -47,6 +47,25 @@ class KoreanPlacementCandidateBankTest {
     }
 
     @Test
+    fun correctAnswerPositionsAreNotPathologicallyConcentrated() {
+        val counts = candidateKoreanPlacementQuestions
+            .groupingBy { it.correctIndex }
+            .eachCount()
+
+        (0..3).forEach { index ->
+            val count = counts[index] ?: 0
+            assertTrue(
+                "Correct-answer position $index is underrepresented: $count of ${candidateKoreanPlacementQuestions.size}",
+                count >= 4
+            )
+            assertTrue(
+                "Correct-answer position $index is overrepresented: $count of ${candidateKoreanPlacementQuestions.size}",
+                count <= 8
+            )
+        }
+    }
+
+    @Test
     fun candidateExpansionPreservesStarterItemsWithoutEnablingProduction() {
         assertTrue(candidateKoreanPlacementQuestions.containsAll(starterKoreanPlacementQuestions))
         assertTrue(candidateKoreanPlacementQuestions.containsAll(additionalKoreanPlacementQuestions))
