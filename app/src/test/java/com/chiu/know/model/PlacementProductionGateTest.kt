@@ -47,17 +47,25 @@ class PlacementProductionGateTest {
     }
 
     @Test
-    fun remainingSupportedTargetsStayOnLegacyFoundationUntilEquivalentBankExists() {
-        supportedTargetLanguages
-            .map { it.code }
-            .filterNot { it in setOf("en", "pt", "es") }
-            .forEach { languageCode ->
-                val selection = placementRuntimeSelection(languageCode)
+    fun frenchUsesQualitySessionWithExpandedValidatedBank() {
+        val selection = placementRuntimeSelection("fr")
 
-                assertEquals(PlacementRuntimeMode.LEGACY_FOUNDATION, selection.mode)
-                assertEquals(starterPlacementQuestionsFor(languageCode), selection.questions)
-                assertFalse(isQualityPlacementEnabled(languageCode))
-            }
+        assertEquals(PlacementRuntimeMode.QUALITY_SESSION, selection.mode)
+        assertEquals(qualityFrenchPlacementQuestions, selection.questions)
+        assertEquals(24, selection.questions.size)
+        CefrLevel.entries.forEach { level ->
+            assertEquals(4, selection.questions.count { it.level == level })
+        }
+        assertTrue(isQualityPlacementEnabled("fr"))
+    }
+
+    @Test
+    fun koreanStaysOnLegacyFoundationUntilEquivalentBankExists() {
+        val selection = placementRuntimeSelection("ko")
+
+        assertEquals(PlacementRuntimeMode.LEGACY_FOUNDATION, selection.mode)
+        assertEquals(starterKoreanPlacementQuestions, selection.questions)
+        assertFalse(isQualityPlacementEnabled("ko"))
     }
 
     @Test
@@ -65,6 +73,14 @@ class PlacementProductionGateTest {
         val englishIds = qualityEnglishPlacementQuestions.map { it.id }.toSet()
         val portugueseIds = qualityPortuguesePlacementQuestions.map { it.id }.toSet()
         val spanishIds = qualitySpanishPlacementQuestions.map { it.id }.toSet()
+        val frenchIds = qualityFrenchPlacementQuestions.map { it.id }.toSet()
+        val qualityIdsByLanguage = mapOf(
+            "en" to englishIds,
+            "pt" to portugueseIds,
+            "es" to spanishIds,
+            "fr" to frenchIds
+        )
+        val allQualityIds = qualityIdsByLanguage.values.flatten().toSet()
 
         supportedTargetLanguages.forEach { language ->
             val selection = placementRuntimeSelection(language.code)
@@ -72,12 +88,8 @@ class PlacementProductionGateTest {
             assertEquals(language.code, selection.languageCode)
             assertTrue(selection.questions.isNotEmpty())
 
-            when (language.code) {
-                "en" -> assertTrue(selection.questions.none { it.id in portugueseIds || it.id in spanishIds })
-                "pt" -> assertTrue(selection.questions.none { it.id in englishIds || it.id in spanishIds })
-                "es" -> assertTrue(selection.questions.none { it.id in englishIds || it.id in portugueseIds })
-                else -> assertTrue(selection.questions.none { it.id in englishIds || it.id in portugueseIds || it.id in spanishIds })
-            }
+            val foreignQualityIds = allQualityIds - qualityIdsByLanguage[language.code].orEmpty()
+            assertTrue(selection.questions.none { it.id in foreignQualityIds })
         }
     }
 }
