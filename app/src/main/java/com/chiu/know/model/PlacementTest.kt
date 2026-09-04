@@ -45,10 +45,10 @@ val starterKoreanPlacementQuestions = listOf(
     PlacementQuestion("ko-b1-002", CefrLevel.B1, "한국에 가게 되면 한복을 꼭 ___.", listOf("입어 봤어요", "입고 있었어요", "입어 보고 싶어요", "입어야 했어요"), 2),
     PlacementQuestion("ko-b2-001", CefrLevel.B2, "집에 도착했을 때 동생은 이미 ___.", listOf("잠들고 있어요", "잠들 거예요", "잠들고 싶어요", "잠들어 있었어요"), 3),
     PlacementQuestion("ko-b2-002", CefrLevel.B2, "미리 알았더라면 그렇게 늦게 ___.", listOf("오지 않았을 거예요", "오지 않을 거예요", "오지 않았어요", "오지 못했을 거예요"), 0),
-    PlacementQuestion("ko-c1-001", CefrLevel.C1, "비가 많이 ___ 경기는 계속되었다.", listOf("오는 바람에", "왔으므로", "왔지만", "오자마자"), 2),
-    PlacementQuestion("ko-c1-002", CefrLevel.C1, "결과는 긍정적이다. ___ 추가적인 검토가 필요하다.", listOf("따라서", "마찬가지로", "덕분에", "그럼에도 불구하고"), 3),
-    PlacementQuestion("ko-c2-001", CefrLevel.C2, "그의 설명은 보고서가 제기한 의혹을 완전히 ___ 못했다.", listOf("해소하지", "뒷받침하지", "구체화하지", "정당화하지"), 0),
-    PlacementQuestion("ko-c2-002", CefrLevel.C2, "그 표현은 여러 해석의 여지를 남기도록 의도적으로 ___ 작성되었다.", listOf("명료하게", "모호하게", "단정적으로", "구체적으로"), 1)
+    PlacementQuestion("ko-c1-001", CefrLevel.C1, "예상보다 비용이 많이 들었___ 사업은 중단되지 않았다.", listOf("기 때문에", "음에 따라", "음에도 불구하고", "는 데다가"), 2),
+    PlacementQuestion("ko-c1-002", CefrLevel.C1, "연구 결과는 통계적으로 유의했다. ___ 표본의 대표성에는 한계가 있어 해석에 주의가 필요하다.", listOf("따라서", "즉", "마찬가지로", "그럼에도 불구하고"), 3),
+    PlacementQuestion("ko-c2-001", CefrLevel.C2, "그의 해명은 보고서가 제기한 핵심 의혹을 불식시키기는커녕 오히려 논란을 ___.", listOf("증폭시키는 결과를 낳았다", "뒷받침하는 근거로 작용했다", "구체화하는 데 그쳤다", "정당화할 여지를 없앴다"), 0),
+    PlacementQuestion("ko-c2-002", CefrLevel.C2, "그 표현은 책임 소재를 명확히 하지 않은 채 여러 해석의 여지를 남기도록 의도적으로 ___ 작성되었다.", listOf("단정적으로", "모호하게", "직설적으로", "구체적으로"), 1)
 )
 fun starterPlacementQuestionsFor(languageCode: String): List<PlacementQuestion> = when (languageCode) { "pt" -> starterPortuguesePlacementQuestions; "es" -> starterSpanishPlacementQuestions; "fr" -> starterFrenchPlacementQuestions; "ko" -> starterKoreanPlacementQuestions; else -> starterEnglishPlacementQuestions }
 fun placementQuestionsForLevel(questions: List<PlacementQuestion>, level: CefrLevel): List<PlacementQuestion> = questions.filter { it.level == level }
