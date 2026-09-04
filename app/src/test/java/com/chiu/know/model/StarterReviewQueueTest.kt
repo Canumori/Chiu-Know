@@ -9,7 +9,8 @@ class StarterReviewQueueTest {
     private val language = "en"
     private val level = CefrLevel.A1
     private val activities = starterLearningActivitiesFor(language)
-    private val vocabulary = activities.first { it.primarySkill == LearningSkill.VOCABULARY }
+    private val vocabulary = activities.first { it.id == "en-a1-greeting-001" }
+    private val gratitude = activities.first { it.id == "en-a1-gratitude-001" }
     private val grammar = activities.first { it.primarySkill == LearningSkill.GRAMMAR }
     private val reading = activities.first { it.primarySkill == LearningSkill.READING }
 
@@ -43,16 +44,48 @@ class StarterReviewQueueTest {
     }
 
     @Test
-    fun dueReviewStillWinsOverLearnerPreference() {
+    fun repeatedObservedNeedCanGuideAnotherUnscheduledTargetInSameSkill() {
         val preferences = LearnerPreferences(
             goal = LearningGoal.STUDY_OR_EXAM,
             priority = LearningPriority.READING,
             dailyMinutes = 35
         )
+        val evidence = listOf(
+            attempt(vocabulary, 10L, correct = false),
+            attempt(vocabulary, 20L, correct = false),
+            attempt(vocabulary, 30L, correct = true)
+        )
+
         val selection = starterQueueSelection(
             language,
             level,
-            evidence = listOf(attempt(vocabulary, 10L)),
+            evidence = evidence,
+            schedules = listOf(schedule(vocabulary.reviewKey, dueAt = 500L)),
+            nowEpochMillis = 100L,
+            preferences = preferences
+        )
+
+        assertEquals(StarterQueueReason.NEW_TARGET, selection.reason)
+        assertEquals(gratitude.reviewKey, selection.activity?.reviewKey)
+        assertEquals(LearningSkill.VOCABULARY, selection.activity?.primarySkill)
+    }
+
+    @Test
+    fun dueReviewStillWinsOverLearnerPreferenceAndObservedNeed() {
+        val preferences = LearnerPreferences(
+            goal = LearningGoal.STUDY_OR_EXAM,
+            priority = LearningPriority.READING,
+            dailyMinutes = 35
+        )
+        val evidence = listOf(
+            attempt(vocabulary, 10L, correct = false),
+            attempt(vocabulary, 20L, correct = false),
+            attempt(vocabulary, 30L, correct = true)
+        )
+        val selection = starterQueueSelection(
+            language,
+            level,
+            evidence = evidence,
             schedules = listOf(schedule(vocabulary.reviewKey, dueAt = 90L)),
             nowEpochMillis = 100L,
             preferences = preferences
@@ -109,11 +142,9 @@ class StarterReviewQueueTest {
 
     @Test
     fun reportsNextDueTimeWhenAllKnownTargetsAreFuture() {
-        val schedules = listOf(
-            schedule(vocabulary.reviewKey, dueAt = 500L),
-            schedule(grammar.reviewKey, dueAt = 400L),
-            schedule(reading.reviewKey, dueAt = 600L)
-        )
+        val schedules = activities
+            .distinctBy { it.reviewKey }
+            .mapIndexed { index, activity -> schedule(activity.reviewKey, dueAt = 400L + index * 100L) }
 
         val selection = starterQueueSelection(
             language,
@@ -136,8 +167,8 @@ class StarterReviewQueueTest {
         assertNull(selection.activity)
     }
 
-    private fun attempt(activity: LearningActivity, at: Long) =
-        learningEvidenceFor(activity, correct = true, attemptedAtEpochMillis = at)
+    private fun attempt(activity: LearningActivity, at: Long, correct: Boolean = true) =
+        learningEvidenceFor(activity, correct = correct, attemptedAtEpochMillis = at)
 
     private fun schedule(reviewKey: String, dueAt: Long) = ReviewScheduleState(
         reviewKey = reviewKey,
