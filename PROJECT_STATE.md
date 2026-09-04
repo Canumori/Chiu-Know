@@ -1,5 +1,36 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-03 21:18 BRT — CI #203 VERDE; IDENTIDADE DO BANCO E TETO GLOBAL DO PLACEMENT ENDURECIDOS
+
+Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
+
+### HEAD / CI validado
+- HEAD funcional/testes: commit `1424f49c45c505e433bff7be1b3eea1a5a6a74ef` — `test: prove placement cap fails closed across phases`.
+- Commit funcional anterior: `67c6b062fa0d59a6461af530af55c9b9c0924ae0` — `fix: enforce placement evidence cap during locating`.
+- Identidade global do banco: `0dba5b39dff74c43205486af4e6675bbedfcfe3f` + testes em `75974adcab5d6c23ec657f0e0a4b9aad428e9735`.
+- Android CI #201, run `33820906914`: `COMPLETED / SUCCESS` para a validação de IDs.
+- Android CI #203, run `33821090943`: `COMPLETED / SUCCESS` para o teto global e regressões de falha fechada.
+- Em ambos os marcos: testes unitários, build debug APK e upload do APK concluíram com sucesso.
+
+### Placement — novas garantias estruturais
+- `startPlacementSession()` agora falha antes de apresentar qualquer pergunta se existir ID vazio/em branco ou ID duplicado em qualquer ponto do banco da sessão.
+- Essa garantia é global e independe dos validadores específicos dos bancos de inglês/português/espanhol.
+- O máximo de evidência agora é respeitado também durante `LOCATE`: ao atingir o teto sem terminar a localização adaptativa, a sessão encerra como `MAX_EVIDENCE_INCONCLUSIVE`, sem apresentar pergunta extra e sem inventar/persistir CEFR.
+- Teste direcionado prova que, no teto, uma fila obrigatória de confirmação ainda incompleta não produz nível decidido: o estado termina inconclusivo, `NEEDS_MORE_EVIDENCE`, `decidedLevel == null`.
+- Continua valendo a invariante de apresentação real: sessão terminal não mantém `current`; perguntas não apresentadas não entram artificialmente em `usedQuestionIds`.
+
+### Estado que permanece válido
+- Inglês, português e espanhol continuam em `QUALITY_SESSION`, 24 questões por idioma, 4 por nível A1–C2.
+- Francês e coreano continuam em `LEGACY_FOUNDATION`; NÃO ativar `QUALITY_SESSION` até expansão e validação equivalentes.
+- UX explícita de `MAX_EVIDENCE_INCONCLUSIVE` versus `BANK_INSUFFICIENT` permanece integrada e localizada; nenhum nível é salvo nos dois casos.
+- Política atual permanece mínimo 8 / máximo 14 como regra de engenharia, sem alegação psicométrica ou confidence calibrada.
+
+### Próximo passo exato
+1. Revisar a semântica da evidência suplementar por `PlacementConfirmationRole` para garantir que evidência extra não altere thresholds de modo acidental ou enviesado; preservar a capacidade deliberada de evidência fresca resolver empate 1–1 no nível provisório.
+2. Confirmar por testes direcionados quais observações devem contar para `CONFIRMED`, `REVISED_UP` e `REVISED_DOWN`, distinguindo contrato obrigatório de evidência suplementar.
+3. Preservar a regra de no máximo uma faixa CEFR por revisão, nenhum score/confidence inventado e falha fechada em ambiguidade.
+4. Depois de estabilizar essa semântica com CI verde, iniciar expansão/revisão do francês para 24 questões e só então avaliar habilitação de `QUALITY_SESSION`; coreano depois pelo mesmo processo.
+
 ## ESTADO AUTORITATIVO — 2026-09-03 20:24 BRT — CI #198 VERDE; PLACEMENT EN/PT/ES ENDURECIDO E RESULTADO INCONCLUSIVO EXPLÍCITO NA UI
 
 Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar a frente.
