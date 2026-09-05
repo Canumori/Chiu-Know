@@ -23,13 +23,26 @@ class A1NarrativeSequenceActivitiesTest {
     }
 
     @Test
-    fun sequenceAnswersAreGroundedInTheFirstNarrativeTurnOrder() {
-        listOf("en", "pt", "es", "fr", "ko").forEach { languageCode ->
+    fun sequenceAnswersMatchTheTurnImmediatelyAfterResidenceReply() {
+        val residenceReplies = mapOf(
+            "en" to "I live in Rio.",
+            "pt" to "Eu moro no Rio.",
+            "es" to "Vivo en Río.",
+            "fr" to "J’habite à Rio.",
+            "ko" to "리우에 살아요."
+        )
+
+        residenceReplies.forEach { (languageCode, residenceReply) ->
             val narrative = a1FirstNarrativeMicroUnitFor(languageCode)!!
             val activity = a1NarrativeSequenceActivitiesFor(languageCode).single()
-            val accepted = activity.acceptedAnswers.single()
+            val residenceIndex = narrative.beats.indexOfFirst { it.text == residenceReply }
 
-            assertTrue(narrative.beats.any { it.text == accepted })
+            assertTrue(residenceIndex >= 0)
+            assertTrue(residenceIndex + 1 < narrative.beats.size)
+            assertEquals(
+                narrative.beats[residenceIndex + 1].text,
+                activity.acceptedAnswers.single()
+            )
         }
     }
 
