@@ -43,7 +43,7 @@ class A1TransferNarrativeComprehensionActivitiesTest {
     @Test
     fun transferChecksRemainOutsideStarterReviewQueue() {
         listOf("en", "pt", "es", "fr", "ko").forEach { languageCode ->
-            val starterKeys = starterReviewActivitiesFor(languageCode).map { it.reviewKey }.toSet()
+            val starterKeys = starterLearningActivitiesFor(languageCode).map { it.reviewKey }.toSet()
             val transferKeys = a1TransferNarrativeComprehensionActivitiesFor(languageCode)
                 .map { it.reviewKey }
                 .toSet()
