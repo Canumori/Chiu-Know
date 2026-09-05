@@ -1,5 +1,68 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-05 — PROGRESSÃO A1 DE TRANSFERÊNCIA PROTEGIDA ATÉ FILL_IN; CI #326 VERDE
+
+**ESTE É O BLOCO AUTORITATIVO MAIS RECENTE E PREVALECE SOBRE BLOCOS ANTIGOS CONFLITANTES.** O estado real do GitHub/Supabase continua sendo a fonte final da verdade. O histórico abaixo foi preservado integralmente para auditoria.
+
+### HEAD / CI confirmado neste checkpoint
+- HEAD de entrada: `b96278127da89761368f28e494cad0e8c493e319` — `test: guard A1 transfer fill-in retrieval`.
+- Android CI #326, run `33972809688`: `COMPLETED / SUCCESS`.
+- O commit anterior de produção `068758dfeff4d0e5b5b8c6fdcf251ac1e6938dd1` — `feat: add A1 transfer fill-in retrieval` — passou no Android CI #325, run `33968791015`.
+
+### Sequência A1 contextual já consolidada
+- Primeira narrativa: café (`A1FirstNarrativeMicroUnit.kt`), com compreensão factual, rastreamento de falante e sequência de turnos protegidos por testes.
+- Segunda narrativa de transferência: parque (`A1TransferNarrativeMicroUnit.kt`), recombinando formas A1 já introduzidas sem criar mastery/FSRS por si só.
+- Progressão pedagógica atual para a resposta de residência no parque:
+  1. reconhecimento/compreensão contextual;
+  2. recuperação com alternativas completas (`A1TransferNarrativeCuedRetrievalActivities.kt`);
+  3. reconstrução por tokens `REORDER` (`A1TransferNarrativeReorderRetrievalActivities.kt`);
+  4. recuperação com menos suporte lexical `FILL_IN` (`A1TransferNarrativeFillInRetrievalActivities.kt`).
+- Essa progressão segue o princípio: contexto → reconhecimento → recuperação com pistas → menos pistas → sem pistas → novo contexto → revisão espaçada → retenção/transferência.
+
+### Commits/CI desta frente desde o checkpoint anterior
+- `069de5a35e1546858117b599758a0d47d2386601` — `feat: add A1 narrative sequence comprehension` — CI #317 `SUCCESS`.
+- `1caa1c465ed80940086a2f4017283e9e62901a3d` — `feat: add A1 transfer narrative micro-unit` — CI #318 `SUCCESS`.
+- `d043c4a372883c74b84394c095928728a1757390` — `feat: add A1 transfer narrative comprehension` — CI #319 `FAILURE` por erro de compilação no teste ao chamar `starterReviewActivitiesFor`, não por falha do conteúdo de produção.
+- `3b802ec61667f502cf0b8ce7adbedbeeb180377f` — `fix: use starter learning entry point in transfer test` — CI #320 `SUCCESS`; correção apenas no teste, usando `starterLearningActivitiesFor`.
+- `e6e05fe2938e1944721145f463918c3b9f404b12` — `test: guard A1 narrative sequence comprehension` — CI #321 `SUCCESS`.
+- `08815e7853245627f2c6d9380e53242e2628828c` — `feat: add A1 transfer cued retrieval` — CI #322 `SUCCESS`.
+- `09c0322b12f7f2d4c75dbbf493e934ae92d8cb3f` — `feat: add A1 transfer reorder retrieval` — CI #323 `SUCCESS`.
+- `04dd1a459346051491b9017f95d16407cf789e1e` — `test: guard A1 transfer reorder retrieval` — CI #324 `SUCCESS`.
+- `068758dfeff4d0e5b5b8c6fdcf251ac1e6938dd1` — `feat: add A1 transfer fill-in retrieval` — CI #325 `SUCCESS`.
+- `b96278127da89761368f28e494cad0e8c493e319` — `test: guard A1 transfer fill-in retrieval` — CI #326 `SUCCESS`.
+
+### Coreano A1 nesta progressão
+- Formas centrais continuam revisadas por IA com rigor linguístico e não devem ser reabertas sem motivo real: `어디에 살아요?` → `리우에 살아요.`.
+- Segunda narrativa coreana: `공원에서 다시 만나요`.
+- Cued retrieval: pergunta `어디에 살아요?`, resposta correta `리우에 살아요.`, distrator `책을 좋아해요.`.
+- REORDER: prompt pede reconstrução da resposta; tokens `살아요.` + `리우에`; resposta aceita `리우에 살아요.`.
+- FILL_IN: prompt `리우에 ___.`; resposta aceita exatamente `살아요`; feedback reconstrói `리우에 살아요.`.
+- Esses formatos são fechados/determinísticos. Não chamar de escrita livre, speaking ou avaliação de pronúncia.
+
+### Guardrails técnicos/pedagógicos atuais
+- `REORDER` e `FILL_IN` usam semântica já existente no modelo `LearningActivity`; não foram inventados avaliadores novos.
+- Atividades de transferência permanecem fora da starter review queue e não criam automaticamente evidência FSRS, mastery, speaking ou pronúncia.
+- `FREE_TEXT` continua inadequado para esta etapa sem política explícita de respostas equivalentes, tolerância a erros e avaliação. Não usar ainda para “sem pistas”.
+- Erro continua contando como tentativa/exposição, não mastery.
+- Preferências do aprendiz continuam sendo planejamento, nunca CEFR/mastery/evidência.
+- Revisões vencidas continuam prioritárias.
+
+### Próximo passo seguro
+1. Confirmar CI deste checkpoint documental antes de nova mudança.
+2. Depois, antes de avançar para produção sem pistas, inspecionar novamente o comportamento real do avaliador e da UI para decidir se existe um formato fechado/determinístico adequado; não promover `FREE_TEXT` apenas porque o enum existe.
+3. Fortalecer o teste de sequência narrativa futuramente: o teste atual comprova que a resposta aceita aparece na narrativa, mas ainda não comprova de forma forte a adjacência imediata após a fala de residência.
+4. Continuar pequenas fatias, uma por vez, com revisão linguística rigorosa do coreano e CI verde.
+
+### Decisões permanentes preservadas
+- Coreano continua em `QUALITY_SESSION`; a exigência antiga de revisão humana obrigatória foi superada pela decisão posterior de segunda revisão rigorosa por IA. Isso NÃO é revisão humana, validação psicométrica, certificação CEFR nem validação independente.
+- Voz oficial privada `Chiu-animada-recorte-final.m4a`: não GitHub público, não fornecedor externo, não Supabase/APK sem autorização específica.
+- Visual absoluto: Chiu realista branco/cabelo castanho SOMENTE logo/ícone; Chiu amarelo/cartunesco SEMPRE interno; Jurandir é o mosquito definitivo; nova pose exige aprovação visual.
+- Supabase CHIU KNOW?: `uskxabsodcnzlovuaurp`; Supabase CHIU PLAYER `hpcbkvbrlwjnwlikmbfb` é proibido neste projeto. Nunca `service_role` no APK.
+- Usuária não programa: trabalhar autonomamente; não mandar terminal, edição manual de código, conflitos ou ZIP quando evitável.
+- Antes de writes: confirmar HEAD/CI e usar estado real; mudanças pequenas, reversíveis e testáveis; esperar CI verde antes de avançar.
+
+# CHIU KNOW? — PROJECT STATE
+
 ## ESTADO AUTORITATIVO — 2026-09-04 — COREANO REVISADO POR IA EM QUALITY_SESSION; CI #313 VERDE
 
 **ESTE É O BLOCO AUTORITATIVO MAIS RECENTE E PREVALECE SOBRE TODOS OS BLOCOS ANTIGOS CONFLITANTES DESTE ARQUIVO, especialmente os que exigem revisão humana como gate, mantêm `ko` em `LEGACY_FOUNDATION` ou proíbem `QUALITY_SESSION`.** O histórico antigo permanece abaixo apenas para auditoria. O estado real do GitHub/Supabase continua sendo a fonte final da verdade.
