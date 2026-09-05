@@ -2,8 +2,11 @@ package com.chiu.know.model
 
 /**
  * Controlled A1 comprehension checks that require tracking who said a line in
- * the first narrative micro-unit. These activities stay outside the starter
- * review queue and do not create FSRS evidence or imply mastery.
+ * the first narrative micro-unit. This adds a small comprehension step beyond
+ * locating an explicit preference or residence fact in the text.
+ *
+ * These activities stay outside the starter review queue and do not create
+ * FSRS evidence or imply mastery.
  */
 private val a1NarrativeSpeakerTrackingActivities = listOf(
     LearningActivity(
