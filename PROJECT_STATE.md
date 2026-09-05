@@ -1,5 +1,58 @@
 # CHIU KNOW? — PROJECT STATE
 
+## ESTADO AUTORITATIVO — 2026-09-04 — COREANO REVISADO POR IA EM QUALITY_SESSION; CI #313 VERDE
+
+**ESTE É O BLOCO AUTORITATIVO MAIS RECENTE E PREVALECE SOBRE TODOS OS BLOCOS ANTIGOS CONFLITANTES DESTE ARQUIVO, especialmente os que exigem revisão humana como gate, mantêm `ko` em `LEGACY_FOUNDATION` ou proíbem `QUALITY_SESSION`.** O histórico antigo permanece abaixo apenas para auditoria. O estado real do GitHub/Supabase continua sendo a fonte final da verdade.
+
+### HEAD / CI de entrada confirmado
+- HEAD antes deste checkpoint: `4ffb4a850eb76aee58f9339613a663b46f8b5761` — `docs: align Korean placement audit with reviewed rollout`.
+- Android CI #313, run `33934986156`: `COMPLETED / SUCCESS`.
+
+### Coreano — decisão vigente
+- A decisão antiga de exigir revisão humana qualificada como gate obrigatório foi **SUPERADA** por decisão posterior da usuária.
+- Como é difícil obter revisão humana gratuita, foi aprovado que a própria IA faça uma segunda revisão linguística rigorosa do coreano.
+- Isso NÃO é revisão humana, validação psicométrica, certificação CEFR nem validação independente.
+- Revisão humana externa continua desejável se futuramente disponível, mas **não é bloqueadora**.
+- Processo aprovado/executado: naturalidade, gramática, registro, contexto, resposta única, qualidade dos distratores, alternativas semanticamente plausíveis, pistas mecânicas, distribuição das posições corretas, progressão relativa, neutralidade cultural, correções dos itens problemáticos, testes automatizados e CI verde.
+
+### Placement coreano atual
+- Banco combinado: `candidateKoreanPlacementQuestions`, com 24 questões, 4 por rótulo interno A1–C2, em `PlacementTest.kt` + `KoreanPlacementExpansion.kt`.
+- A1–C2 são alvos internos de placement. Não alegar certificação/equivalência oficial CEFR, calibração psicométrica, validação independente ou equivalência automática com King Sejong.
+- Resultado é estimativa pedagógica de nível.
+- Correções de ambiguidade concluídas no commit `86d9edd8ce4de9a23b77bb1767f7da0efc3b7fc9` (`fix: remove ambiguity from Korean A1-A2 placement items`), CI #310 verde:
+  - `ko-a1-001`: `저___ 학생입니다.`; opções `는 / 를 / 에 / 와`; correta índice 0.
+  - `ko-a2-002`: `밖에 나가려는 친구에게 말합니다. "지금 비가 오니까 우산을 ___."`; opções `챙겼어요 / 챙길 거예요 / 챙기고 있어요 / 챙기세요`; correta índice 3.
+- Integridade protegida em `KoreanPlacementCandidateBankTest.kt`, commit `f0309cc1b2907fda1571a527120de10d7389bd5d`, CI #309 verde: 24 itens; 4 por A1–C2; IDs/prompts únicos; quatro opções; índice válido; sem vazios/duplicatas internas; ID coerente com nível; starter+expansion; posições corretas 0–3 entre 4 e 8 ocorrências cada. Isso é guardrail de engenharia, não validação psicométrica.
+- Auditoria: `KOREAN_PLACEMENT_AI_AUDIT_2026-09-04.md`, atualizada no commit `4ffb4a850eb76aee58f9339613a663b46f8b5761`; deve ser interpretada como segunda revisão rigorosa por IA, não revisão humana/psicometria/certificação.
+
+### Rollout vigente
+- Coreano habilitado em `QUALITY_SESSION` no commit `fc176c92cb769397fe283dc7bb85ecf6d381b5b9` — `feat: enable reviewed Korean quality placement`; Android CI #311, run `33930358594`: `SUCCESS`.
+- Estado validado: EN/PT/ES/FR/KO = `QUALITY_SESSION`.
+- `ko` usa exatamente `candidateKoreanPlacementQuestions` (24 itens). Não voltar a `LEGACY_FOUNDATION` por causa do histórico abaixo.
+
+### Conteúdo/narrativa coreana já existente
+- Formas A1 revisadas incluem `안녕하세요`, `저는 미아예요`, `저는 치우예요`, `이름이 뭐예요?`, `어디에 살아요?`, `리우에 살아요`, `무엇을 좋아해요?`, `커피를 좋아해요`, `저는 책이 있어요`, `감사합니다`, `고맙습니다`, `또 봐요`. Não reabrir sem motivo linguístico real.
+- `A1FirstNarrativeMicroUnit.kt`: `ko-a1-narrative-coffee-001`, título `카페에서 처음 만나요`, com Mia/Chiu e conceitos greeting/name/residence/preference.
+- `A1FirstNarrativeComprehensionActivities.kt`: leitura A1 específica da narrativa; pergunta sobre o que Chiu gosta, correta `커피`, distrator `리우`. Fora da starter queue normal e da evidência FSRS/mastery; sem speaking, áudio ou visual integrado.
+
+### Regras pedagógicas e próximas ações
+- Fluxo: contexto → reconhecimento → recuperação com pistas → menos pistas → sem pistas → novo contexto → revisão espaçada → retenção/transferência.
+- Regras duras permanecem fora da discricionariedade da IA: nível/elegibilidade, FSRS, revisões vencidas, limites de conteúdo, evidência, não fabricar mastery e não pular fundamentos.
+- Erro conta tentativa/exposição, não mastery. Preferências do aluno são planejamento, nunca evidência. Revisões vencidas têm prioridade.
+- Placement adaptativo: mínimo 8, máximo 14, evidência inicial + confirmação de fronteira, resultado inconclusivo explícito quando necessário, não salvar nível se `null`, sem fabricar revisão para baixo, subida mais rigorosa, no máximo uma banda durante confirmação. Nunca voltar a porcentagem fixa simples nem fabricar seis scores multidimensionais.
+- Depois do CI deste checkpoint, inspecionar o fluxo coreano real e escolher a próxima pequena fatia pedagógica de alto valor, provavelmente continuação A1 contextual/narrativa, mas sem executar cegamente.
+- Toda nova fatia coreana deve receber revisão linguística rigorosa por IA, contexto natural, respostas inequívocas, testes e CI verde. Sem visual novo sem aprovação; sem áudio até autorização.
+
+### Limites permanentes relevantes
+- `FREE_TEXT` ainda tem avaliador determinístico/simples; não chamar resposta fechada de escrita livre. Speaking/ASR/pronúncia real ainda não existe e nunca deve ser alegado como avaliado/dominado.
+- Voz oficial privada: `Chiu-animada-recorte-final.m4a` (~15,4 s / 309 KB). Não GitHub público, não fornecedor externo, não Supabase/APK sem autorização específica.
+- Visual: ler `VISUAL_BIBLE.md`; Chiu realista branco/cabelo castanho SOMENTE logo/ícone; Chiu amarelo/cartunesco SEMPRE interno. Jurandir é o mosquito definitivo. Masters aprovados não são redesenhados; nova pose exige aprovação visual prévia.
+- Supabase CHIU KNOW?: project `uskxabsodcnzlovuaurp`, org `aeerqbmrwulxsawhjyvm`, `sa-east-1`. CHIU PLAYER project `hpcbkvbrlwjnwlikmbfb`, org `nnrwosbnvdvzaoflwxlo`: PROIBIDO tocar/misturar. Nunca `service_role` no APK. Deep link `chiuknow://auth-callback` testado.
+- Usuária não programa: trabalhar autonomamente; não mandar terminal, edição de código, conflitos, ZIP ou decisões técnicas desnecessárias.
+- Antes de writes: confirmar HEAD/CI, refetch/usar SHA atual; mudanças pequenas, reversíveis e testáveis; esperar CI verde antes de avançar.
+
+# CHIU KNOW? — PROJECT STATE
+
 ## ESTADO AUTORITATIVO — 2026-09-04 — TEXTO DO PLACEMENT CORRIGIDO; PROTOCOLO HUMANO COREANO PRONTO; CI #238 VERDE
 
 Este bloco prevalece sobre trechos antigos conflitantes deste arquivo. O estado real do GitHub/Supabase continua prevalecendo sobre a documentação. Não recomeçar estas frentes.
