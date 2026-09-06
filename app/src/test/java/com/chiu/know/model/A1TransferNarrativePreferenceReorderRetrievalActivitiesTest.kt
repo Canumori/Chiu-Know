@@ -38,6 +38,19 @@ class A1TransferNarrativePreferenceReorderRetrievalActivitiesTest {
     }
 
     @Test
+    fun acceptedPreferenceReorderAnswerIsSpokenByMiaInTransferNarrative() {
+        supportedLanguages.forEach { languageCode ->
+            val narrative = a1TransferNarrativeMicroUnitFor(languageCode)!!
+            val activity = a1TransferNarrativePreferenceReorderRetrievalActivitiesFor(languageCode).single()
+            assertTrue(
+                narrative.beats.any {
+                    it.speaker == "Mia" && it.text == activity.acceptedAnswers.single()
+                }
+            )
+        }
+    }
+
+    @Test
     fun preferenceReorderRetrievalRemainsOutsideStarterReviewQueue() {
         supportedLanguages.forEach { languageCode ->
             val starterKeys = starterLearningActivitiesFor(languageCode).map { it.reviewKey }.toSet()
