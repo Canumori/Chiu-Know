@@ -25,11 +25,15 @@ class A1TransferNarrativePreferenceCuedRetrievalActivitiesTest {
     }
 
     @Test
-    fun acceptedPreferenceAnswerIsGroundedInTransferNarrative() {
+    fun acceptedPreferenceAnswerIsGroundedInMiasTransferNarrativeTurn() {
         supportedLanguages.forEach { languageCode ->
             val narrative = a1TransferNarrativeMicroUnitFor(languageCode)!!
             val activity = a1TransferNarrativePreferenceCuedRetrievalActivitiesFor(languageCode).single()
-            assertTrue(narrative.beats.any { it.text == activity.acceptedAnswers.single() })
+            assertTrue(
+                narrative.beats.any {
+                    it.speaker == "Mia" && it.text == activity.acceptedAnswers.single()
+                }
+            )
         }
     }
 
@@ -50,5 +54,6 @@ class A1TransferNarrativePreferenceCuedRetrievalActivitiesTest {
         assertTrue(activity.prompt.contains("무엇을 좋아해요?"))
         assertEquals(listOf("책을 좋아해요."), activity.acceptedAnswers)
         assertEquals(listOf("책을 좋아해요.", "리우에 살아요."), activity.responseOptions)
+        assertTrue(activity.feedback.contains("책을 좋아해요."))
     }
 }
