@@ -6,6 +6,13 @@ import org.junit.Test
 
 class A1TransferNarrativePreferenceFillInRetrievalActivitiesTest {
     private val supportedLanguages = listOf("en", "pt", "es", "fr", "ko")
+    private val expectedMiaReplies = mapOf(
+        "en" to "I like books.",
+        "pt" to "Eu gosto de livros.",
+        "es" to "Me gustan los libros.",
+        "fr" to "J’aime les livres.",
+        "ko" to "책을 좋아해요."
+    )
 
     @Test
     fun providesOneClosedA1PreferenceFillInRetrievalPerSupportedLanguage() {
@@ -20,6 +27,19 @@ class A1TransferNarrativePreferenceFillInRetrievalActivitiesTest {
             assertEquals(1, activity.acceptedAnswers.size)
             assertTrue(activity.acceptedAnswers.single().isNotBlank())
             assertTrue(activity.responseOptions.isEmpty())
+        }
+    }
+
+    @Test
+    fun completedPreferenceFillInIsGroundedInMiaTransferDialogue() {
+        supportedLanguages.forEach { languageCode ->
+            val narrative = a1TransferNarrativeMicroUnitFor(languageCode)!!
+            val activity = a1TransferNarrativePreferenceFillInRetrievalActivitiesFor(languageCode).single()
+            val expectedReply = expectedMiaReplies.getValue(languageCode)
+
+            assertTrue(expectedReply.contains(activity.acceptedAnswers.single()))
+            assertTrue(activity.feedback.contains(expectedReply))
+            assertTrue(narrative.beats.any { it.speaker == "Mia" && it.text == expectedReply })
         }
     }
 
