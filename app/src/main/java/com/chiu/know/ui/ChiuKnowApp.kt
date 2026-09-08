@@ -346,13 +346,14 @@ private fun PlacementTestIntroScreen(targetLanguage: LanguageOption, previousLev
 
 @Composable
 private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, total: Int?, onAnswer: (Int) -> Unit) {
+    var submitted by remember(question.id) { mutableStateOf(false) }
     CenteredColumn {
         if (total != null) {
             Text(stringResource(R.string.question_progress, number, total), style = MaterialTheme.typography.labelLarge)
         } else {
             Text("${stringResource(R.string.placement_title)} · $number", style = MaterialTheme.typography.labelLarge)
         }
-        Spacer(Modifier.height(12.dp)); Text(question.level.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(20.dp)); Text(question.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(28.dp)); question.options.forEachIndexed { index, option -> OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { onAnswer(index) }) { Text(option) }; Spacer(Modifier.height(10.dp)) }
+        Spacer(Modifier.height(12.dp)); Text(question.level.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(20.dp)); Text(question.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(28.dp)); question.options.forEachIndexed { index, option -> OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = !submitted, onClick = { if (!submitted) { submitted = true; onAnswer(index) } }) { Text(option) }; Spacer(Modifier.height(10.dp)) }
     }
 }
 
