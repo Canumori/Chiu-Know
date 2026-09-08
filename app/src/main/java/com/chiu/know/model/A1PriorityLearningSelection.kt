@@ -67,7 +67,7 @@ fun a1PriorityLearningSelection(
             .mapTo(hashSetOf()) { it.reviewKey }
 
         if (oldestDueReviewKey in secondTransferReviewKeys) {
-            val transferQueue = a1SecondTransferReviewQueueSelection(
+            val transferQueue = a1SecondTransferReviewSelection(
                 languageCode = languageCode,
                 evidence = evidence,
                 schedules = schedules,
