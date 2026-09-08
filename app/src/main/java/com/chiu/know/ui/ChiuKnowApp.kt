@@ -69,6 +69,7 @@ import com.chiu.know.model.decodeLearningEvidenceSet
 import com.chiu.know.model.decodeReviewScheduleStateSet
 import com.chiu.know.model.encodeLearningEvidence
 import com.chiu.know.model.isLearningAnswerCorrect
+import com.chiu.know.model.learningActivityForOptionalPractice
 import com.chiu.know.model.learningActivityQueueSelection
 import com.chiu.know.model.learningEvidenceFor
 import com.chiu.know.model.persistedLearnerPreferences
@@ -79,7 +80,6 @@ import com.chiu.know.model.restoredLearnerPreferences
 import com.chiu.know.model.startAdaptivePlacement
 import com.chiu.know.model.startPlacementSession
 import com.chiu.know.model.starterLearningActivityFor
-import com.chiu.know.model.starterLearningActivityForEvidence
 import com.chiu.know.model.supportedInterfaceLanguages
 import com.chiu.know.model.supportedTargetLanguages
 import com.chiu.know.model.temporaryVoiceSamples
@@ -282,7 +282,7 @@ fun ChiuKnowApp() {
                     }
                     var optionalPracticeRequested by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(false) }
                     val optionalPracticeActivity = if (optionalPracticeRequested) {
-                        starterLearningActivityForEvidence(targetLanguage.code, estimatedLevel, persistedLearningEvidence)
+                        learningActivityForOptionalPractice(targetLanguage.code, estimatedLevel, persistedLearningEvidence)
                     } else {
                         null
                     }
