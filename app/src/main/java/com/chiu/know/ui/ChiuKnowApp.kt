@@ -69,6 +69,7 @@ import com.chiu.know.model.decodeLearningEvidenceSet
 import com.chiu.know.model.decodeReviewScheduleStateSet
 import com.chiu.know.model.encodeLearningEvidence
 import com.chiu.know.model.isLearningAnswerCorrect
+import com.chiu.know.model.learningActivityQueueSelection
 import com.chiu.know.model.learningEvidenceFor
 import com.chiu.know.model.persistedLearnerPreferences
 import com.chiu.know.model.placementQuestionForLevel
@@ -79,7 +80,6 @@ import com.chiu.know.model.startAdaptivePlacement
 import com.chiu.know.model.startPlacementSession
 import com.chiu.know.model.starterLearningActivityFor
 import com.chiu.know.model.starterLearningActivityForEvidence
-import com.chiu.know.model.starterQueueSelection
 import com.chiu.know.model.supportedInterfaceLanguages
 import com.chiu.know.model.supportedTargetLanguages
 import com.chiu.know.model.temporaryVoiceSamples
@@ -271,7 +271,7 @@ fun ChiuKnowApp() {
                 AppStep.VOICE_PREVIEW -> VoiceSampleScreen(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
                 AppStep.LEARNING_ACTIVITY -> {
                     val queue = remember(targetLanguage.code, estimatedLevel, learnerPreferences, persistedLearningEvidence, persistedReviewSchedules) {
-                        starterQueueSelection(
+                        learningActivityQueueSelection(
                             languageCode = targetLanguage.code,
                             level = estimatedLevel,
                             evidence = persistedLearningEvidence,
