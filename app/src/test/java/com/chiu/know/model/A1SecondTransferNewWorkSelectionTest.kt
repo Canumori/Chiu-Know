@@ -48,7 +48,7 @@ class A1SecondTransferNewWorkSelectionTest {
                     activityId = "synthetic-$languageCode-prerequisite-$index",
                     reviewKey = reviewKey,
                     level = CefrLevel.A2,
-                    skill = LearningSkill.READING,
+                    primarySkill = LearningSkill.READING,
                     correct = true,
                     attemptedAtEpochMillis = index.toLong() + 1L
                 )
@@ -130,7 +130,7 @@ class A1SecondTransferNewWorkSelectionTest {
             activityId = "synthetic-${unit.narrative.languageCode}-prerequisite-$index",
             reviewKey = reviewKey,
             level = CefrLevel.A1,
-            skill = LearningSkill.READING,
+            primarySkill = LearningSkill.READING,
             correct = correct,
             attemptedAtEpochMillis = index.toLong() + 1L
         )
@@ -144,7 +144,7 @@ class A1SecondTransferNewWorkSelectionTest {
         activityId = activity.id,
         reviewKey = activity.reviewKey,
         level = activity.level,
-        skill = activity.primarySkill,
+        primarySkill = activity.primarySkill,
         correct = correct,
         attemptedAtEpochMillis = time
     )
