@@ -85,6 +85,7 @@ import com.chiu.know.model.supportedTargetLanguages
 import com.chiu.know.model.temporaryVoiceSamples
 import com.chiu.know.model.updateReviewScheduleStateSet
 import com.chiu.know.model.voiceSamplePhrase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.util.Date
@@ -270,7 +271,8 @@ fun ChiuKnowApp() {
                 AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel, starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, { step = AppStep.LEARNING_ACTIVITY }, { step = AppStep.VOICE_PREVIEW }) { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
                 AppStep.VOICE_PREVIEW -> VoiceSampleScreen(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
                 AppStep.LEARNING_ACTIVITY -> {
-                    val queue = remember(targetLanguage.code, estimatedLevel, learnerPreferences, persistedLearningEvidence, persistedReviewSchedules) {
+                    var queueRefreshTick by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
+                    val queue = remember(targetLanguage.code, estimatedLevel, learnerPreferences, persistedLearningEvidence, persistedReviewSchedules, queueRefreshTick) {
                         learningActivityQueueSelection(
                             languageCode = targetLanguage.code,
                             level = estimatedLevel,
@@ -287,6 +289,15 @@ fun ChiuKnowApp() {
                         null
                     }
                     val activity = optionalPracticeActivity ?: queue.activity
+
+                    LaunchedEffect(queue.reason, queue.nextDueAtEpochMillis, optionalPracticeRequested) {
+                        val nextDueAtEpochMillis = queue.nextDueAtEpochMillis
+                        if (queue.reason == StarterQueueReason.NONE_DUE && !optionalPracticeRequested && nextDueAtEpochMillis != null) {
+                            val delayMillis = nextDueAtEpochMillis - System.currentTimeMillis()
+                            if (delayMillis > 0L) delay(delayMillis)
+                            queueRefreshTick++
+                        }
+                    }
 
                     when {
                         queue.reason == StarterQueueReason.NO_CONTENT ->
