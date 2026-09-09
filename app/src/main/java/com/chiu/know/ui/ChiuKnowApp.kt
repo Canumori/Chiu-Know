@@ -283,12 +283,13 @@ fun ChiuKnowApp() {
                         )
                     }
                     var optionalPracticeRequested by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(false) }
+                    var feedbackActivity by remember(targetLanguage.code, estimatedLevel) { mutableStateOf<LearningActivity?>(null) }
                     val optionalPracticeActivity = if (optionalPracticeRequested) {
                         learningActivityForOptionalPractice(targetLanguage.code, estimatedLevel, persistedLearningEvidence)
                     } else {
                         null
                     }
-                    val activity = optionalPracticeActivity ?: queue.activity
+                    val activity = if (optionalPracticeRequested) optionalPracticeActivity else feedbackActivity ?: queue.activity
 
                     LaunchedEffect(queue.reason, queue.nextDueAtEpochMillis, optionalPracticeRequested) {
                         val nextDueAtEpochMillis = queue.nextDueAtEpochMillis
@@ -300,17 +301,10 @@ fun ChiuKnowApp() {
                     }
 
                     when {
-                        queue.reason == StarterQueueReason.NO_CONTENT ->
-                            LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
-                        queue.reason == StarterQueueReason.NONE_DUE && !optionalPracticeRequested ->
-                            ReviewUpToDateScreen(
-                                nextDueAtEpochMillis = queue.nextDueAtEpochMillis,
-                                onPracticeMore = { optionalPracticeRequested = true },
-                                onBack = { step = AppStep.LEARNING_TRAIL }
-                            )
                         activity != null ->
                             LearningActivityScreen(activity, onAttempt = { learnerAnswer ->
                                 if (!optionalPracticeRequested) {
+                                    feedbackActivity = activity
                                     val correct = isLearningAnswerCorrect(activity, learnerAnswer)
                                     val evidence = learningEvidenceFor(activity, correct, System.currentTimeMillis())
                                     coroutineScope.launch {
@@ -326,7 +320,18 @@ fun ChiuKnowApp() {
                                         }
                                     }
                                 }
-                            }) { step = AppStep.LEARNING_TRAIL }
+                            }) {
+                                feedbackActivity = null
+                                step = AppStep.LEARNING_TRAIL
+                            }
+                        queue.reason == StarterQueueReason.NO_CONTENT ->
+                            LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
+                        queue.reason == StarterQueueReason.NONE_DUE && !optionalPracticeRequested ->
+                            ReviewUpToDateScreen(
+                                nextDueAtEpochMillis = queue.nextDueAtEpochMillis,
+                                onPracticeMore = { optionalPracticeRequested = true },
+                                onBack = { step = AppStep.LEARNING_TRAIL }
+                            )
                     }
                 }
             }
