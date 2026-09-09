@@ -284,6 +284,7 @@ fun ChiuKnowApp() {
                     }
                     var optionalPracticeRequested by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(false) }
                     var feedbackActivity by remember(targetLanguage.code, estimatedLevel) { mutableStateOf<LearningActivity?>(null) }
+                    var pendingLearningPersistenceCount by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
                     val optionalPracticeActivity = if (optionalPracticeRequested) {
                         learningActivityForOptionalPractice(targetLanguage.code, estimatedLevel, persistedLearningEvidence)
                     } else {
@@ -302,28 +303,43 @@ fun ChiuKnowApp() {
 
                     when {
                         activity != null ->
-                            LearningActivityScreen(activity, onAttempt = { learnerAnswer ->
-                                if (!optionalPracticeRequested) {
-                                    feedbackActivity = activity
-                                    val correct = isLearningAnswerCorrect(activity, learnerAnswer)
-                                    val evidence = learningEvidenceFor(activity, correct, System.currentTimeMillis())
-                                    coroutineScope.launch {
-                                        context.languagePreferencesDataStore.edit { prefs ->
-                                            val key = learningEvidenceKey(targetLanguage.code)
-                                            val current = prefs[key].orEmpty()
-                                            prefs[key] = current + encodeLearningEvidence(evidence)
-                                            val scheduleKey = reviewScheduleKey(targetLanguage.code)
-                                            prefs[scheduleKey] = updateReviewScheduleStateSet(
-                                                encoded = prefs[scheduleKey].orEmpty(),
-                                                evidence = evidence
-                                            )
+                            LearningActivityScreen(
+                                activity = activity,
+                                onAttempt = { learnerAnswer ->
+                                    if (!optionalPracticeRequested) {
+                                        feedbackActivity = activity
+                                        val correct = isLearningAnswerCorrect(activity, learnerAnswer)
+                                        val evidence = learningEvidenceFor(activity, correct, System.currentTimeMillis())
+                                        pendingLearningPersistenceCount++
+                                        coroutineScope.launch {
+                                            try {
+                                                context.languagePreferencesDataStore.edit { prefs ->
+                                                    val key = learningEvidenceKey(targetLanguage.code)
+                                                    val current = prefs[key].orEmpty()
+                                                    prefs[key] = current + encodeLearningEvidence(evidence)
+                                                    val scheduleKey = reviewScheduleKey(targetLanguage.code)
+                                                    prefs[scheduleKey] = updateReviewScheduleStateSet(
+                                                        encoded = prefs[scheduleKey].orEmpty(),
+                                                        evidence = evidence
+                                                    )
+                                                }
+                                            } finally {
+                                                pendingLearningPersistenceCount--
+                                            }
                                         }
                                     }
+                                },
+                                canContinue = !optionalPracticeRequested && pendingLearningPersistenceCount == 0,
+                                onContinue = if (!optionalPracticeRequested) {
+                                    { feedbackActivity = null }
+                                } else {
+                                    null
+                                },
+                                onBack = {
+                                    feedbackActivity = null
+                                    step = AppStep.LEARNING_TRAIL
                                 }
-                            }) {
-                                feedbackActivity = null
-                                step = AppStep.LEARNING_TRAIL
-                            }
+                            )
                         queue.reason == StarterQueueReason.NO_CONTENT ->
                             LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
                         queue.reason == StarterQueueReason.NONE_DUE && !optionalPracticeRequested ->
@@ -498,7 +514,13 @@ private fun ReviewUpToDateScreen(
 }
 
 @Composable
-private fun LearningActivityScreen(activity: LearningActivity, onAttempt: (String) -> Unit, onBack: () -> Unit) {
+private fun LearningActivityScreen(
+    activity: LearningActivity,
+    onAttempt: (String) -> Unit,
+    canContinue: Boolean,
+    onContinue: (() -> Unit)?,
+    onBack: () -> Unit
+) {
     var answer by remember(activity.id) { mutableStateOf("") }
     var selectedTokenIndices by remember(activity.id) { mutableStateOf(emptyList<Int>()) }
     var checked by remember(activity.id) { mutableStateOf(false) }
@@ -551,6 +573,12 @@ private fun LearningActivityScreen(activity: LearningActivity, onAttempt: (Strin
             Text(if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
             Text("${stringResource(R.string.activity_feedback)}: ${activity.feedback}", style = MaterialTheme.typography.bodyLarge)
+            if (correct && onContinue != null) {
+                Spacer(Modifier.height(16.dp))
+                Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = canContinue, onClick = onContinue) {
+                    Text(stringResource(R.string.continue_button))
+                }
+            }
         }
         Spacer(Modifier.height(20.dp))
         OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) }
