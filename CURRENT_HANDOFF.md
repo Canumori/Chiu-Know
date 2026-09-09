@@ -1,344 +1,266 @@
 # CHIU KNOW? — CURRENT HANDOFF
 
-## FINALIDADE DESTE ARQUIVO
+## AUTORITATIVO — 2026-09-09 — SUPERSEDE O HANDOFF ANTIGO
 
-Este arquivo existe para impedir que um novo chat retome o CHIU KNOW? a partir de memória incompleta, resumos antigos ou do topo atualmente desatualizado de `PROJECT_STATE.md`.
+Este arquivo substitui o handoff antigo que ainda estava parado no CI #345. Ele registra o estado real e recente do projeto até o código verde no CI #394.
 
-**Regra operacional:** o estado real do GitHub em `main` é sempre a fonte final da verdade. Este handoff registra o estado confirmado imediatamente antes de sua criação. Ao iniciar um novo chat, a primeira ação deve ser buscar novamente o HEAD real de `main` e o Android CI correspondente a esse HEAD.
+A fonte final da verdade continua sendo sempre o GitHub real em `main` + Android CI do SHA exato. Nunca confiar apenas em memória de chat, em resumo antigo ou no topo histórico de `PROJECT_STATE.md`.
 
-O `PROJECT_STATE.md` é muito grande e as leituras atuais podem ser truncadas. **NÃO sobrescrever `PROJECT_STATE.md` a partir de conteúdo truncado.** Só alterá-lo se for possível fazer round-trip do conteúdo integral, com SHA atual do blob. Enquanto isso, este `CURRENT_HANDOFF.md` registra o checkpoint operacional mais recente e deve ser lido junto com `PROJECT_STATE.md`, `PRODUCT_SPEC.md` e `PEDAGOGY_ARCHITECTURE.md`.
+`PROJECT_STATE.md` é muito grande e pode ser retornado truncado. **NUNCA sobrescrever `PROJECT_STATE.md` a partir de uma leitura truncada.** O arquivo operacional compacto é `PROJECT_STATE_CURRENT.md`; este `CURRENT_HANDOFF.md` é o complemento mais recente e, nesta data, contém fatos posteriores ao checkpoint documental que registra verde até o CI #392.
 
 ---
 
-# 1. REPOSITÓRIO E WORKFLOW
+# 1. REPOSITÓRIO / BRANCH / REGRA ZERO
 
 - Repositório: `Canumori/Chiu-Know`
 - Branch autoritativa: `main`
-- O repositório está público intencionalmente por causa dos minutos de GitHub Actions.
-- O estado real de `main` prevalece sobre memória, resumos de chat e documentação histórica.
+- Repo atualmente público para aproveitar minutos de GitHub Actions; isso não autoriza publicar voz privada, segredos ou dados sensíveis.
+- Nunca reiniciar o projeto.
+- Nunca recriar arquitetura já existente sem provar regressão real.
+- Nunca pedir à usuária para programar, usar terminal ou resolver conflito manualmente se as ferramentas conectadas puderem executar o trabalho.
 
-## Regra obrigatória antes de qualquer write
+## GATE OBRIGATÓRIO ANTES DE QUALQUER WRITE
 
 1. Buscar o HEAD real de `main`.
 2. Buscar o Android CI correspondente **exatamente** ao SHA desse HEAD.
-3. Se CI estiver `queued` ou `in_progress`, não escrever nada: parar no gate.
-4. Se CI falhou, inspecionar jobs/logs e corrigir somente a falha real.
-5. Se CI passou, reler qualquer arquivo que será alterado e usar seu SHA atual.
-6. Fazer mudança pequena, reversível e testável.
-7. Depois do commit, aguardar o Android CI desse commit.
-8. Só avançar novamente com CI verde.
+3. Se CI estiver `queued` ou `in_progress`: não escrever nada; parar no gate.
+4. Se CI falhar: inspecionar jobs/logs e corrigir apenas a falha real.
+5. Se CI estiver `success`: reler cada arquivo a alterar e usar o SHA atual do blob.
+6. Fazer uma única mudança pequena, reversível e testável.
+7. Depois do commit, verificar o Android CI do novo SHA exato.
+8. Não empilhar produção + teste + docs atrás de CI em andamento.
 
-Nunca fazer writes sequenciais concorrentes no mesmo arquivo.
-Nunca assumir que um commit mencionado neste handoff ainda é o HEAD quando o novo chat começar.
-
----
-
-# 2. CHECKPOINT DE CÓDIGO CONFIRMADO ANTES DESTE HANDOFF
-
-Checkpoint de código confirmado imediatamente antes da criação deste documento:
-
-- `e8f7b8e34a3f5fb97e1238da9dde0d99ffe33aa6`
-- mensagem: `test: guard second transfer preference cued retrieval`
-- Android CI #345, run `34137900321`: `COMPLETED / SUCCESS`.
-
-O commit de produção imediatamente anterior também está verde:
-
-- `d949d54da8fcdb4397b401bf25a6df30b1aedb43`
-- mensagem: `feat: add second transfer preference cued retrieval`
-- Android CI #344, run `34127261384`: `COMPLETED / SUCCESS`.
-
-**IMPORTANTE:** depois que este arquivo foi criado, `main` ganhou um novo commit documental. O próximo chat deve buscar o HEAD atual em vez de assumir que `e8f7b8e3...` ainda é o HEAD.
+Se falhar somente infraestrutura externa do GitHub depois de testes/build terem passado, não alterar código de produto. Inspecionar o passo real; rerun no mesmo SHA é aceitável quando os logs provarem falha externa/transitória.
 
 ---
 
-# 3. HISTÓRICO RECENTE — CI #339 A #345
+# 2. HEAD REAL CONFIRMADO ANTES DESTE HANDOFF
 
-## CI #339 — sucesso
-- commit `01b69eae1f16336c6355270a7c83425231b456e0`
-- `feat: add second A1 transfer narrative`
-- criou a terceira narrativa A1 / segundo contexto controlado de transferência, com Barto + Chiu em uma praça.
+HEAD confirmado imediatamente antes desta atualização documental:
 
-## CI #340 — sucesso
-- commit `d7942f132c7c558eaf3e164201cc8d212858a20b`
-- `test: guard second A1 transfer narrative`
-- adicionou guard estrutural da nova narrativa.
+- SHA: `d880f924008d11ea331bb8b0c553a0678e8d6559`
+- mensagem: `fix: serialize learning retries with persistence`
+- Android CI #394
+- run: `34372882404`
+- estado: `COMPLETED / SUCCESS`
 
-## CI #341 — falha conhecida e corrigida
-- commit `e801a2663cf74840b76f6496c8c2653c8ded0202`
-- `feat: add second A1 transfer comprehension`
-- falhou por incompatibilidade com o modelo real `LearningActivity`:
-  - foi usado um parâmetro inexistente `languageCode`;
-  - faltavam `learningObjective` e `knowledgeTarget`;
-  - o accessor tentou filtrar por `activity.languageCode`, propriedade inexistente.
-- isso foi erro de implementação/compilação, não problema pedagógico do conteúdo.
+Commit pai:
 
-## CI #342 — sucesso
-- commit `71604b19f4187a35216fc64e4d5d21f00ba086d5`
-- `fix: align second transfer comprehension model`
-- correção alinhada ao contrato real de `LearningActivity`:
-  - sem `languageCode` no objeto;
-  - com `learningObjective` e `knowledgeTarget`;
-  - filtragem por prefixo do `id`.
+- `ab01d129277ed3a4c905bc9ffa35e241c9b8ea24`
+- `docs: record green state through CI 392`
+- Android CI #393, run `34357428947`: `COMPLETED / SUCCESS`.
 
-## CI #343 — sucesso
-- commit `384cd0b1e3ee8b475d7cdb9ea8ad526abc7e7093`
-- `test: guard second A1 transfer comprehension`
-- teste dedicado da compreensão da segunda transferência.
-
-## CI #344 — sucesso
-- commit `d949d54da8fcdb4397b401bf25a6df30b1aedb43`
-- `feat: add second transfer preference cued retrieval`
-- criou recuperação com pista da preferência no novo contexto.
-
-## CI #345 — sucesso
-- commit `e8f7b8e34a3f5fb97e1238da9dde0d99ffe33aa6`
-- `test: guard second transfer preference cued retrieval`
-- protegeu a atividade contra regressões de estrutura, grounding narrativo, starter queue e coreano.
+IMPORTANTE: este handoff cria um novo commit documental depois de `d880f924...`. Portanto o próximo chat **NÃO deve assumir que `d880f924...` ainda é HEAD**; deve buscar `main` novamente e conferir o CI do novo commit documental antes de qualquer write.
 
 ---
 
-# 4. TERCEIRA NARRATIVA A1 / SEGUNDO CONTEXTO DE TRANSFERÊNCIA
+# 3. SEQUÊNCIA RECENTE PROTEGIDA — CI #384 A #394
 
-Arquivo:
-`app/src/main/java/com/chiu/know/model/A1SecondTransferNarrativeMicroUnit.kt`
+## CI #384 — SUCCESS
+`5e5a8e9672e9979f721a099b1854ee6a9d8bb4ae`
+`fix: prevent duplicate learning attempt submission`
 
-Accessor:
-`a1SecondTransferNarrativeMicroUnitFor(languageCode: String)`
+Verify passou a ficar desabilitado quando `checked == true`, impedindo reenvio óbvio da mesma tentativa.
 
-Objetivo:
-- mudar interlocutor e cenário;
-- reutilizar residência e preferência já introduzidas;
-- testar transferência contextual;
-- não criar mastery/FSRS por si só;
-- não fingir free writing, conversação, speaking ou pronúncia.
+## CI #385 — SUCCESS
+`a1e8f03000b8708f2fa09a37c57efb630baa7740`
+`fix: guard rapid duplicate learning submission`
 
-Exatamente uma narrativa por EN/PT/ES/FR/KO, A1, 6 beats.
+Adicionou guard no handler `if (!checked)` para fechar a janela de double tap antes da recomposição.
 
-## EN
-- id `en-a1-narrative-square-003`
-- title `A meeting in the square`
-- setting `Barto meets Chiu in a small square.`
-- Barto: `Hello, Chiu!`
-- Chiu: `Hello, Barto!`
-- Barto: `Where do you live?`
-- Chiu: `I live in Rio.`
-- Barto: `What do you like?`
-- Chiu: `I like coffee.`
+## CI #386 — SUCCESS
+`f8eedfa0f3b49c141a97be85b98ce4d347a828c5`
+`fix: refresh learning queue when review becomes due`
 
-## PT
-- id `pt-a1-narrative-praca-003`
-- title `Um encontro na praça`
-- setting `Barto encontra Chiu em uma pequena praça.`
-- Barto: `Olá, Chiu!`
-- Chiu: `Olá, Barto!`
-- Barto: `Onde você mora?`
-- Chiu: `Eu moro no Rio.`
-- Barto: `Do que você gosta?`
-- Chiu: `Eu gosto de café.`
+A fila `NONE_DUE` passa a acordar em `nextDueAtEpochMillis` e recomputar sem exigir sair/entrar na tela. Não cria scheduler novo e não muda cálculo de due date.
 
-## ES
-- id `es-a1-narrative-plaza-003`
-- title `Un encuentro en la plaza`
-- setting `Barto se encuentra con Chiu en una pequeña plaza.`
-- Barto: `¡Hola, Chiu!`
-- Chiu: `¡Hola, Barto!`
-- Barto: `¿Dónde vives?`
-- Chiu: `Vivo en Río.`
-- Barto: `¿Qué te gusta?`
-- Chiu: `Me gusta el café.`
+## CI #387 — mesmo SHA, tentativa 2 SUCCESS
+`1efce976987aaa00707065a00bbea5e95cce7681`
+`fix: guard rapid duplicate placement submission`
 
-## FR
-- id `fr-a1-narrative-place-003`
-- title `Une rencontre sur la place`
-- setting `Barto rencontre Chiu sur une petite place.`
-- Barto: `Bonjour, Chiu !`
-- Chiu: `Bonjour, Barto !`
-- Barto: `Où est-ce que tu habites ?`
-- Chiu: `J’habite à Rio.`
-- Barto: `Qu’est-ce que tu aimes ?`
-- Chiu: `J’aime le café.`
+Tentativa 1 falhou apenas no `actions/upload-artifact` com HTTP 403 externo depois de testes e build terem passado. Nenhum código foi alterado. Rerun do mesmo SHA terminou verde.
 
-## KO
-- id `ko-a1-narrative-square-003`
-- title `광장에서 만나요`
-- setting `바르토가 작은 광장에서 치우를 만나요.`
-- Barto: `안녕하세요, 치우!`
-- Chiu: `안녕하세요, 바르토!`
-- Barto: `어디에 살아요?`
-- Chiu: `리우에 살아요.`
-- Barto: `무엇을 좋아해요?`
-- Chiu: `커피를 좋아해요.`
+Placement agora mantém flag de submissão por `question.id`; primeira escolha fecha a questão e nova pergunta reseta pelo ID.
 
-Os `linkedReviewKeys` reutilizam os targets de greeting/residence/preference já existentes em cada idioma.
+## CI #388 — SUCCESS
+`3158be3f79237aa98220838dd65003212b0890e4`
+`docs: record green state through CI 387`
 
----
+## CI #389 — SUCCESS
+`491112b4c54736e48fce1d42404b5c3a83a5d374`
+`fix: require changed multiple-choice answer for retry`
 
-# 5. COMPREENSÃO DA SEGUNDA TRANSFERÊNCIA — COMPLETA E PROTEGIDA
+Depois do feedback, tocar de novo na mesma opção MULTIPLE_CHOICE não reseta `checked`. Selecionar opção diferente é mudança real e reseta `checked=false`, permitindo retry genuíno.
 
-Produção:
-`app/src/main/java/com/chiu/know/model/A1SecondTransferNarrativeComprehensionActivities.kt`
+## CI #390 — SUCCESS
+`82683504452ae606d4327f0a0508cd639da8e30f`
+`docs: record green state through CI 389`
 
-Teste:
-`app/src/test/java/com/chiu/know/model/A1SecondTransferNarrativeComprehensionActivitiesTest.kt`
+## CI #391 — SUCCESS
+`0b37447ccdabfde5f8b4699605468ca37dffcfdb`
+`fix: keep learning feedback visible after persistence`
 
-Estado:
-- produção corrigida no CI #342;
-- teste dedicado verde no CI #343.
+Foi corrigido um problema real: a tentativa era persistida imediatamente e a fila podia recalcular/trocar de atividade antes de o aluno ler o feedback.
 
-Uma atividade A1 READING MULTIPLE_CHOICE por idioma.
+Agora, no aprendizado normal, a atividade submetida fica presa em `feedbackActivity` enquanto o feedback está na tela. A persistência continua imediata; apenas a apresentação visual fica estável até o aluno escolher sair/continuar.
 
-Foco: identificar o que Chiu diz gostar na nova praça.
+Prática opcional não entrou nessa persistência.
 
-Respostas corretas:
-- EN `coffee`
-- PT `café`
-- ES `café`
-- FR `café`
-- KO `커피`
+## CI #392 — SUCCESS
+`081725bd95c685058da003f9a8bb0e9e04b2e52d`
+`feat: continue learning after correct persisted answer`
 
-Distratores contrastam com `books/livros/libros/livres/책`.
+Depois de resposta correta no aprendizado normal, a tela passou a oferecer `Continue`, evitando volta obrigatória à trilha entre todas as atividades.
 
-O teste prova:
-- exatamente uma atividade por idioma;
-- A1 / READING / MULTIPLE_CHOICE;
-- uma resposta aceita presente em duas opções distintas;
-- review keys fora da starter review queue;
-- resposta e feedback ancorados na fala real de Chiu na narrativa;
-- coreano usa a forma revisada `커피를 좋아해요.`.
+Semântica protegida:
+- feedback continua visível;
+- Continue só pode ser usado quando persistência da tentativa terminou;
+- Continue apenas limpa `feedbackActivity` e devolve seleção à fila já existente;
+- review-first continua sendo decidido pela fila existente;
+- erro continua permitindo corrigir e tentar de novo;
+- Back to path continua disponível;
+- prática opcional continua fora da persistência/FSRS.
+
+## CI #393 — SUCCESS
+`ab01d129277ed3a4c905bc9ffa35e241c9b8ea24`
+`docs: record green state through CI 392`
+
+Atualizou `PROJECT_STATE_CURRENT.md` até o fluxo pós-feedback verde.
+
+## CI #394 — SUCCESS — CÓDIGO MAIS RECENTE ANTES DESTE HANDOFF
+`d880f924008d11ea331bb8b0c553a0678e8d6559`
+`fix: serialize learning retries with persistence`
+
+Problema fechado: após um erro, o usuário podia alterar a resposta enquanto a gravação anterior ainda estava pendente e chegar a uma nova tentativa concorrente. Agora `LearningActivityScreen` recebe `canSubmit`.
+
+No aprendizado normal:
+- `canSubmit = pendingLearningPersistenceCount == 0`;
+- Verify exige resposta não vazia, `!checked` e `canSubmit`;
+- o próprio click handler também exige `!checked && canSubmit`;
+- portanto retry normal só pode ser persistido depois que a persistência da tentativa anterior terminou.
+
+Na prática opcional:
+- `canSubmit = true` porque ela deliberadamente não persiste evidência/schedule;
+- não transformar prática opcional em tentativa normal só para uniformizar UI.
+
+`pendingLearningPersistenceCount` fica no escopo de `AppStep.LEARNING_ACTIVITY`, chaveado por idioma-alvo e nível estimado, incrementa antes do DataStore edit e decrementa em `finally`.
 
 ---
 
-# 6. PREFERENCE CUED RETRIEVAL NA PRAÇA — COMPLETA E PROTEGIDA
+# 4. CÓDIGO ATUAL DO FLUXO DE APRENDIZAGEM — NÃO REGREDIR
 
-Produção:
-`app/src/main/java/com/chiu/know/model/A1SecondTransferNarrativePreferenceCuedRetrievalActivities.kt`
+Arquivo principal:
+`app/src/main/java/com/chiu/know/ui/ChiuKnowApp.kt`
 
-Teste:
-`app/src/test/java/com/chiu/know/model/A1SecondTransferNarrativePreferenceCuedRetrievalActivitiesTest.kt`
+No estado verde #394:
 
-Estado:
-- produção verde no CI #344;
-- teste verde no CI #345.
+- `queueRefreshTick` controla recomputação temporal de reviews due;
+- `queue` vem de `learningActivityQueueSelection(...)`;
+- `optionalPracticeRequested` separa prática extra;
+- `feedbackActivity` fixa a atividade respondida enquanto o feedback está sendo lido;
+- `pendingLearningPersistenceCount` serializa persistência normal e impede Continue/retry antes da gravação terminar;
+- `activity = if (optionalPracticeRequested) optionalPracticeActivity else feedbackActivity ?: queue.activity`;
+- tentativa normal chama a cadeia genérica de correctness/evidence/scheduler;
+- prática opcional não persiste tentativa nem schedule;
+- `canSubmit` normal exige ausência de persistência pendente;
+- `canContinue` normal exige ausência de persistência pendente;
+- Continue normal limpa apenas `feedbackActivity`, fazendo a fila corrente decidir o próximo estado.
 
-Formato:
-- uma atividade por EN/PT/ES/FR/KO;
-- A1;
-- READING;
-- MULTIPLE_CHOICE;
-- fechada e determinística;
-- pergunta completa de Barto como pista;
-- resposta completa de Chiu como alternativa correta;
-- resposta de residência como distrator contextual;
-- fora da starter review queue.
+Não inventar outro estado de progressão, outra fila, outro scheduler ou outro storage para resolver problemas nessa tela.
 
-## Respostas exatas
+---
+
+# 5. FILA / REVIEW-FIRST / FSRS — ARQUITETURA PROTEGIDA
+
+Produção principal:
+`app/src/main/java/com/chiu/know/model/LearningActivityQueue.kt`
+
+Guardas:
+- `LearningActivityQueueTest.kt`
+- `LearningActivityQueuePersistenceIntegrationTest.kt`
+
+Cadeia normal de tentativa:
+`isLearningAnswerCorrect(...) → learningEvidenceFor(...) → encodeLearningEvidence(...) → updateReviewScheduleStateSet(...)`
+
+`ReviewScheduleState` continua genérico por `reviewKey`.
+Variantes do mesmo alvo compartilham o mesmo reviewKey/schedule.
+Não criar outro scheduler ou FSRS paralelo.
+
+Prioridade A1 composta:
+1. due starter review;
+2. due second-transfer review;
+3. second-transfer new work;
+4. starter new target;
+5. NONE_DUE;
+6. NO_CONTENT.
+
+A2/B1/B2/C1/C2 continuam delegando ao comportamento starter existente.
+
+Erro = tentativa/exposição; não significa mastery.
+Acerto imediato também não prova mastery.
+
+---
+
+# 6. A1 SECOND TRANSFER — PRAÇA — CONTEÚDO PROTEGIDO
+
+Narrativa:
+`A1SecondTransferNarrativeMicroUnit.kt`
+
+Exatamente 6 beats, EN/PT/ES/FR/KO, Barto pergunta e Chiu responde.
 
 EN:
-- pergunta `What do you like?`
-- correta `I like coffee.`
-- distrator `I live in Rio.`
+`Hello, Chiu!` / `Hello, Barto!` / `Where do you live?` / `I live in Rio.` / `What do you like?` / `I like coffee.`
 
 PT:
-- pergunta `Do que você gosta?`
-- correta `Eu gosto de café.`
-- distrator `Eu moro no Rio.`
+`Olá, Chiu!` / `Olá, Barto!` / `Onde você mora?` / `Eu moro no Rio.` / `Do que você gosta?` / `Eu gosto de café.`
 
 ES:
-- pergunta `¿Qué te gusta?`
-- correta `Me gusta el café.`
-- distrator `Vivo en Río.`
+`¡Hola, Chiu!` / `¡Hola, Barto!` / `¿Dónde vives?` / `Vivo en Río.` / `¿Qué te gusta?` / `Me gusta el café.`
 
 FR:
-- pergunta `Qu’est-ce que tu aimes ?`
-- correta `J’aime le café.`
-- distrator `J’habite à Rio.`
+`Bonjour, Chiu !` / `Bonjour, Barto !` / `Où est-ce que tu habites ?` / `J’habite à Rio.` / `Qu’est-ce que tu aimes ?` / `J’aime le café.`
 
 KO:
-- pergunta `무엇을 좋아해요?`
-- correta `커피를 좋아해요.`
-- distrator `리우에 살아요.`
+`안녕하세요, 치우!` / `안녕하세요, 바르토!` / `어디에 살아요?` / `리우에 살아요.` / `무엇을 좋아해요?` / `커피를 좋아해요.`
 
-O teste dedicado prova, para todos os idiomas:
-- exatamente uma atividade;
-- A1 / READING / MULTIPLE_CHOICE;
-- uma resposta aceita e duas opções distintas;
-- a pergunta existe como fala de Barto na narrativa;
-- a fala imediatamente seguinte é de Chiu e é exatamente a resposta aceita;
-- prompt contém a pergunta real;
-- feedback contém a resposta real;
-- review key não colide com starter queue;
-- no coreano, pergunta/resposta/distrator são exatamente os esperados.
+Residence e preference preservam progressão:
+`context/comprehension → MULTIPLE_CHOICE → REORDER → FILL_IN`.
+
+`A1SecondTransferLearningUnit.kt` liga narrativa + compreensão + residence + preference.
+Residence/preference são alvos separados.
+Novo trabalho desbloqueia por exposição aos reviewKeys starter ligados; correção não é exigida.
+Não pular automaticamente para FREE_TEXT.
 
 ---
 
-# 7. PROGRESSÃO A1 JÁ EXISTENTE ANTES DA PRAÇA
+# 7. PRÁTICA OPCIONAL — REGRA ABSOLUTA
 
-Não apagar/recomeçar.
+Produção:
+`LearningOptionalPractice.kt`
 
-## Primeira narrativa — café
-`A1FirstNarrativeMicroUnit.kt`
+Teste:
+`LearningOptionalPracticeTest.kt`
 
-Já possui:
-- compreensão factual;
-- speaker tracking;
-- sequence comprehension;
-- testes dedicados.
+Regras já verdes:
+- A2–C2 preservam comportamento starter;
+- A1 fica starter-only até completar exposição da sequência second-transfer;
+- depois podem entrar variantes fortes REORDER/FILL_IN do second transfer;
+- é balanceamento de exposição, não mastery;
+- NÃO persiste `LearningEvidence`;
+- NÃO chama `updateReviewScheduleStateSet(...)`;
+- NÃO cria/muta FSRS schedule;
+- só aparece a partir de NONE_DUE;
+- nunca outranka due review.
 
-## Segunda narrativa — parque
-`A1TransferNarrativeMicroUnit.kt`
-
-A frente de residência no parque já passou por:
-1. compreensão/contexto;
-2. cued retrieval com alternativas completas;
-3. REORDER;
-4. FILL_IN.
-
-A frente de preferência no parque já passou por:
-1. compreensão/contexto;
-2. cued retrieval;
-3. REORDER;
-4. FILL_IN.
-
-Os respectivos testes foram fortalecidos para grounding no diálogo real.
-
-Essa sequência é o padrão de referência para a retirada gradual de pistas na praça.
+No CI #394, prática opcional continua podendo submeter sem `pendingLearningPersistenceCount` justamente porque não possui persistência de tentativa.
 
 ---
 
-# 8. PRÓXIMO PASSO PEDAGÓGICO RECOMENDADO
+# 8. LEARNINGACTIVITY — CONTRATO REAL
 
-**Não executar cegamente sem conferir o HEAD/CI real.**
+`LearningActivity` NÃO possui propriedade `languageCode`.
 
-Se o novo chat encontrar `main` com apenas alterações documentais depois do checkpoint e Android CI verde, o próximo pequeno slice recomendado é:
-
-### Preference REORDER na praça
-Criar uma atividade de reconstrução da resposta de Chiu à pergunta de Barto, uma por idioma, seguindo o padrão já validado em:
-`A1TransferNarrativePreferenceReorderRetrievalActivities.kt`
-
-Objetivo:
-- retirar a alternativa de frase completa;
-- exigir reconstrução por tokens;
-- manter atividade fechada/determinística;
-- continuar fora da starter review queue;
-- manter grounding na troca imediata Barto → Chiu;
-- não alegar mastery, writing livre, speaking ou pronúncia.
-
-Depois:
-1. commit de produção;
-2. esperar CI verde;
-3. criar teste dedicado em commit separado, se necessário;
-4. esperar CI verde;
-5. só então considerar FILL_IN da preferência na praça.
-
-Não pular diretamente para `FREE_TEXT`.
-
----
-
-# 9. LEARNINGACTIVITY — CONTRATO REAL QUE NÃO PODE SER INVENTADO
-
-O modelo atual `LearningActivity` NÃO possui `languageCode`.
-
-Campos obrigatórios atuais incluem:
+Campos atuais relevantes:
 - `id`
 - `level`
 - `primarySkill`
@@ -352,383 +274,128 @@ Campos obrigatórios atuais incluem:
 - `responseOptions` quando aplicável
 - `audioPromptId` opcional
 
-Para filtrar idioma nas famílias atuais, o padrão existente usa prefixo do `id`, por exemplo:
-`it.id.startsWith("$languageCode-")`.
+Quando necessário, filtragem por idioma usa padrão de prefixo do ID, por exemplo `it.id.startsWith("$languageCode-")`.
 
-Não repetir o erro do CI #341.
-
-`isLearningAnswerCorrect` atualmente faz normalização conservadora: trim + lowercase e igualdade exata com accepted answers. Não apaga acentos nem reescreve respostas.
+CI #341 falhou historicamente porque foi inventado `languageCode` e foram omitidos campos obrigatórios. Não repetir.
 
 ---
 
-# 10. FREE_TEXT / SPEAKING / PRONÚNCIA — NÃO INVENTAR
+# 9. PEDAGOGIA / CLAIMS — NÃO INVENTAR
 
-`ResponseType` contém `FREE_TEXT`, mas isso NÃO significa que exista escrita livre pedagogicamente válida.
+Qualidade > quantidade.
+Progressão desejada quando tecnicamente defensável:
+`context → recognition → cued retrieval → fewer cues → new context → spaced review → retention/transfer`.
 
-Estado atual:
-- `FREE_TEXT` não tem semântica distinta robusta de avaliação;
-- a UI trata tipos textuais simples com campo de texto;
-- o avaliador global é igualdade determinística conservadora;
-- não há política de equivalentes, tolerância linguística, erros aceitáveis ou avaliação AI para free writing.
-
-Portanto:
-- não chamar FILL_IN de escrita livre;
-- não usar `FREE_TEXT` como “sem pistas” só porque o enum existe;
-- não alegar escrita livre avaliada;
-- não alegar speaking avaliado;
-- não alegar pronúncia avaliada;
-- não há ASR/pronúncia real validada.
-
-Antes de qualquer etapa real sem pistas, definir explicitamente política/evaluator apropriado.
-
----
-
-# 11. REGRAS PEDAGÓGICAS PERMANENTES
-
-Antes de mudanças pedagógicas, ler:
-- `CURRENT_HANDOFF.md`
-- `PROJECT_STATE.md`
-- `PRODUCT_SPEC.md`
-- `PEDAGOGY_ARCHITECTURE.md`
-
-Fluxo desejado:
-`contexto → reconhecimento → recuperação com pistas → menos pistas → sem pistas → novo contexto → revisão espaçada → retenção/transferência`
-
-Regras duras:
-- qualidade > quantidade;
-- erro = tentativa/exposição, não mastery;
-- XP/streak não são domínio;
-- preferências do aluno são planejamento, nunca evidência de proficiência;
-- revisões vencidas têm prioridade;
-- não fabricar mastery;
-- não fabricar scores por habilidade sem evidência real;
-- não pular fundamentos;
-- não massificar conteúdo antes de validar pequenos slices ponta a ponta.
-
----
-
-# 12. COREANO — REGRA ATUAL E DEFINITIVA
-
-A regra antiga de revisão humana obrigatória foi superada.
-
-Decisão vigente:
-- a IA faz segunda revisão linguística rigorosa do coreano;
-- revisão humana externa é desejável se um dia estiver disponível, mas não é gate obrigatório.
-
-Nunca chamar a revisão por IA de:
-- revisão humana;
+Não fabricar:
+- mastery;
+- avaliação robusta de free writing;
+- speaking;
+- pronúncia;
+- ASR;
+- scores de proficiência por habilidade sem evidência válida;
 - validação psicométrica;
-- certificação CEFR;
-- validação independente.
+- certificação CEFR.
 
-A revisão rigorosa deve checar:
-- naturalidade;
-- gramática;
-- registro;
-- contexto;
-- resposta única defensável;
-- qualidade dos distratores;
-- alternativas plausíveis;
-- pistas mecânicas;
-- progressão relativa;
-- neutralidade cultural;
-- testes automatizados;
-- CI verde.
-
-Formas A1 fortes já revisadas e que não devem ser reabertas sem motivo linguístico real incluem:
-- `안녕하세요`
-- `저는 미아예요`
-- `저는 치우예요`
-- `제 이름은 치우예요`
-- `이름이 뭐예요?`
-- `어디에 살아요?`
-- `리우에 살아요`
-- `무엇을 좋아해요?`
-- `커피를 좋아해요`
-- `저는 책이 있어요`
-- `감사합니다`
-- `고맙습니다`
-- `또 봐요`
-
-Na praça atual, a troca revisada é:
-`무엇을 좋아해요?` → `커피를 좋아해요.`
+`FREE_TEXT` existir no enum não significa que escrita aberta esteja robustamente avaliada.
+XP/streak/preferences não são evidência de domínio CEFR.
 
 ---
 
-# 13. PLACEMENT COREANO E CEFR — NÃO REGREDIR
+# 10. KOREANO
 
-EN/PT/ES/FR/KO estão em `QUALITY_SESSION`, sujeito sempre ao código real atual.
+Gate obrigatório de revisão humana foi supersedido.
+Segunda revisão linguística rigorosa por IA é aceita; revisão humana externa é desejável, não bloqueante.
+Nunca chamar revisão por IA de revisão humana, validação independente, validação psicométrica ou certificação CEFR.
 
-Coreano usa o banco combinado `candidateKoreanPlacementQuestions`, 24 itens, 4 por rótulo interno A1–C2.
+Formas A1 já revisadas incluem:
+`안녕하세요`, `저는 미아예요`, `저는 치우예요`, `제 이름은 치우예요`, `이름이 뭐예요?`, `어디에 살아요?`, `리우에 살아요`, `무엇을 좋아해요?`, `커피를 좋아해요`, `저는 책이 있어요`, `감사합니다`, `고맙습니다`, `또 봐요`.
 
-A1–C2 no placement são alvos internos de classificação.
-Nunca alegar:
-- certificação CEFR oficial;
-- equivalência oficial CEFR;
-- calibração psicométrica validada;
-- validação independente;
-- equivalência automática ao King Sejong.
-
-Resultado deve ser tratado como estimativa pedagógica de nível.
+Não reabrir sem motivo linguístico real.
 
 ---
 
-# 14. SUPABASE — SEPARAÇÃO ABSOLUTA
+# 11. SUPABASE — SEPARAÇÃO ABSOLUTA
 
 CHIU KNOW?:
 - project `uskxabsodcnzlovuaurp`
 - org `aeerqbmrwulxsawhjyvm`
 - region `sa-east-1`
 
-CHIU PLAYER — PROIBIDO tocar durante trabalho do Know?:
+CHIU PLAYER — NÃO TOCAR durante trabalho do Know?:
 - project `hpcbkvbrlwjnwlikmbfb`
 - org `nnrwosbnvdvzaoflwxlo`
 
-Nunca misturar:
-- projetos;
-- quotas;
-- buckets;
-- Edge Functions;
-- credenciais;
-- secrets.
-
+Nunca misturar recursos, quotas, buckets, funções, credenciais ou secrets.
 Nunca colocar `service_role` no APK.
-
-Auth deep link `chiuknow://auth-callback` já foi fisicamente testado.
+Auth deep link fisicamente testado: `chiuknow://auth-callback`.
 
 ---
 
-# 15. VOZ — PRIVADA
+# 12. VOZ — REGRA ABSOLUTA
 
-Voz oficial aprovada do Chiu:
+Voz privada oficial:
 `Chiu-animada-recorte-final.m4a`
+aproximadamente 15,4 s / 309 KB.
 
-Características registradas:
-- ~15,4 s;
-- ~309 KB;
-- aprovada após corte de silêncio/ruído.
-
-Regra absoluta:
-- PRIVATE;
-- não colocar no GitHub público;
-- não enviar a fornecedor externo;
-- não colocar no Supabase;
-- não embutir no APK;
-- qualquer uma dessas ações depende de autorização explícita da usuária.
-
-Bucket privado `character-voices` existe no Supabase do Know?, mas isso NÃO autoriza upload da voz.
+NÃO colocar em GitHub público, provedor externo, Supabase ou APK sem autorização explícita da usuária.
+Bucket privado existir não constitui autorização de upload.
 
 ---
 
-# 16. VISUAL — REGRA ABSOLUTA DOS DOIS CHIUS
+# 13. VISUAL — REGRA ABSOLUTA
 
-Antes de qualquer trabalho visual, ler `VISUAL_BIBLE.md`.
+Dois Chius diferentes:
 
-- Chiu realista branco com cabelo castanho: **SOMENTE ícone/logo do APK**.
-- Chiu amarelo/cartunesco/esquisito aprovado: **SEMPRE personagem interno** em histórias, cards, exercícios e universo do app.
-- Nunca misturar nem substituir um pelo outro.
+- Chihuahua branco realista com cabelo castanho = SOMENTE logo/ícone do APK.
+- Chihuahua amarelo/esquisito cartunesco = SEMPRE personagem interno em histórias, cards, exercícios e telas.
+
+Nunca misturar/substituir os dois.
+Não redesenhar arbitrariamente masters aprovados.
+Nova pose precisa ser mostrada e aprovada antes de integrar ao APK.
 
 Personagens oficiais atuais:
-- Chiu
-- Mia (gata)
-- Jurandir (mosquito; nome definitivo, não Zé Pernilongo)
-- Barto (morcego)
-- Lara (arara)
-- Caca (capivara)
-- Onça
-- Perry (ornitorrinco)
-- Lena (preguiça)
+Chiu, Mia, Jurandir, Barto, Lara, Caca, Onça, Perry, Lena.
+Jurandir é o nome definitivo do mosquito; “Zé Pernilongo” é apenas histórico.
 
-Masters aprovados não devem ser redesenhados.
-Nova pose é candidata e deve ser mostrada à usuária e aprovada antes de integração. Sem exceção.
+Antes de trabalho visual, reler `VISUAL_BIBLE.md`.
 
 ---
 
-# 17. USUÁRIA / FORMA DE TRABALHO
+# 14. PRÓXIMA AÇÃO DO NOVO CHAT
 
-A usuária não programa e espera que o chat trabalhe autonomamente.
+O novo chat NÃO deve começar programando.
 
-Quando ela disser `Continue`:
-- não perguntar o que fazer se o próximo passo puder ser inferido com segurança;
-- buscar estado real;
-- seguir gates de CI;
-- avançar uma pequena fatia;
-- parar apenas em gate real, risco, necessidade de aprovação visual/voz/dados/publicação ou decisão genuína da usuária.
+Primeiro:
+1. buscar HEAD real de `main`;
+2. buscar Android CI do SHA exato;
+3. ler `PROJECT_STATE_CURRENT.md`;
+4. ler este `CURRENT_HANDOFF.md`;
+5. reler `ChiuKnowApp.kt` no SHA atual;
+6. se relevante, consultar `PRODUCT_SPEC.md` e `PEDAGOGY_ARCHITECTURE.md`;
+7. só então escolher o próximo menor seam real.
 
-Não mandar a usuária editar código manualmente, resolver conflitos, usar terminal ou montar ZIP quando isso puder ser feito pelas ferramentas.
+Como `d880f924...` já resolveu serialização de retry normal com persistência, NÃO repetir esse trabalho.
 
----
+Próximas investigações seguras, sem assumir bug:
+- verificar se `Back to path` durante uma persistência normal pendente possui semântica segura com o `coroutineScope` atual e as chaves capturadas no momento da tentativa;
+- verificar se editar uma resposta correta enquanto a persistência ainda está pendente pode produzir UX incoerente, embora novo submit esteja bloqueado por `canSubmit`;
+- confirmar que Continue repetido rapidamente é inofensivo antes de inventar novo guard;
+- confirmar que após Continue os estados `NONE_DUE`/`NO_CONTENT` continuam coerentes com o contrato da fila;
+- confirmar que prática opcional entra/sai sem criar evidência ou schedule.
 
-# 18. PROMPT PARA O PRÓXIMO CHAT
-
-Copiar a partir daqui para um novo chat:
-
----
-
-Quero continuar o desenvolvimento do **CHIU KNOW?** EXATAMENTE do ponto em que o chat anterior parou.
-
-## REGRA ZERO
-NÃO RECOMECE O PROJETO.
-NÃO INVENTE O ESTADO.
-NÃO CONFIE APENAS NA MEMÓRIA DO CHAT.
-NÃO ME PEÇA O HISTÓRICO ANTERIOR.
-NÃO ALTERE COISAS PORQUE “PARECEM MELHORES” SEM VERIFICAR O CÓDIGO E AS REGRAS REAIS.
-
-O repositório é `Canumori/Chiu-Know`, branch autoritativa `main`.
-
-### PRIMEIRAS AÇÕES OBRIGATÓRIAS
-1. Leia `CURRENT_HANDOFF.md` inteiro.
-2. Leia o topo atual relevante de `PROJECT_STATE.md`, mas saiba que ele é um arquivo enorme e pode ser truncado; NUNCA sobrescreva `PROJECT_STATE.md` usando uma leitura truncada.
-3. Leia `PRODUCT_SPEC.md` e `PEDAGOGY_ARCHITECTURE.md` antes de qualquer mudança pedagógica.
-4. Se houver trabalho visual, leia `VISUAL_BIBLE.md` antes de fazer qualquer coisa.
-5. Busque o HEAD real de `main`.
-6. Busque o Android CI correspondente exatamente ao SHA do HEAD real.
-7. Se CI estiver queued/in_progress, pare no gate e não escreva nada.
-8. Se CI falhou, inspecione logs e corrija somente a falha real.
-9. Se CI passou, só então avance.
-
-### CHECKPOINT DE CÓDIGO DO CHAT ANTERIOR
-Antes da criação do handoff documental, o código confirmado estava em:
-`e8f7b8e34a3f5fb97e1238da9dde0d99ffe33aa6`
-`test: guard second transfer preference cued retrieval`
-Android CI #345 = SUCCESS.
-
-O commit de produção anterior:
-`d949d54da8fcdb4397b401bf25a6df30b1aedb43`
-`feat: add second transfer preference cued retrieval`
-Android CI #344 = SUCCESS.
-
-Depois disso foi criado `CURRENT_HANDOFF.md`, então **não assuma que e8f7b8e3 é o HEAD atual**. Descubra o HEAD real.
-
-### ESTADO PEDAGÓGICO ATUAL
-A terceira narrativa A1 / segundo contexto de transferência já existe em:
-`A1SecondTransferNarrativeMicroUnit.kt`.
-
-Contexto: Barto encontra Chiu em uma praça. São 6 beats por idioma EN/PT/ES/FR/KO.
-
-Troca de preferência:
-- EN: `What do you like?` → `I like coffee.`
-- PT: `Do que você gosta?` → `Eu gosto de café.`
-- ES: `¿Qué te gusta?` → `Me gusta el café.`
-- FR: `Qu’est-ce que tu aimes ?` → `J’aime le café.`
-- KO: `무엇을 좋아해요?` → `커피를 좋아해요.`
-
-Já existem e estão protegidos:
-1. compreensão fechada dessa nova narrativa;
-2. `preference cued retrieval` com frase completa.
-
-Produção da compreensão:
-`A1SecondTransferNarrativeComprehensionActivities.kt`
-Teste:
-`A1SecondTransferNarrativeComprehensionActivitiesTest.kt`
-CI #343 = SUCCESS.
-
-Produção do cued retrieval:
-`A1SecondTransferNarrativePreferenceCuedRetrievalActivities.kt`
-Teste:
-`A1SecondTransferNarrativePreferenceCuedRetrievalActivitiesTest.kt`
-CI #344 e #345 = SUCCESS.
-
-No cued retrieval coreano:
-- prompt contém `무엇을 좋아해요?`;
-- correta `커피를 좋아해요.`;
-- distrator `리우에 살아요.`.
-
-O teste prova que a pergunta é de Barto e que a fala imediatamente seguinte de Chiu é exatamente a resposta aceita. Também prova que essas activities ficam fora da starter review queue.
-
-### PRÓXIMO PASSO RECOMENDADO, SE O ESTADO REAL CONTINUAR COMPATÍVEL
-Depois de confirmar HEAD/CI e reler os arquivos atuais, criar o próximo slice de retirada de pistas para **preferência na praça**:
-
-**REORDER da resposta de Chiu**.
-
-Use como referência o padrão já validado em:
-`A1TransferNarrativePreferenceReorderRetrievalActivities.kt`
-
-e seus testes.
-
-Faça uma activity por EN/PT/ES/FR/KO, A1, READING, `ResponseType.REORDER`, fechada e determinística, grounded na pergunta de Barto e resposta de Chiu.
-
-Não invente semântica nova. Inspecione o contrato atual de `LearningActivity` antes de escrever.
-
-Depois do commit de produção, espere CI verde. Só depois crie/fortaleça teste dedicado em commit separado. Espere CI verde de novo. Depois, e somente depois, poderá considerar FILL_IN da preferência na praça.
-
-### ERRO QUE NÃO PODE SER REPETIDO
-No CI #341 foi criado `LearningActivity(languageCode=...)`, mas o modelo real NÃO possui `languageCode`; também faltavam `learningObjective` e `knowledgeTarget`.
-
-Contrato atual de `LearningActivity` deve ser lido no código. O padrão de filtragem usado pelas famílias recentes é por prefixo do `id`:
-`it.id.startsWith("$languageCode-")`.
-
-Não repita esse erro.
-
-### FREE_TEXT / SPEAKING
-NÃO use `FREE_TEXT` como “sem pistas”. O enum existe, mas a avaliação real ainda é simples/determinística e não há política robusta de equivalentes, tolerância linguística ou escrita livre.
-
-Não alegue:
-- escrita livre avaliada;
-- speaking avaliado;
-- pronúncia avaliada;
-- mastery por passar uma atividade;
-- FSRS automaticamente criado por essas atividades de transferência.
-
-### COREANO
-A exigência antiga de revisão humana obrigatória foi SUPERADA.
-A regra atual é segunda revisão linguística rigorosa por IA. Revisão humana externa é desejável, mas não bloqueadora.
-
-Não chame isso de revisão humana, validação psicométrica, certificação CEFR ou validação independente.
-
-Formas atuais da praça já revisadas:
-`어디에 살아요?` → `리우에 살아요.`
-`무엇을 좋아해요?` → `커피를 좋아해요.`
-
-Não reabra essas formas sem motivo linguístico real.
-
-### PLACEMENT
-EN/PT/ES/FR/KO estão em `QUALITY_SESSION`, sujeito ao código real atual.
-Coreano possui banco combinado de 24 itens, 4 por rótulo interno A1–C2.
-Nunca alegar certificação CEFR oficial, calibração psicométrica ou equivalência oficial.
-
-### SUPABASE — NÃO MISTURAR
-CHIU KNOW?:
-project `uskxabsodcnzlovuaurp`
-org `aeerqbmrwulxsawhjyvm`
-region `sa-east-1`
-
-CHIU PLAYER — PROIBIDO tocar neste trabalho:
-project `hpcbkvbrlwjnwlikmbfb`
-org `nnrwosbnvdvzaoflwxlo`
-
-Nunca colocar `service_role` no APK.
-
-### VOZ
-A voz oficial `Chiu-animada-recorte-final.m4a` é PRIVADA.
-Não GitHub público.
-Não fornecedor externo.
-Não Supabase.
-Não APK.
-Qualquer uso/upload depende de autorização explícita da usuária.
-
-### VISUAL ABSOLUTO
-Chiu realista branco/cabelo castanho = SOMENTE logo/ícone.
-Chiu amarelo/cartunesco/esquisito = SEMPRE personagem interno.
-Nunca misturar.
-Nova pose deve ser mostrada e aprovada antes de integração.
-Jurandir é o mosquito definitivo, não Zé Pernilongo.
-
-### FORMA DE TRABALHO
-A usuária não programa.
-Trabalhe autonomamente.
-Quando ela disser `Continue`, confira o estado real e avance a próxima pequena fatia segura sem perguntar o que fazer se isso estiver claro.
-
-Cada write:
-- HEAD/CI real antes;
-- arquivo atual + SHA antes;
-- mudança pequena;
-- commit;
-- CI correspondente;
-- só continuar verde.
-
-Se o estado real tiver mudado externamente, siga o estado real e NÃO sobrescreva trabalho novo.
+Se investigação não demonstrar problema real, não mudar código apenas para “fazer alguma coisa”. Registrar conclusão e escolher outro seam comprovável.
 
 ---
 
-Fim do handoff.
+# 15. REGRA DE CONTINUIDADE
+
+Quando a usuária disser apenas `Continue`:
+- não perguntar o que ela quer estudar/desenvolver;
+- buscar HEAD + CI;
+- respeitar o gate;
+- ler este handoff e o estado compacto;
+- escolher a menor mudança necessária baseada em código real;
+- fazer uma alteração por vez;
+- parar no novo CI gate.
+
+Nunca reabrir problemas já resolvidos apenas porque outro chat não lembra deles.
