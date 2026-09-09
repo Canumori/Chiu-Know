@@ -527,9 +527,9 @@ private fun LearningActivityScreen(activity: LearningActivity, onAttempt: (Strin
                 activity.responseOptions.forEach { option ->
                     val selected = answer == option
                     if (selected) {
-                        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { answer = option; checked = false }) { Text(option) }
+                        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { if (answer != option) { answer = option; checked = false } }) { Text(option) }
                     } else {
-                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { answer = option; checked = false }) { Text(option) }
+                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { if (answer != option) { answer = option; checked = false } }) { Text(option) }
                     }
                     Spacer(Modifier.height(8.dp))
                 }
