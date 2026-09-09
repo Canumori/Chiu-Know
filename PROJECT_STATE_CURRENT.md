@@ -1,17 +1,19 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
-## AUTORITATIVO — 2026-09-08 — MAIN GREEN THROUGH RAPID-SUBMISSION HARDENING, CI #387
+## AUTORITATIVO — 2026-09-08 — MAIN GREEN THROUGH MULTIPLE-CHOICE RETRY HARDENING, CI #389
 
 This is the compact operational checkpoint. Historical `PROJECT_STATE.md` is too large for safe full round-trip editing and may be returned truncated. **Never overwrite historical `PROJECT_STATE.md` from a truncated read.** Read this file first, then `CURRENT_HANDOFF.md`, `PROJECT_STATE.md`, `PRODUCT_SPEC.md`, `PEDAGOGY_ARCHITECTURE.md`, and `VISUAL_BIBLE.md` before visual work. Real GitHub `main` plus Android CI for that exact SHA always override documentation.
 
 ## 1. EXACT GREEN STATE BEFORE THIS DOCUMENT COMMIT
 
 Current code HEAD before this documentation write:
-- `1efce976987aaa00707065a00bbea5e95cce7681`
-- `fix: guard rapid duplicate placement submission`
-- Android CI #387, run `34252154194`: attempt 1 failed only while finalizing `actions/upload-artifact` with external HTTP 403 after unit tests and APK build had succeeded; the same job was rerun without code changes and attempt 2 finished `COMPLETED / SUCCESS` on the exact same SHA.
+- `491112b4c54736e48fce1d42404b5c3a83a5d374`
+- `fix: require changed multiple-choice answer for retry`
+- Android CI #389, run `34305553667`: `COMPLETED / SUCCESS`; unit tests, debug APK build and artifact upload all succeeded.
 
 Immediately before it:
+- `3158be3f79237aa98220838dd65003212b0890e4` — `docs: record green state through CI 387` — CI #388 SUCCESS.
+- `1efce976987aaa00707065a00bbea5e95cce7681` — `fix: guard rapid duplicate placement submission` — CI #387 attempt 1 failed only while finalizing `actions/upload-artifact` with external HTTP 403 after unit tests and APK build had succeeded; the same job was rerun without code changes and attempt 2 finished SUCCESS on the exact same SHA.
 - `f8eedfa0f3b49c141a97be85b98ce4d347a828c5` — `fix: refresh learning queue when review becomes due` — CI #386 SUCCESS.
 - `a1e8f03000b8708f2fa09a37c57efb630baa7740` — `fix: guard rapid duplicate learning submission` — CI #385 SUCCESS.
 - `5e5a8e9672e9979f721a099b1854ee6a9d8bb4ae` — `fix: prevent duplicate learning attempt submission` — CI #384 SUCCESS.
@@ -91,11 +93,12 @@ The CI #378 integration guard proves for EN/PT/ES/FR/KO that persisted incorrect
 
 ### Attempt-submission hardening now green
 
-`LearningActivityScreen` now blocks repeated submission of the same checked answer in two layers:
+`LearningActivityScreen` blocks repeated submission of the same checked answer in multiple layers:
 - the Verify button is disabled when `checked == true`;
-- the click handler itself also guards with `if (!checked)` before calling `onAttempt(...)`, closing the very small rapid-double-event window before recomposition.
+- the Verify click handler also guards with `if (!checked)` before calling `onAttempt(...)`, closing the rapid-double-event window before recomposition;
+- for `MULTIPLE_CHOICE`, tapping the already-selected option after feedback no longer resets `checked`; selecting a genuinely different option still changes `answer` and resets `checked = false` so a retry remains possible.
 
-This protects persisted evidence and scheduler mutation from accidental duplicate submissions. Genuine answer edits still reset `checked = false` and remain retryable.
+This protects persisted evidence and scheduler mutation from accidental duplicate submissions while preserving genuine retries after a real answer change. REORDER and text editing behavior remain unchanged.
 
 ### Due-time refresh now green
 
@@ -144,13 +147,20 @@ Therefore no change was made. Do not revisit unless future content architecture 
 
 ### Placement rapid-double-tap — RESOLVED
 
-`PlacementQuestionScreen` now keeps a per-question submission flag keyed by `question.id`. Once one option is submitted, all options are disabled and the handler refuses another submission for that same question. A new question ID resets the flag. The placement decision algorithms themselves were not changed.
+`PlacementQuestionScreen` keeps a per-question submission flag keyed by `question.id`. Once one option is submitted, all options are disabled and the handler refuses another submission for that same question. A new question ID resets the flag. The placement decision algorithms themselves were not changed.
 
-### Next safe technical investigation — MULTIPLE_CHOICE same-selection retry semantics
+### MULTIPLE_CHOICE same-selection retry — RESOLVED
 
-Current learning multiple-choice UI resets `checked = false` whenever an option button is tapped, including when the user taps the already-selected option after feedback. That can intentionally re-enable Verify for an unchanged answer.
+After feedback, selecting the same already-selected multiple-choice option no longer resets `checked` and therefore cannot re-enable Verify for an unchanged answer. Selecting a different option still resets `checked = false` and allows a genuine retry. This is a UI-only guard; persistence, evidence, correctness evaluation and scheduler semantics were not changed.
 
-Do not call this a bug automatically. First determine the intended retry semantics. If retry is supposed to require a genuine answer change, apply the smallest UI-only fix so reselecting the already-selected option does not reset `checked`, while selecting a different option still does. Preserve REORDER/text editing behavior and do not alter scheduler semantics.
+Commit/CI proof:
+- `491112b4c54736e48fce1d42404b5c3a83a5d374` — `fix: require changed multiple-choice answer for retry` — CI #389 SUCCESS.
+
+### Next safe technical investigation — post-feedback progression/navigation
+
+Current `LearningActivityScreen` shows feedback and always offers `Back to path`; it does not expose a dedicated post-feedback `Continue to next activity` action. Do **not** call this a bug automatically and do not add auto-advance blindly.
+
+Investigate the actual end-to-end flow against `PRODUCT_SPEC.md` and the queue/persistence timing. The product spec requires useful feedback and the ability to understand an error and try again; the current screen already supports retry after a genuine answer change. Determine whether, after a correct checked response, requiring a return to the path creates a real product-flow mismatch or whether the existing navigation is intentional at this prototype stage. Any future change must preserve persistence before progression, review-first priority, retry-after-error behavior, and optional-practice isolation.
 
 ## 8. LEARNINGACTIVITY CONTRACT
 
