@@ -329,6 +329,7 @@ fun ChiuKnowApp() {
                                         }
                                     }
                                 },
+                                canSubmit = optionalPracticeRequested || pendingLearningPersistenceCount == 0,
                                 canContinue = !optionalPracticeRequested && pendingLearningPersistenceCount == 0,
                                 onContinue = if (!optionalPracticeRequested) {
                                     { feedbackActivity = null }
@@ -517,6 +518,7 @@ private fun ReviewUpToDateScreen(
 private fun LearningActivityScreen(
     activity: LearningActivity,
     onAttempt: (String) -> Unit,
+    canSubmit: Boolean,
     canContinue: Boolean,
     onContinue: (() -> Unit)?,
     onBack: () -> Unit
@@ -567,7 +569,7 @@ private fun LearningActivityScreen(
         }
 
         Spacer(Modifier.height(16.dp))
-        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = effectiveAnswer.isNotBlank() && !checked, onClick = { if (!checked) { checked = true; onAttempt(effectiveAnswer) } }) { Text(stringResource(R.string.check_answer)) }
+        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = effectiveAnswer.isNotBlank() && !checked && canSubmit, onClick = { if (!checked && canSubmit) { checked = true; onAttempt(effectiveAnswer) } }) { Text(stringResource(R.string.check_answer)) }
         if (checked) {
             Spacer(Modifier.height(20.dp))
             Text(if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
