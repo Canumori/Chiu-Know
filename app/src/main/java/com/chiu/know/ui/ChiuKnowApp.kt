@@ -286,9 +286,11 @@ fun ChiuKnowApp() {
                     }
                     var optionalPracticeRequested by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(false) }
                     var optionalPracticeSessionEvidence by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(emptyList<LearningEvidence>()) }
+                    var optionalPracticeLastContinuedRound by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(-1) }
                     var feedbackActivity by remember(targetLanguage.code, estimatedLevel) { mutableStateOf<LearningActivity?>(null) }
                     var pendingLearningPersistenceCount by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
-                    val optionalPracticeComplete = optionalPracticeSessionEvidence.size >= OPTIONAL_PRACTICE_SESSION_SIZE
+                    val optionalPracticeRound = optionalPracticeSessionEvidence.size
+                    val optionalPracticeComplete = optionalPracticeRound >= OPTIONAL_PRACTICE_SESSION_SIZE
                     val optionalPracticeActivity = if (optionalPracticeRequested && !optionalPracticeComplete) {
                         learningActivityForOptionalPractice(
                             targetLanguage.code,
@@ -313,7 +315,10 @@ fun ChiuKnowApp() {
                         optionalPracticeRequested && optionalPracticeComplete ->
                             OptionalPracticeSummaryScreen(
                                 completedCount = optionalPracticeSessionEvidence.size,
-                                onPracticeAgain = { optionalPracticeSessionEvidence = emptyList() },
+                                onPracticeAgain = {
+                                    optionalPracticeSessionEvidence = emptyList()
+                                    optionalPracticeLastContinuedRound = -1
+                                },
                                 onBack = { step = AppStep.LEARNING_TRAIL }
                             )
                         activity != null ->
@@ -348,8 +353,11 @@ fun ChiuKnowApp() {
                                 canExit = optionalPracticeRequested || pendingLearningPersistenceCount == 0,
                                 onContinue = if (optionalPracticeRequested) {
                                     {
-                                        optionalPracticeSessionEvidence = optionalPracticeSessionEvidence +
-                                            learningEvidenceFor(activity, correct = true, System.currentTimeMillis())
+                                        if (optionalPracticeLastContinuedRound != optionalPracticeRound) {
+                                            optionalPracticeLastContinuedRound = optionalPracticeRound
+                                            optionalPracticeSessionEvidence = optionalPracticeSessionEvidence +
+                                                learningEvidenceFor(activity, correct = true, System.currentTimeMillis())
+                                        }
                                     }
                                 } else {
                                     { feedbackActivity = null }
@@ -368,6 +376,7 @@ fun ChiuKnowApp() {
                                 nextDueAtEpochMillis = queue.nextDueAtEpochMillis,
                                 onPracticeMore = {
                                     optionalPracticeSessionEvidence = emptyList()
+                                    optionalPracticeLastContinuedRound = -1
                                     optionalPracticeRequested = true
                                 },
                                 onBack = { step = AppStep.LEARNING_TRAIL }
