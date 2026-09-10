@@ -1,5 +1,32 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-10 — OPTIONAL PRACTICE FIVE-ACTIVITY SESSION, CI #399 GREEN
+
+Latest verified production state before this documentation write:
+- `5593d0ed6156cd2c838ace251ae1e99301c77965`
+- `fix: restore full tree with optional session summary`
+- Android CI #399, run `34487431192`: `COMPLETED / SUCCESS` on the exact SHA.
+- The repository tree was explicitly verified complete with 226 entries, including Android CI workflow, Gradle project files and tests.
+
+Optional Practice now:
+- remains strictly local/non-persistent and does not mutate LearningEvidence storage, FSRS schedules, mastery or unlock state;
+- uses temporary session-only evidence to balance and advance to another activity after a correct answer;
+- preserves useful feedback and genuine retry after an error;
+- offers Continue after a correct optional-practice answer;
+- completes after exactly 5 correct activities;
+- shows a localized summary in EN/PT/ES/FR/KO;
+- offers Practice again or Back to path;
+- has a dedicated model test proving transient session evidence changes the next optional selection without mutating the persisted evidence list.
+
+Relevant commits:
+- `a73f4508f56563f5ff578af6ae1b45518cc98c0a` — optional non-persistent progression — CI #397 SUCCESS.
+- `bad6a2c4114a26dae203855f5b01da24f2905678` — dedicated progression test — CI #398 SUCCESS.
+- `4273228e5ba52a8bee623e70936e0a69b820b2b2` / `14bb91738bcd04d11ae1fe6a2839049ee394aa92` — intermediate same-feature commits whose direct Git tree construction did not inherit the base tree and therefore did not start CI.
+- `5593d0ed6156cd2c838ace251ae1e99301c77965` — restored the complete parent tree while preserving the feature; CI #399 SUCCESS.
+
+Do not remove the temporary/persisted separation. Optional session evidence may guide only the current in-memory practice session and must never be written to DataStore or passed into the normal learning queue.
+
+
 ## AUTORITATIVO — 2026-09-10 — MAIN GREEN THROUGH RETRY-PERSISTENCE SERIALIZATION + HANDOFF, CI #395
 
 This is the compact operational checkpoint. Historical `PROJECT_STATE.md` is too large for safe full round-trip editing and may be returned truncated. **Never overwrite historical `PROJECT_STATE.md` from a truncated read.** Read this file first, then `CURRENT_HANDOFF.md`, historical `PROJECT_STATE.md`, `PRODUCT_SPEC.md`, `PEDAGOGY_ARCHITECTURE.md`, and `VISUAL_BIBLE.md` before visual work. Real GitHub `main` plus Android CI for that exact SHA always override documentation.
