@@ -1,5 +1,15 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-10 — PREFERENCE LANGUAGE-SAFE PERSISTENCE, CI #413 GREEN
+
+Latest verified production state before this documentation write:
+- `9e2e011fa4f0bc83c0a15a48509c85096280dc37`
+- `fix: persist learner preferences for selected language`
+- Android CI #413, run `34495917189`: `COMPLETED / SUCCESS` on the exact SHA.
+
+Learner-preference persistence now captures the target-language code before launching the asynchronous DataStore write. Rapid navigation to language selection can no longer store one language's selected preferences under another language's key. Preference content, curriculum behavior and personalization rules did not change.
+
+
 ## AUTORITATIVO — 2026-09-10 — PLACEMENT LANGUAGE-SAFE PERSISTENCE, CI #411 GREEN
 
 Latest verified production state before this documentation write:
