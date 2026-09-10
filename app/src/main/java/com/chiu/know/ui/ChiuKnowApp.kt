@@ -190,9 +190,10 @@ fun ChiuKnowApp() {
                             if (next.phase == PlacementSessionPhase.COMPLETE) {
                                 val decidedLevel = requireNotNull(next.finalDecision?.decidedLevel)
                                 estimatedLevel = decidedLevel
+                                val completedLanguageCode = targetLanguage.code
                                 coroutineScope.launch {
                                     context.languagePreferencesDataStore.edit {
-                                        it[estimatedLevelKey(targetLanguage.code)] = decidedLevel.name
+                                        it[estimatedLevelKey(completedLanguageCode)] = decidedLevel.name
                                     }
                                 }
                                 step = AppStep.PLACEMENT_RESULT
@@ -214,9 +215,10 @@ fun ChiuKnowApp() {
                             adaptiveState = result.state
                             estimatedLevel = result.estimatedLevel
                             if (result.finished) {
+                                val completedLanguageCode = targetLanguage.code
                                 coroutineScope.launch {
                                     context.languagePreferencesDataStore.edit {
-                                        it[estimatedLevelKey(targetLanguage.code)] = result.estimatedLevel.name
+                                        it[estimatedLevelKey(completedLanguageCode)] = result.estimatedLevel.name
                                     }
                                 }
                                 step = AppStep.PLACEMENT_RESULT
