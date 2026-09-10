@@ -99,6 +99,7 @@ private fun estimatedLevelKey(languageCode: String) = stringPreferencesKey("esti
 private fun learnerPreferencesKey(languageCode: String) = stringPreferencesKey("learner_preferences_$languageCode")
 private fun learningEvidenceKey(languageCode: String) = stringSetPreferencesKey("learning_evidence_$languageCode")
 private fun reviewScheduleKey(languageCode: String) = stringSetPreferencesKey("review_schedule_$languageCode")
+private const val OPTIONAL_PRACTICE_SESSION_SIZE = 5
 
 private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, PLACEMENT_UNRESOLVED, LEARNER_PREFERENCES, LEARNING_TRAIL, LEARNING_ACTIVITY, VOICE_PREVIEW }
 
@@ -287,7 +288,7 @@ fun ChiuKnowApp() {
                     var optionalPracticeSessionEvidence by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(emptyList<LearningEvidence>()) }
                     var feedbackActivity by remember(targetLanguage.code, estimatedLevel) { mutableStateOf<LearningActivity?>(null) }
                     var pendingLearningPersistenceCount by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
-                    val optionalPracticeComplete = optionalPracticeSessionEvidence.size >= 5
+                    val optionalPracticeComplete = optionalPracticeSessionEvidence.size >= OPTIONAL_PRACTICE_SESSION_SIZE
                     val optionalPracticeActivity = if (optionalPracticeRequested && !optionalPracticeComplete) {
                         learningActivityForOptionalPractice(
                             targetLanguage.code,
