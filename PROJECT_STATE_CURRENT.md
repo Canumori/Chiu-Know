@@ -1,5 +1,21 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-10 — DESCRIPTIVE EVIDENCE BY CLAIM, CI #419 GREEN
+
+Latest verified state before this documentation write:
+- `eade155aa9f82bdac3fae66f68d9ce18218e9cf9` — `feat: add descriptive evidence summaries by claim` — CI #418 SUCCESS.
+- `3cd5905aa9bea30a44ad38bf742c8b010cc0dd06` — `test: cover descriptive evidence summaries by claim` — Android CI #419, run `34501223143`: `COMPLETED / SUCCESS`.
+
+New model-only foundation:
+- `LearningClaimEvidenceSummary` joins observed evidence to known activities and aggregates only claims returned by `supportedEvidenceClaims(...)`;
+- one attempt may contribute to multiple legitimate claims;
+- unknown activity IDs are omitted instead of guessed;
+- duplicate activity IDs are rejected as ambiguous;
+- pronunciation and interaction remain unavailable without dedicated mechanisms;
+- summaries preserve attempts, correctness, target variety and recency, with no score, mastery or CEFR sub-level;
+- the persisted `LearningEvidence` format and all UI/scheduler behavior remain unchanged.
+
+
 ## AUTORITATIVO — 2026-09-10 — DESCRIPTIVE EVIDENCE BY SKILL, CI #416 GREEN
 
 Latest verified state before this documentation write:
