@@ -502,7 +502,7 @@ private fun VoiceSampleScreen(languageCode: String, onBack: () -> Unit) {
         Spacer(Modifier.height(12.dp))
         Text(stringResource(R.string.voice_samples_temporary_note), style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(20.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = canExit, onClick = { if (canExit) onBack() }) { Text(stringResource(R.string.back_to_path)) }
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) }
     }
 }
 
@@ -628,7 +628,7 @@ private fun LearningActivityScreen(
             }
         }
         Spacer(Modifier.height(20.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) }
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = canExit, onClick = { if (canExit) onBack() }) { Text(stringResource(R.string.back_to_path)) }
     }
 }
 
