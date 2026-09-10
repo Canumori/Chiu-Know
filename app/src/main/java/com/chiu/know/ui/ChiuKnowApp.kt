@@ -260,10 +260,11 @@ fun ChiuKnowApp() {
                     initialPreferences = learnerPreferences ?: LearnerPreferences(),
                     onContinue = { selectedPreferences ->
                         learnerPreferences = selectedPreferences
+                        val preferencesLanguageCode = targetLanguage.code
                         coroutineScope.launch {
                             context.languagePreferencesDataStore.edit { stored ->
                                 persistedLearnerPreferences(selectedPreferences)?.let { encoded ->
-                                    stored[learnerPreferencesKey(targetLanguage.code)] = encoded
+                                    stored[learnerPreferencesKey(preferencesLanguageCode)] = encoded
                                 }
                             }
                         }
