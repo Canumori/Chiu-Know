@@ -1,5 +1,22 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-10 — ALL-LANGUAGE PLACEMENT RUNTIME CONTRACT, CI #409 GREEN
+
+Latest verified test state before this documentation write:
+- `eb34ab15cfd462d5f3aa5158c15bc1b20d3abea8`
+- `test: cover placement runtime sessions for all languages`
+- Android CI #409, run `34492953275`: `COMPLETED / SUCCESS` on the exact SHA.
+
+A new integration contract now exercises the actual `placementRuntimeSelection(...)` path for every supported target language (EN/PT/ES/FR/KO). It verifies that each production-selected quality session:
+- always exposes one current question while active;
+- stays within `maximumAnsweredQuestions`;
+- terminates with no current question;
+- never reuses a question ID;
+- keeps presented-question and answered-question accounting consistent.
+
+No placement bank, scoring decision, runtime mode or production behavior changed.
+
+
 ## AUTORITATIVO — 2026-09-10 — OPTIONAL CONTINUE ROUND GUARD, CI #407 GREEN
 
 Latest verified production state before this documentation write:
