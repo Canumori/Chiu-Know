@@ -573,6 +573,10 @@ private fun LearningActivityScreen(
     var checked by remember(activity.id) { mutableStateOf(false) }
     val effectiveAnswer = if (activity.responseType == ResponseType.REORDER) selectedTokenIndices.joinToString(" ") { activity.responseOptions[it] } else answer
     val correct = checked && isLearningAnswerCorrect(activity, effectiveAnswer)
+    val canEditAnswer = !correct
+    val editAnswer = { edit: () -> Unit ->
+        if (!checked || !isLearningAnswerCorrect(activity, effectiveAnswer)) edit()
+    }
 
     CenteredColumn {
         Text(stringResource(R.string.activity_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
@@ -588,12 +592,12 @@ private fun LearningActivityScreen(
                 Spacer(Modifier.height(12.dp))
                 activity.responseOptions.forEachIndexed { index, token ->
                     if (index !in selectedTokenIndices) {
-                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { selectedTokenIndices = selectedTokenIndices + index; checked = false }) { Text(token) }
+                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { selectedTokenIndices = selectedTokenIndices + index; checked = false } }) { Text(token) }
                         Spacer(Modifier.height(8.dp))
                     }
                 }
                 if (selectedTokenIndices.isNotEmpty()) {
-                    OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { selectedTokenIndices = selectedTokenIndices.dropLast(1); checked = false }) { Text("↶") }
+                    OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { selectedTokenIndices = selectedTokenIndices.dropLast(1); checked = false } }) { Text("↶") }
                     Spacer(Modifier.height(8.dp))
                 }
             }
@@ -601,15 +605,15 @@ private fun LearningActivityScreen(
                 activity.responseOptions.forEach { option ->
                     val selected = answer == option
                     if (selected) {
-                        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { if (answer != option) { answer = option; checked = false } }) { Text(option) }
+                        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { if (answer != option) { answer = option; checked = false } } }) { Text(option) }
                     } else {
-                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = { if (answer != option) { answer = option; checked = false } }) { Text(option) }
+                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { if (answer != option) { answer = option; checked = false } } }) { Text(option) }
                     }
                     Spacer(Modifier.height(8.dp))
                 }
             }
             else -> {
-                OutlinedTextField(value = answer, onValueChange = { answer = it; checked = false }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.activity_answer_hint)) }, singleLine = true, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done))
+                OutlinedTextField(value = answer, onValueChange = { updated -> editAnswer { answer = updated; checked = false } }, modifier = Modifier.fillMaxWidth(), enabled = canEditAnswer, label = { Text(stringResource(R.string.activity_answer_hint)) }, singleLine = true, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done))
             }
         }
 
