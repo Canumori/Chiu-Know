@@ -1,5 +1,21 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-10 — CLAIMS LIMITED TO CURRENT EVALUATORS, CI #421 GREEN
+
+Latest verified production/test state before this documentation write:
+- `c68a7011429530d1e11d503823ead5bf065a0d7b`
+- `fix: limit claim summaries to current evaluators`
+- Android CI #421, run `34502175588`: `COMPLETED / SUCCESS` on the exact SHA.
+- Full repository tree was verified before CI: 231 entries, workflow and Gradle project present.
+
+Important distinction:
+- `supportedEvidenceClaims(...)` continues to describe what an activity format could support when an appropriate evaluator exists;
+- `summarizeLearningEvidenceByClaim(...)` now aggregates only claims observable with current evaluation capabilities;
+- WRITTEN_PRODUCTION, SPOKEN_PRODUCTION, PRONUNCIATION and INTERACTION are omitted until dedicated mechanisms exist;
+- unknown activities remain omitted and duplicate activity IDs remain rejected;
+- no persisted evidence format, UI, scheduler or curriculum behavior changed.
+
+
 ## AUTORITATIVO — 2026-09-10 — DESCRIPTIVE EVIDENCE BY CLAIM, CI #419 GREEN
 
 Latest verified state before this documentation write:
