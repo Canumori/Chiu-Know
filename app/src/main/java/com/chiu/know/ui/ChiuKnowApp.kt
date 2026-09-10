@@ -345,6 +345,7 @@ fun ChiuKnowApp() {
                                 },
                                 canSubmit = optionalPracticeRequested || pendingLearningPersistenceCount == 0,
                                 canContinue = optionalPracticeRequested || pendingLearningPersistenceCount == 0,
+                                canExit = optionalPracticeRequested || pendingLearningPersistenceCount == 0,
                                 onContinue = if (optionalPracticeRequested) {
                                     {
                                         optionalPracticeSessionEvidence = optionalPracticeSessionEvidence +
@@ -354,8 +355,10 @@ fun ChiuKnowApp() {
                                     { feedbackActivity = null }
                                 },
                                 onBack = {
-                                    feedbackActivity = null
-                                    step = AppStep.LEARNING_TRAIL
+                                    if (optionalPracticeRequested || pendingLearningPersistenceCount == 0) {
+                                        feedbackActivity = null
+                                        step = AppStep.LEARNING_TRAIL
+                                    }
                                 }
                             )
                         queue.reason == StarterQueueReason.NO_CONTENT ->
@@ -499,7 +502,7 @@ private fun VoiceSampleScreen(languageCode: String, onBack: () -> Unit) {
         Spacer(Modifier.height(12.dp))
         Text(stringResource(R.string.voice_samples_temporary_note), style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(20.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) }
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = canExit, onClick = { if (canExit) onBack() }) { Text(stringResource(R.string.back_to_path)) }
     }
 }
 
@@ -561,6 +564,7 @@ private fun LearningActivityScreen(
     onAttempt: (String) -> Unit,
     canSubmit: Boolean,
     canContinue: Boolean,
+    canExit: Boolean,
     onContinue: (() -> Unit)?,
     onBack: () -> Unit
 ) {
