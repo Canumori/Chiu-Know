@@ -54,6 +54,7 @@ import com.chiu.know.model.CefrTrailStatus
 import com.chiu.know.model.LanguageOption
 import com.chiu.know.model.LearnerPreferences
 import com.chiu.know.model.LearningActivity
+import com.chiu.know.model.LearningEvidence
 import com.chiu.know.model.PlacementQuestion
 import com.chiu.know.model.PlacementRuntimeMode
 import com.chiu.know.model.PlacementSessionPhase
@@ -283,10 +284,15 @@ fun ChiuKnowApp() {
                         )
                     }
                     var optionalPracticeRequested by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(false) }
+                    var optionalPracticeSessionEvidence by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(emptyList<LearningEvidence>()) }
                     var feedbackActivity by remember(targetLanguage.code, estimatedLevel) { mutableStateOf<LearningActivity?>(null) }
                     var pendingLearningPersistenceCount by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
                     val optionalPracticeActivity = if (optionalPracticeRequested) {
-                        learningActivityForOptionalPractice(targetLanguage.code, estimatedLevel, persistedLearningEvidence)
+                        learningActivityForOptionalPractice(
+                            targetLanguage.code,
+                            estimatedLevel,
+                            persistedLearningEvidence + optionalPracticeSessionEvidence
+                        )
                     } else {
                         null
                     }
@@ -330,11 +336,14 @@ fun ChiuKnowApp() {
                                     }
                                 },
                                 canSubmit = optionalPracticeRequested || pendingLearningPersistenceCount == 0,
-                                canContinue = !optionalPracticeRequested && pendingLearningPersistenceCount == 0,
-                                onContinue = if (!optionalPracticeRequested) {
-                                    { feedbackActivity = null }
+                                canContinue = optionalPracticeRequested || pendingLearningPersistenceCount == 0,
+                                onContinue = if (optionalPracticeRequested) {
+                                    {
+                                        optionalPracticeSessionEvidence = optionalPracticeSessionEvidence +
+                                            learningEvidenceFor(activity, correct = true, System.currentTimeMillis())
+                                    }
                                 } else {
-                                    null
+                                    { feedbackActivity = null }
                                 },
                                 onBack = {
                                     feedbackActivity = null
