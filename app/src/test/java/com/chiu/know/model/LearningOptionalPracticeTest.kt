@@ -1,6 +1,7 @@
 package com.chiu.know.model
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -54,6 +55,35 @@ class LearningOptionalPracticeTest {
                 selected.responseType == ResponseType.REORDER ||
                     selected.responseType == ResponseType.FILL_IN
             )
+        }
+    }
+
+    @Test
+    fun transientSessionEvidenceAdvancesOptionalPracticeWithoutChangingPersistedEvidence() {
+        supportedLanguages.forEach { languageCode ->
+            val unit = requireNotNull(a1SecondTransferLearningUnitFor(languageCode))
+            val persistedEvidence = completedSecondTransferEvidenceWithStarterTargetsHeavier(languageCode, unit)
+            val persistedEvidenceSize = persistedEvidence.size
+            val first = requireNotNull(
+                learningActivityForOptionalPractice(languageCode, CefrLevel.A1, persistedEvidence)
+            )
+            val sessionEvidence = listOf(
+                learningEvidenceFor(
+                    activity = first,
+                    correct = true,
+                    attemptedAtEpochMillis = 1_000L
+                )
+            )
+            val second = requireNotNull(
+                learningActivityForOptionalPractice(
+                    languageCode,
+                    CefrLevel.A1,
+                    persistedEvidence + sessionEvidence
+                )
+            )
+
+            assertNotEquals(first.id, second.id)
+            assertEquals(persistedEvidenceSize, persistedEvidence.size)
         }
     }
 
