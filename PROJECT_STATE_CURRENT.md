@@ -1,22 +1,29 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
-## AUTORITATIVO — 2026-09-09 — MAIN GREEN THROUGH POST-FEEDBACK PROGRESSION, CI #392
+## AUTORITATIVO — 2026-09-10 — MAIN GREEN THROUGH RETRY-PERSISTENCE SERIALIZATION + HANDOFF, CI #395
 
 This is the compact operational checkpoint. Historical `PROJECT_STATE.md` is too large for safe full round-trip editing and may be returned truncated. **Never overwrite historical `PROJECT_STATE.md` from a truncated read.** Read this file first, then `CURRENT_HANDOFF.md`, historical `PROJECT_STATE.md`, `PRODUCT_SPEC.md`, `PEDAGOGY_ARCHITECTURE.md`, and `VISUAL_BIBLE.md` before visual work. Real GitHub `main` plus Android CI for that exact SHA always override documentation.
 
 ## 1. EXACT GREEN STATE BEFORE THIS DOCUMENT COMMIT
 
-Current code HEAD before this documentation write:
-- `081725bd95c685058da003f9a8bb0e9e04b2e52d`
-- `feat: continue learning after correct persisted answer`
-- Android CI #392, run `34352699998`: `COMPLETED / SUCCESS` on the exact SHA.
+Current HEAD before this documentation write:
+- `88aa412747549c2d834d58a24b3af0c57efb970a`
+- `docs: refresh current handoff through CI 394`
+- Android CI #395, run `34375793682`: `COMPLETED / SUCCESS` on the exact SHA.
+
+Most recent production code immediately before that handoff:
+- `d880f924008d11ea331bb8b0c553a0678e8d6559`
+- `fix: serialize learning retries with persistence`
+- Android CI #394, run `34372882404`: `COMPLETED / SUCCESS`.
 
 Immediately before it:
+- `ab01d129277ed3a4c905bc9ffa35e241c9b8ea24` — `docs: record green state through CI 392` — CI #393 SUCCESS.
+- `081725bd95c685058da003f9a8bb0e9e04b2e52d` — `feat: continue learning after correct persisted answer` — CI #392 SUCCESS.
 - `0b37447ccdabfde5f8b4699605468ca37dffcfdb` — `fix: keep learning feedback visible after persistence` — CI #391 SUCCESS.
 - `82683504452ae606d4327f0a0508cd639da8e30f` — `docs: record green state through CI 389` — CI #390 SUCCESS.
 - `491112b4c54736e48fce1d42404b5c3a83a5d374` — `fix: require changed multiple-choice answer for retry` — CI #389 SUCCESS.
 - `3158be3f79237aa98220838dd65003212b0890e4` — `docs: record green state through CI 387` — CI #388 SUCCESS.
-- `1efce976987aaa00707065a00bbea5e95cce7681` — `fix: guard rapid duplicate placement submission` — CI #387 attempt 1 failed only while finalizing `actions/upload-artifact` with external HTTP 403 after tests/build passed; attempt 2 on the exact same SHA finished SUCCESS.
+- `1efce976987aaa00707065a00bbea5e95cce7681` — placement rapid-double-tap guard — CI #387 attempt 1 external upload-artifact HTTP 403 after tests/build passed; same SHA attempt 2 SUCCESS.
 - `f8eedfa0f3b49c141a97be85b98ce4d347a828c5` — due-time queue refresh — CI #386 SUCCESS.
 - `a1e8f03000b8708f2fa09a37c57efb630baa7740` — rapid duplicate learning submission guard — CI #385 SUCCESS.
 - `5e5a8e9672e9979f721a099b1854ee6a9d8bb4ae` — duplicate learning attempt prevention — CI #384 SUCCESS.
@@ -28,7 +35,7 @@ Optional-practice / compatible-queue foundation remains green:
 - `b6eec3ea22ef0c5c8073004e00995a5658e31f84` — compatible learning queue UI — CI #377 SUCCESS.
 - `576ace99d9e6df712bb68197e3c0cd5316c6153e` — persisted queue integration guard — CI #378 SUCCESS.
 
-This documentation write creates a newer HEAD. Before any later write, fetch `main` again and verify Android CI for exactly that SHA.
+This documentation write creates a newer HEAD. Before any later write, fetch `main` again and verify Android CI for exactly that resulting SHA.
 
 ## 2. MANDATORY DEVELOPMENT GATE
 
@@ -46,7 +53,7 @@ Do not stack production, tests or docs behind running CI. Prefer production and 
 
 If CI fails only in external infrastructure after code validation passed, inspect the exact step. Do not modify product code for an unrelated GitHub service failure. A clean rerun on the same SHA is acceptable when logs prove the failure is external/transient.
 
-## 3. A1 SECOND TRANSFER — SQUARE — PROTECTED
+## 3. A1 SECOND TRANSFER — PRAÇA — PROTECTED
 
 Narrative file: `A1SecondTransferNarrativeMicroUnit.kt`.
 Exactly 6 beats for EN/PT/ES/FR/KO with Barto asking and Chiu responding.
@@ -94,7 +101,7 @@ Normal attempt path remains:
 
 ### Submission/retry hardening
 
-`LearningActivityScreen` now protects repeated submission in multiple layers:
+`LearningActivityScreen` protects repeated submission in multiple layers:
 - Verify is disabled when `checked == true`;
 - click handler also guards `if (!checked)` before `onAttempt(...)`;
 - MULTIPLE_CHOICE reselecting the same option after feedback does not reset `checked`;
@@ -103,28 +110,42 @@ Normal attempt path remains:
 
 ### Feedback visibility — RESOLVED
 
-Before CI #391, persistence could recalculate the queue and replace the current activity immediately, making feedback disappear before the learner could read it.
+Normal learning keeps the submitted activity pinned in `feedbackActivity` while feedback is displayed. Persistence still happens immediately in the existing DataStore/evidence/schedule path. Queue recomputation behind the UI cannot replace the feedback screen before the learner chooses to leave/continue. Optional practice stays outside this persistence path.
 
-Now normal learning keeps the submitted activity in `feedbackActivity` while its feedback is being displayed. Persistence still happens immediately in the existing DataStore/evidence/schedule path. The queue may recalculate behind the UI, but it does not replace the feedback screen until the learner leaves/continues. Optional practice stays outside this persistence path.
-
-Commit/CI proof:
-- `0b37447ccdabfde5f8b4699605468ca37dffcfdb` — `fix: keep learning feedback visible after persistence` — CI #391 SUCCESS.
+Proof:
+- `0b37447ccdabfde5f8b4699605468ca37dffcfdb` — CI #391 SUCCESS.
 
 ### Post-feedback progression — GREEN
 
-After a **correct** normal-learning answer, the UI now offers a dedicated Continue action so the learner does not need to return to the trail between every activity.
+After a correct normal-learning answer, a dedicated Continue action is available instead of forcing a trip back to the trail.
 
 Safety semantics:
-- feedback remains visible until the learner chooses what to do;
-- the Continue action is not usable until the persistence write for that attempt has completed;
-- after persistence, Continue clears the pinned feedback activity and lets the already-existing queue select the next appropriate state/activity;
-- this preserves review-first priority because no new ordering logic was introduced;
-- after an incorrect answer, the learner can still make a genuine answer change and retry;
+- feedback remains visible;
+- Continue cannot be used while persistence is pending;
+- after persistence, Continue clears `feedbackActivity` and returns selection to the already-existing queue;
+- review-first remains controlled by that queue;
+- incorrect answer still allows a genuine edit + retry;
 - Back to path remains available;
-- optional practice is not turned into scheduler-mutating progression by this change.
+- optional practice remains outside scheduler-mutating progression.
 
-Commit/CI proof:
-- `081725bd95c685058da003f9a8bb0e9e04b2e52d` — `feat: continue learning after correct persisted answer` — CI #392 SUCCESS.
+Proof:
+- `081725bd95c685058da003f9a8bb0e9e04b2e52d` — CI #392 SUCCESS.
+
+### Retry persistence serialization — GREEN
+
+The normal learning flow now serializes retries with persistence using `pendingLearningPersistenceCount` in the `AppStep.LEARNING_ACTIVITY` scope, keyed by target language and estimated level.
+
+Protected behavior from CI #394:
+- normal-learning `canSubmit = pendingLearningPersistenceCount == 0`;
+- Verify requires nonblank answer, `!checked`, and `canSubmit`;
+- its handler also guards `!checked && canSubmit`;
+- the counter increments before the DataStore write and decrements in `finally`;
+- therefore a corrected retry cannot be persisted concurrently with the previous attempt;
+- Continue is also held until persistence is finished;
+- optional practice deliberately keeps `canSubmit = true` because it does not persist evidence or schedules.
+
+Proof:
+- `d880f924008d11ea331bb8b0c553a0678e8d6559` — `fix: serialize learning retries with persistence` — CI #394 SUCCESS.
 
 ### Due-time refresh
 
@@ -142,7 +163,8 @@ Rules:
 - optional practice is exposure balancing, not mastery;
 - it does **not** persist `LearningEvidence` and does **not** call `updateReviewScheduleStateSet(...)`;
 - it cannot create/mutate FSRS schedules;
-- it is offered only from `NONE_DUE` and never outranks due review.
+- it is offered only from `NONE_DUE` and never outranks due review;
+- CI #394 must not be “simplified” by applying the normal persistence counter to optional practice, because there is intentionally no attempt persistence there.
 
 Do not revert this to `starterLearningActivityForEvidence(...)` unless a real regression requires it.
 
@@ -155,17 +177,18 @@ Resolved:
 - MULTIPLE_CHOICE same-selection retry loophole: guarded;
 - due-time stale queue: fixed;
 - feedback disappearing after persistence: fixed;
-- correct-answer progression requiring forced path round-trip: fixed with Continue after persistence.
+- correct-answer progression requiring forced path round-trip: fixed with Continue after persistence;
+- corrected retry racing an earlier DataStore write: fixed by serializing normal-learning persistence in CI #394.
 
 ### Next safe technical investigation
 
-Do not invent a new feature blindly. First inspect the current end-to-end learning activity lifecycle after the new Continue flow, especially these integrity seams:
-- whether rapid repeated taps on Continue can cause an unintended extra transition before recomposition;
-- whether persistence-complete state is correctly reset when the next activity ID changes;
-- whether optional practice still exits/loops exactly as intended and remains non-persistent;
+Investigate first; do not assume a bug. Check the current end-to-end lifecycle after Continue and retry serialization, especially:
+- whether rapid repeated taps on Continue can trigger an unintended extra transition before recomposition;
+- whether persistence-complete/counter state resets correctly when the next activity ID changes;
+- whether optional practice exits/loops exactly as intended and remains non-persistent;
 - whether `NONE_DUE` / `NO_CONTENT` states reached after Continue remain consistent with the queue contract.
 
-Treat any item as an investigation first, not automatically as a bug. Make only the smallest correction supported by real code behavior.
+If code proves a real issue, make only the smallest supported correction. Do not invent a new progression state, scheduler, queue or storage layer.
 
 ## 8. LEARNINGACTIVITY CONTRACT
 
@@ -213,4 +236,6 @@ Do not arbitrarily redraw approved masters. Any new pose must be shown to the us
 
 ## 13. HANDOFF RULE
 
-When the user says `Continue`, fetch real HEAD + exact CI, read this compact state and relevant code, select the smallest safe next slice, implement, then stop at the exact new CI gate. Stop earlier only for a genuine product decision, explicit authorization requirement, voice/data/publication requirement, or required visual approval.
+When the user says `Continue`, fetch real HEAD + exact CI first. Then read this compact state and `CURRENT_HANDOFF.md`, reread relevant code, select the smallest safe next slice, implement, and stop at the exact new CI gate. Stop earlier only for a genuine product decision, explicit authorization requirement, voice/data/publication requirement, or required visual approval.
+
+The next chat must not trust a SHA copied into a prompt as current without verifying `main`; documentation may itself have created a newer commit. Real GitHub state always wins.
