@@ -1,5 +1,19 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-10 — PLACEMENT LANGUAGE-SAFE PERSISTENCE, CI #411 GREEN
+
+Latest verified production state before this documentation write:
+- `9cfd522ab9332f7ed7c7fb4e9f2ca8ff29bf238e`
+- `fix: persist placement level for completed language`
+- Android CI #411, run `34494483656`: `COMPLETED / SUCCESS` on the exact SHA.
+
+A real asynchronous persistence race was closed in both quality-session and legacy placement completion:
+- the completed target-language code is captured before launching the DataStore write;
+- the decided level is persisted under that captured language key;
+- changing language immediately after placement can no longer write the completed level under a different language;
+- placement banks, scoring, terminal decisions and UI progression remain unchanged.
+
+
 ## AUTORITATIVO — 2026-09-10 — ALL-LANGUAGE PLACEMENT RUNTIME CONTRACT, CI #409 GREEN
 
 Latest verified test state before this documentation write:
