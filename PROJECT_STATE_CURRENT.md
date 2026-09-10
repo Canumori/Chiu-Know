@@ -1,5 +1,20 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-10 — DESCRIPTIVE EVIDENCE BY SKILL, CI #416 GREEN
+
+Latest verified state before this documentation write:
+- `195a0c7cbf8f13ab0a266922ee78045beba0030d` — `feat: add descriptive evidence summaries by skill` — CI #415 SUCCESS.
+- `357cfdde5fd90b6d90b58643b73eb9f8a2a17f4b` — `test: cover descriptive evidence summaries by skill` — Android CI #416, run `34497386866`: `COMPLETED / SUCCESS`.
+
+New model-only foundation:
+- `LearningSkillEvidenceSummary` groups observed `LearningEvidence` by declared `LearningSkill` and CEFR level;
+- it preserves total/correct/incorrect attempts, distinct review-target count, first observation and latest observation as separate facts;
+- empty skills are omitted instead of receiving an artificial zero/mastery state;
+- results are ordered by latest observed evidence;
+- it deliberately calculates no percentage, grade, mastery, proficiency sub-score or CEFR sub-level;
+- no UI, scheduler, placement result or curriculum behavior changed.
+
+
 ## AUTORITATIVO — 2026-09-10 — PREFERENCE LANGUAGE-SAFE PERSISTENCE, CI #413 GREEN
 
 Latest verified production state before this documentation write:
