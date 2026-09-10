@@ -287,7 +287,8 @@ fun ChiuKnowApp() {
                     var optionalPracticeSessionEvidence by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(emptyList<LearningEvidence>()) }
                     var feedbackActivity by remember(targetLanguage.code, estimatedLevel) { mutableStateOf<LearningActivity?>(null) }
                     var pendingLearningPersistenceCount by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
-                    val optionalPracticeActivity = if (optionalPracticeRequested) {
+                    val optionalPracticeComplete = optionalPracticeSessionEvidence.size >= 5
+                    val optionalPracticeActivity = if (optionalPracticeRequested && !optionalPracticeComplete) {
                         learningActivityForOptionalPractice(
                             targetLanguage.code,
                             estimatedLevel,
@@ -308,6 +309,12 @@ fun ChiuKnowApp() {
                     }
 
                     when {
+                        optionalPracticeRequested && optionalPracticeComplete ->
+                            OptionalPracticeSummaryScreen(
+                                completedCount = optionalPracticeSessionEvidence.size,
+                                onPracticeAgain = { optionalPracticeSessionEvidence = emptyList() },
+                                onBack = { step = AppStep.LEARNING_TRAIL }
+                            )
                         activity != null ->
                             LearningActivityScreen(
                                 activity = activity,
@@ -355,7 +362,10 @@ fun ChiuKnowApp() {
                         queue.reason == StarterQueueReason.NONE_DUE && !optionalPracticeRequested ->
                             ReviewUpToDateScreen(
                                 nextDueAtEpochMillis = queue.nextDueAtEpochMillis,
-                                onPracticeMore = { optionalPracticeRequested = true },
+                                onPracticeMore = {
+                                    optionalPracticeSessionEvidence = emptyList()
+                                    optionalPracticeRequested = true
+                                },
                                 onBack = { step = AppStep.LEARNING_TRAIL }
                             )
                     }
@@ -516,6 +526,27 @@ private fun ReviewUpToDateScreen(
         }
         Spacer(Modifier.height(8.dp))
         Text(stringResource(R.string.optional_practice_note), style = MaterialTheme.typography.bodyMedium)
+        Spacer(Modifier.height(12.dp))
+        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) {
+            Text(stringResource(R.string.back_to_path))
+        }
+    }
+}
+
+@Composable
+private fun OptionalPracticeSummaryScreen(
+    completedCount: Int,
+    onPracticeAgain: () -> Unit,
+    onBack: () -> Unit
+) {
+    CenteredColumn {
+        Text(stringResource(R.string.optional_practice_summary_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(12.dp))
+        Text(stringResource(R.string.optional_practice_summary_description, completedCount), style = MaterialTheme.typography.bodyLarge)
+        Spacer(Modifier.height(24.dp))
+        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onPracticeAgain) {
+            Text(stringResource(R.string.practice_again))
+        }
         Spacer(Modifier.height(12.dp))
         OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) {
             Text(stringResource(R.string.back_to_path))

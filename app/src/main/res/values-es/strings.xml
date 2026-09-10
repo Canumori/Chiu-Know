@@ -70,4 +70,7 @@
     <string name="voice_samples_loading">Preparando la voz del dispositivo…</string>
     <string name="voice_samples_unavailable">Este dispositivo no tiene actualmente una voz compatible con el idioma elegido.</string>
     <string name="voice_samples_temporary_note">Estas muestras son solo para comparación técnica y no serán oficiales sin aprobación.</string>
+    <string name="optional_practice_summary_title">Práctica completada</string>
+    <string name="optional_practice_summary_description">Completaste %1$d actividades adicionales. Esta práctica no modificó tu calendario de repaso.</string>
+    <string name="practice_again">Practicar de nuevo</string>
 </resources>

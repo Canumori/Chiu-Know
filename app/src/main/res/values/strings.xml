@@ -84,4 +84,7 @@
     <string name="auth_sign_in_error">We could not sign you in.</string>
     <string name="auth_reset_error">We could not send the recovery email.</string>
     <string name="auth_update_error">We could not save your password.</string>
+    <string name="optional_practice_summary_title">Practice complete</string>
+    <string name="optional_practice_summary_description">You completed %1$d extra activities. This practice did not change your review schedule.</string>
+    <string name="practice_again">Practice again</string>
 </resources>
