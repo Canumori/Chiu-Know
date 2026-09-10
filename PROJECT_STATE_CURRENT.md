@@ -1,5 +1,22 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-10 — NORMAL-LEARNING EXIT SERIALIZATION, CI #402/#403 GREEN
+
+Latest verified production state before this documentation write:
+- `3936f438bbecacd9b89e28c0f52a92d4afaeb25a`
+- `fix: scope persistence exit guard to learning`
+- Duplicate Android CI runs #402 and #403 both finished `COMPLETED / SUCCESS` on the exact SHA.
+
+A real lifecycle window was closed:
+- normal learning now disables Back to path while `pendingLearningPersistenceCount > 0`;
+- the parent `onBack` handler independently rechecks the counter, protecting rapid taps before recomposition;
+- this prevents leaving/re-entering while the previous DataStore write is pending and resubmitting against stale queue state;
+- optional practice remains freely exitable because it intentionally has no persistence;
+- voice preview and unrelated Back buttons retain their original behavior.
+
+CI #401 failed on the first implementation because a broad replacement applied `canExit` to VoiceSampleScreen. The follow-up commit restored that unrelated button and scoped the guard only to LearningActivityScreen; both exact-SHA verification runs passed.
+
+
 ## AUTORITATIVO — 2026-09-10 — OPTIONAL PRACTICE FIVE-ACTIVITY SESSION, CI #399 GREEN
 
 Latest verified production state before this documentation write:
