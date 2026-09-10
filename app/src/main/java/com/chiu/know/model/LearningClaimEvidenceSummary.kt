@@ -38,9 +38,23 @@ data class LearningClaimEvidenceSummary(
  * Joins persisted observations to known activities and aggregates only claims
  * supported by those activity contracts.
  *
- * Evidence for an unknown activity is omitted rather than guessed. Activity IDs
- * must be unique so historical evidence can never be assigned ambiguously.
+ * Evidence for an unknown activity is omitted rather than guessed. Claims that
+ * still require dedicated evaluation (free writing, speaking, pronunciation and
+ * interaction) are also omitted even when their format could support them in
+ * the future. Activity IDs must be unique so historical evidence can never be
+ * assigned ambiguously.
  */
+private val claimsAwaitingDedicatedEvaluation = setOf(
+    EvidenceClaim.WRITTEN_PRODUCTION,
+    EvidenceClaim.SPOKEN_PRODUCTION,
+    EvidenceClaim.PRONUNCIATION,
+    EvidenceClaim.INTERACTION
+)
+
+private fun currentlyObservableEvidenceClaims(
+    activity: LearningActivity
+): Set<EvidenceClaim> = supportedEvidenceClaims(activity) - claimsAwaitingDedicatedEvaluation
+
 fun summarizeLearningEvidenceByClaim(
     evidence: List<LearningEvidence>,
     activities: List<LearningActivity>
@@ -54,7 +68,7 @@ fun summarizeLearningEvidenceByClaim(
     return evidence
         .flatMap { attempt ->
             val activity = activitiesById[attempt.activityId] ?: return@flatMap emptyList()
-            supportedEvidenceClaims(activity).map { claim -> (claim to attempt.level) to attempt }
+            currentlyObservableEvidenceClaims(activity).map { claim -> (claim to attempt.level) to attempt }
         }
         .groupBy(keySelector = { it.first }, valueTransform = { it.second })
         .map { (identity, attempts) ->

@@ -39,8 +39,14 @@ class LearningClaimEvidenceSummaryTest {
             skill = LearningSkill.SPEAKING,
             responseType = ResponseType.SPEAK
         )
+        val freeText = activity(
+            id = "free-text",
+            skill = LearningSkill.WRITING,
+            responseType = ResponseType.FREE_TEXT
+        )
         val evidence = listOf(
             learningEvidenceFor(speaking, correct = false, attemptedAtEpochMillis = 200L),
+            learningEvidenceFor(freeText, correct = true, attemptedAtEpochMillis = 250L),
             LearningEvidence(
                 activityId = "removed-activity",
                 reviewKey = "unknown:target",
@@ -51,9 +57,11 @@ class LearningClaimEvidenceSummaryTest {
             )
         )
 
-        val summaries = summarizeLearningEvidenceByClaim(evidence, listOf(speaking))
+        val summaries = summarizeLearningEvidenceByClaim(evidence, listOf(speaking, freeText))
 
-        assertEquals(listOf(EvidenceClaim.SPOKEN_PRODUCTION), summaries.map { it.claim })
+        assertTrue(summaries.isEmpty())
+        assertFalse(summaries.any { it.claim == EvidenceClaim.WRITTEN_PRODUCTION })
+        assertFalse(summaries.any { it.claim == EvidenceClaim.SPOKEN_PRODUCTION })
         assertFalse(summaries.any { it.claim == EvidenceClaim.PRONUNCIATION })
         assertFalse(summaries.any { it.claim == EvidenceClaim.INTERACTION })
     }
