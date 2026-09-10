@@ -1,5 +1,20 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-10 — CORRECT-FEEDBACK ANSWER LOCK, CI #405 GREEN
+
+Latest verified production state before this documentation write:
+- `437d7af8ef2231649ab13766c31f54ba8f1d2bef`
+- `fix: keep correct learning feedback immutable`
+- Android CI #405, run `34490147701`: `COMPLETED / SUCCESS` on the exact SHA.
+
+A real post-answer lifecycle issue was closed:
+- after a correct answer, MULTIPLE_CHOICE, REORDER and text controls are disabled while feedback is displayed;
+- each edit handler independently rechecks whether the current checked answer is correct, protecting rapid taps before recomposition;
+- a correct activity can no longer lose its feedback or accept an unintended extra attempt before Continue;
+- incorrect answers remain editable and preserve the existing genuine retry behavior;
+- normal persistence serialization, optional-practice separation and Continue behavior remain unchanged.
+
+
 ## AUTORITATIVO — 2026-09-10 — NORMAL-LEARNING EXIT SERIALIZATION, CI #402/#403 GREEN
 
 Latest verified production state before this documentation write:
