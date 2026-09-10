@@ -1,5 +1,19 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-10 — OPTIONAL CONTINUE ROUND GUARD, CI #407 GREEN
+
+Latest verified production state before this documentation write:
+- `e1cc0d147f83456619973ec30e932f8406467ea4`
+- `fix: guard duplicate optional practice continue`
+- Android CI #407, run `34492052225`: `COMPLETED / SUCCESS` on the exact SHA.
+
+The five-activity optional session now protects rapid repeated Continue taps:
+- each displayed optional-practice round can be counted only once;
+- the guard uses the displayed round number rather than `activity.id`, so a legitimate next round still works if content availability causes the same activity ID to appear again;
+- Practice again and a fresh Practice more entry reset the round guard;
+- no temporary session evidence is persisted and normal LearningEvidence/FSRS remain unchanged.
+
+
 ## AUTORITATIVO — 2026-09-10 — CORRECT-FEEDBACK ANSWER LOCK, CI #405 GREEN
 
 Latest verified production state before this documentation write:
