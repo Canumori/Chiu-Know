@@ -357,11 +357,6 @@ fun ChiuKnowApp() {
                                                     val evidenceKey = learningEvidenceKey(completedLanguageCode)
                                                     prefs[evidenceKey] = prefs[evidenceKey].orEmpty() +
                                                         encodeLearningEvidence(evidence)
-                                                    val scheduleKey = reviewScheduleKey(completedLanguageCode)
-                                                    prefs[scheduleKey] = updateReviewScheduleStateSet(
-                                                        encoded = prefs[scheduleKey].orEmpty(),
-                                                        evidence = evidence
-                                                    )
                                                 }
                                             } finally {
                                                 pendingNarrativePersistenceCount--
