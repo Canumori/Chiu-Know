@@ -187,3 +187,49 @@ fun NextNarrativeScreen(
         }
     }
 }
+
+@Composable
+fun PracticeNowScreen(
+    onContinue: () -> Unit,
+    onBack: () -> Unit
+) {
+    var continueHandled by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.practice_now),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = stringResource(R.string.practice_now_description),
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Button(
+            onClick = {
+                if (!continueHandled) {
+                    continueHandled = true
+                    onContinue()
+                }
+            },
+            enabled = !continueHandled,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp)
+        ) {
+            Text(stringResource(R.string.practice_now))
+        }
+        OutlinedButton(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp)
+        ) {
+            Text(stringResource(R.string.back_to_path))
+        }
+    }
+}
