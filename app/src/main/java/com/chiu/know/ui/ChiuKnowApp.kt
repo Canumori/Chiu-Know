@@ -110,7 +110,7 @@ private fun learningEvidenceKey(languageCode: String) = stringSetPreferencesKey(
 private fun reviewScheduleKey(languageCode: String) = stringSetPreferencesKey("review_schedule_$languageCode")
 private const val OPTIONAL_PRACTICE_SESSION_SIZE = 5
 
-private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, PLACEMENT_UNRESOLVED, LEARNER_PREFERENCES, LEARNING_TRAIL, NARRATIVE_STORY, LEARNING_ACTIVITY, VOICE_PREVIEW }
+private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, PLACEMENT_UNRESOLVED, LEARNER_PREFERENCES, LEARNING_TRAIL, NARRATIVE_STORY, NARRATIVE_NEXT, LEARNING_ACTIVITY, VOICE_PREVIEW }
 
 @Composable
 fun ChiuKnowApp() {
@@ -414,11 +414,8 @@ fun ChiuKnowApp() {
                                                 nextNarrative != null &&
                                                 transferNarrativeComprehension.isNotEmpty()
                                             ) {
-                                                activeNarrativeIndex = 1
-                                                narrativeSession = narrativeSessionProgressFor(
-                                                    nextNarrative,
-                                                    transferNarrativeComprehension
-                                                )
+                                                narrativeSession = null
+                                                step = AppStep.NARRATIVE_NEXT
                                             } else {
                                                 activeNarrativeIndex = 0
                                                 narrativeSession = null
@@ -442,6 +439,32 @@ fun ChiuKnowApp() {
                             step = AppStep.LEARNING_TRAIL
                         }
                     }
+                }
+                AppStep.NARRATIVE_NEXT -> {
+                    val nextNarrative = requireNotNull(transferNarrative)
+                    NextNarrativeScreen(
+                        narrative = nextNarrative,
+                        imageResId = R.drawable.a1_story_park_surreal,
+                        onContinue = {
+                            if (
+                                activeNarrativeIndex == 0 &&
+                                narrativeSession == null &&
+                                transferNarrativeComprehension.isNotEmpty()
+                            ) {
+                                activeNarrativeIndex = 1
+                                narrativeSession = narrativeSessionProgressFor(
+                                    nextNarrative,
+                                    transferNarrativeComprehension
+                                )
+                                step = AppStep.NARRATIVE_STORY
+                            }
+                        },
+                        onBack = {
+                            activeNarrativeIndex = 0
+                            narrativeSession = null
+                            step = AppStep.LEARNING_TRAIL
+                        }
+                    )
                 }
                 AppStep.VOICE_PREVIEW -> VoiceSampleScreen(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
                 AppStep.LEARNING_ACTIVITY -> {
