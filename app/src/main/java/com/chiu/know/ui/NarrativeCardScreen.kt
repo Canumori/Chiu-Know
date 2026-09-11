@@ -125,3 +125,65 @@ fun NarrativeCardScreen(
         }
     }
 }
+
+
+@Composable
+fun NextNarrativeScreen(
+    narrative: NarrativeMicroUnit,
+    @DrawableRes imageResId: Int,
+    onContinue: () -> Unit,
+    onBack: () -> Unit
+) {
+    var continueHandled by remember(narrative.id) { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.next_story),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = narrative.title,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = narrative.setting,
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Image(
+            painter = painterResource(imageResId),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(3f / 2f),
+            contentScale = ContentScale.Fit
+        )
+        Button(
+            onClick = {
+                if (!continueHandled) {
+                    continueHandled = true
+                    onContinue()
+                }
+            },
+            enabled = !continueHandled,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp)
+        ) {
+            Text(stringResource(R.string.next_story))
+        }
+        OutlinedButton(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp)
+        ) {
+            Text(stringResource(R.string.back_to_path))
+        }
+    }
+}
