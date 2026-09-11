@@ -1,5 +1,30 @@
 # CHIU KNOW? — VISUAL BIBLE
 
+## ASSET APROVADO — 2026-09-11 — PRIMEIRA HISTÓRIA A1 / CAFÉ
+
+A usuária aprovou explicitamente com “Está ok” a **terceira candidata** da cena de Chiu e Mia no café.
+
+Identificação inequívoca da versão aprovada:
+- arquivo de trabalho gerado: `exec-9898bf1c-815a-419c-a41e-2c789349c59b.png`;
+- formato original: paisagem;
+- Chiu amarelo sentado à esquerda, segurando uma xícara e acenando;
+- Mia sentada à direita, segurando uma xícara;
+- Mia preserva focinho pequeno/torto, língua para fora e expressão estranha;
+- mesa redonda com croissant, pequeno bolo e flores;
+- café claro ao fundo, sem texto, balões, logo ou outros personagens.
+
+Status das versões anteriores:
+- primeira candidata: REJEITADA por suavizar ambos os rostos;
+- segunda candidata: REJEITADA porque a boca da Mia permaneceu normal demais;
+- somente a terceira candidata descrita acima está aprovada.
+
+Uso autorizado:
+- pode ser derivada tecnicamente para asset Android da primeira história A1, preservando composição, proporção e identidade;
+- otimização de tamanho/formato não autoriza retoque, redesenho ou mudança facial;
+- versões rejeitadas nunca podem entrar no APK;
+- a aprovação desta cena não aprova automaticamente futuras poses ou cenas.
+
+
 ## AUTORITATIVO — 2026-09-11 — IDENTIDADE FACIAL IMUTÁVEL / REFERÊNCIAS REENVIADAS
 
 A usuária reenviou neste chat as três pranchas visuais anteriormente aprovadas:
