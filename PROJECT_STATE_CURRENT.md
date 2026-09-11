@@ -1,5 +1,21 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-11 — PROGRESSIVE CUE-WITHDRAWAL MODEL, CI #424 GREEN
+
+Latest verified production/test state before this documentation write:
+- `d5ef20c0fb402313f5b7b63785259699e3d6691d` — `feat: model progressive cue withdrawal` — Android CI #423 SUCCESS.
+- `c599cddc06f3042e22da4f8507a43919cbd7f0e7` — `test: cover progressive cue withdrawal model` — Android CI #424, run `34619708519`: `COMPLETED / SUCCESS`.
+
+New model-only foundation:
+- `LearningCueStage` represents the currently defensible sequence `RECOGNITION → STRUCTURED_RECONSTRUCTION → REDUCED_CUE_RETRIEVAL`;
+- the mapping is limited to the deterministic closed formats already evaluated by the app: MULTIPLE_CHOICE, REORDER and FILL_IN;
+- FREE_TEXT, LISTEN_AND_RESPOND and SPEAK remain deliberately unclassified until dedicated evaluators justify a cue-withdrawal claim;
+- the stage is a curriculum-planning fact, never mastery, proficiency or proof of transfer;
+- no activity content, queue, UI, persistence, evidence or FSRS behavior changed.
+
+The learner-profile front was also re-audited before this work. Goal, priority, daily availability, versioned persistence, language separation, UI and conservative practice weights already exist and are covered; no duplicate preference model was added.
+
+
 ## AUTORITATIVO — 2026-09-10 — CLAIMS LIMITED TO CURRENT EVALUATORS, CI #421 GREEN
 
 Latest verified production/test state before this documentation write:
