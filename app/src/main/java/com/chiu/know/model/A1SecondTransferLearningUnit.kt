@@ -19,11 +19,7 @@ data class A1SecondTransferRetrievalTrack(
             "Second-transfer retrieval variants for one target must share one review key"
         }
         require(
-            activities.map { it.responseType } == listOf(
-                ResponseType.MULTIPLE_CHOICE,
-                ResponseType.REORDER,
-                ResponseType.FILL_IN
-            )
+            activities.mapNotNull(::learningCueStage) == LearningCueStage.entries
         ) {
             "Second-transfer retrieval track must withdraw cues in the validated order"
         }
