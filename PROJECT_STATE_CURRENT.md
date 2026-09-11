@@ -1,5 +1,41 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-11 — FIRST A1 STORY EXPERIENCE IN APP, CI #444 GREEN
+
+Approved visual:
+- final canonical café scene: `exec-123a0c4c-da72-429d-8791-a25d610d2db7.png`;
+- Android derivation: `app/src/main/res/drawable-nodpi/a1_story_cafe_surreal.webp`, 1280×853, approximately 184 KB;
+- the derivation preserves the approved composition and replaces all earlier rejected café candidates;
+- asset-only commit `7a8942e4d99852c53c84021d65121dd651ac9cac` — Android CI #438 SUCCESS.
+- `VISUAL_BIBLE.md` records the exact approved scene and makes strongly surreal/caricatural/crazy settings the future minimum; approval-doc commit `c0edfe1fc62e6098e30b8fc9c68023ace5d9a7a1` — CI #437 SUCCESS.
+
+Sequential UI foundation:
+- `NarrativeCardScreen` shows title, setting, approved 3:2 image, one dialogue beat, progress, guarded Continue and clear Back;
+- commit `d25c3cf79cd2b26e3ca1fc2950567e285eb26b91` — Android CI #439 SUCCESS;
+- localized `read_story` action exists in EN/PT/ES/FR/KO;
+- commit `ca7dbc8dd2d0b98fec02028de57ee7b185dbf5ce` — Android CI #440 SUCCESS.
+
+Story-session contract:
+- `NarrativeSessionProgress` enforces STORY → COMPREHENSION → COMPLETE;
+- six story beats remain visible one at a time;
+- the two dedicated first-story comprehension activities follow in order;
+- state advances are idempotent outside their phase and language/level mismatches fail closed;
+- production commit `72ab059383f785cf0ab3a7587a7fe6a6c478f290` — CI #441 SUCCESS;
+- all-language dedicated tests commit `20f52ad2800ab14a171f07cf60398dc72e76098e` — CI #442 SUCCESS.
+
+Real app integration:
+- A1 trail exposes “Read the story” only when narrative plus dedicated comprehension exist;
+- flow is trail → illustrated six-card story → two comprehension activities → trail;
+- story viewing alone writes no evidence, schedule, unlock or mastery;
+- comprehension attempts reuse the existing correctness and LearningEvidence encoding path;
+- retry, correct-feedback lock, rapid Continue guard and persistence exit serialization remain active;
+- integration commit `4c030828e11edbf91f76223c2a74d13feefe7db8` — CI #443 SUCCESS;
+- narrative comprehension remains outside the review queue, so it deliberately writes evidence without creating orphan FSRS schedules;
+- correction commit `8985e79f3eace7e79fc34a4c64b35a0b1ec68582` — Android CI #444, run `34627106257`: `COMPLETED / SUCCESS`.
+
+No second/third narrative was exposed in the UI, and no unapproved park/square asset was added. The next visual step may create an approval candidate for the already-written park narrative, preserving canonical characters and the strengthened surreal-setting rule.
+
+
 ## AUTORITATIVO — 2026-09-11 — SEQUENTIAL STORY CARDS + CANONICAL VISUAL LOCK, CI #433 GREEN
 
 User-approved story experience:
