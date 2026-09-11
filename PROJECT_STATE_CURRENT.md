@@ -1,5 +1,34 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-11 — COMPLETE THREE-CONTEXT A1 STORY CHAIN, CI #455 GREEN
+
+Approved third visual:
+- the user explicitly approved the first square candidate with “Está linda”;
+- exact master: `exec-7ec17e7d-fafa-4ada-a44d-f3fcaa53c325.png`;
+- Android derivation: `app/src/main/res/drawable-nodpi/a1_story_square_surreal.webp`, 1280×853, approximately 258 KB;
+- asset commit `326c9433df6a9ade4bd92b63ec080ecceb2bf1c2` — Android CI #453 SUCCESS;
+- `VISUAL_BIBLE.md` records the exact approved composition, characters and no-retouch rule;
+- approval record commit `30e4b47fe273b529958103ab18b5432dbea261f2` — Android CI #454 SUCCESS.
+
+Complete connected experience:
+- the A1 flow now exposes all three already-validated narrative contexts;
+- café story → café comprehension → explicit Next story preview;
+- park story → park comprehension → explicit Next story preview;
+- square story with Chiu and Barto → square comprehension → trail;
+- each preview uses the correct approved 3:2 asset and requires an explicit guarded learner action;
+- production commit `a79e6ebf88b9ffd7d035b6fbf2cc33151e2cfdab` — Android CI #455, run `34655079852`: `COMPLETED / SUCCESS`.
+
+Protected semantics:
+- no silent transition between stories;
+- rapid repeated Next story taps remain guarded;
+- Back to path is available at each story and preview;
+- viewing cards creates no evidence, schedule, unlock or mastery;
+- closed comprehension attempts use the existing serialized LearningEvidence path;
+- narrative comprehension remains outside the review queue and creates no orphan FSRS schedule;
+- no new queue, persistence format, scheduler or artificial mastery state was introduced;
+- the content and its all-language model tests existed before this UI exposure and were not rewritten.
+
+
 ## AUTORITATIVO — 2026-09-11 — EXPLICIT CAFÉ → PARK STORY TRANSITION, CI #451 GREEN
 
 Approved second visual:
