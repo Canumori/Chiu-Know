@@ -1,5 +1,32 @@
 # CHIU KNOW? — VISUAL BIBLE
 
+## ASSET FINAL APROVADO — 2026-09-11 — CAFÉ SURREAL A1
+
+A usuária aprovou explicitamente com “Está bom” a versão final surreal da primeira história A1.
+
+Arquivo exato aprovado no ambiente de trabalho:
+- `exec-123a0c4c-da72-429d-8791-a25d610d2db7.png`.
+
+Identificação visual:
+- Chiu amarelo canônico à esquerda e Mia canônica à direita, sentados com xícaras;
+- rostos excêntricos preservados, incluindo olhos assimétricos, dentes do Chiu e focinho/língua da Mia;
+- café deliberadamente torto e impossível;
+- cadeiras e mesa remendadas com pernas incompatíveis;
+- doces flutuando e empilhados de modo absurdo;
+- bule flutuante servindo café;
+- louças empilhadas em posições impossíveis;
+- vaso invertido, relógio surreal, quadros e arquitetura inclinados;
+- sem personagem adicional, texto, logo ou Chiu branco.
+
+Esta versão substitui todas as candidatas anteriores para a cena do café. Somente uma derivação técnica desta imagem exata pode ser integrada ao APK; redimensionamento/otimização deve preservar composição e identidade sem retoque.
+
+Regra futura reforçada pela usuária:
+- próximos cenários devem receber atenção especial para serem muito surreais, caricatos e doidos;
+- esta intensidade visual passa a ser referência mínima do universo interno;
+- manter o absurdo controlado o suficiente para a atividade continuar legível;
+- cada nova cena/pose continua exigindo aprovação própria antes da integração.
+
+
 ## REGRA ABSOLUTA — CENÁRIOS SURREAIS E EXCÊNTRICOS
 
 Os ambientes do universo interno devem ser **bem surreais, doidos, caricaturais e expressivos como os personagens**. Não usar cenários perfeitos, excessivamente polidos, genéricos ou com aparência de catálogo.
