@@ -1,5 +1,32 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-11 — SEQUENTIAL STORY CARDS + CANONICAL VISUAL LOCK, CI #433 GREEN
+
+User-approved story experience:
+- title and setting first;
+- dialogue shown one beat at a time in sequential cards;
+- explicit Continue between beats;
+- comprehension and the existing closed retrieval progression follow the story;
+- viewing narrative context alone creates no LearningEvidence, FSRS update, mastery or transfer claim.
+
+Verified implementation foundation:
+- `94605071e5b4574728913ca139deeae47d29ab52` — immutable/idempotent `NarrativeCardProgress` model — Android CI #431 SUCCESS.
+- `8d1e2db27377a49afb9782f816c3f6cd2bb07efa` — tests for one-beat-at-a-time advancement, completion after the final beat, invalid-index rejection and post-completion idempotence — Android CI #432 SUCCESS.
+- These commits do not yet wire narratives into `ChiuKnowApp.kt` or the learning queue.
+
+Visual continuity:
+- the user re-supplied the three previously approved visual boards in the working chat;
+- no binary was uploaded to the public repository or APK;
+- `VISUAL_BIBLE.md` now declares the first canonical cast board dominant for identity;
+- only pose, interaction and situation may change; crazy/asymmetric faces, oversized eyes, teeth, muzzles, proportions, colors, clothes and accessories must not be softened, beautified or reinterpreted;
+- `40f2635d801f999288a67965e767e4b87f2598a6` — visual identity lock documentation — Android CI #433, run `34623551075`: `COMPLETED / SUCCESS`.
+
+Candidate status:
+- first generated Chiu-and-Mia café scene: REJECTED because faces were softened and too normal;
+- second revised café scene: CANDIDATE ONLY / NOT APPROVED; it must not enter the APK without explicit approval;
+- if any generated candidate conflicts with the first canonical cast board, the canonical board wins.
+
+
 ## AUTORITATIVO — 2026-09-11 — CONNECTED A1 NARRATIVES + SHARED CUE CONTRACT, CI #429 GREEN
 
 Latest verified production/test state before this documentation write:
