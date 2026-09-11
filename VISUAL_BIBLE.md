@@ -1,6 +1,19 @@
 # CHIU KNOW? — VISUAL BIBLE
 
-## ASSET APROVADO — 2026-09-11 — PRIMEIRA HISTÓRIA A1 / CAFÉ
+## REGRA ABSOLUTA — CENÁRIOS SURREAIS E EXCÊNTRICOS
+
+Os ambientes do universo interno devem ser **bem surreais, doidos, caricaturais e expressivos como os personagens**. Não usar cenários perfeitos, excessivamente polidos, genéricos ou com aparência de catálogo.
+
+Direção obrigatória:
+- arquitetura, móveis, objetos e composições podem ser tortos, improváveis, exagerados e visualmente engraçados;
+- o absurdo deve parecer intencional e coerente com o universo Chiu Know?;
+- preservar legibilidade, contraste e foco pedagógico: surreal não significa poluição visual;
+- não introduzir personagens extras ou elementos narrativos que não pertençam à cena;
+- não usar sujeira, dano ou atmosfera sombria como substituto de excentricidade, salvo decisão narrativa específica;
+- personagens continuam submetidos à identidade canônica imutável; cenário surreal não autoriza redesenhá-los.
+
+
+## REFERÊNCIA DE PERSONAGENS APROVADA — 2026-09-11 — PRIMEIRA HISTÓRIA A1 / CAFÉ
 
 A usuária aprovou explicitamente com “Está ok” a **terceira candidata** da cena de Chiu e Mia no café.
 
@@ -13,13 +26,15 @@ Identificação inequívoca da versão aprovada:
 - mesa redonda com croissant, pequeno bolo e flores;
 - café claro ao fundo, sem texto, balões, logo ou outros personagens.
 
-Status das versões anteriores:
+Status das versões:
 - primeira candidata: REJEITADA por suavizar ambos os rostos;
 - segunda candidata: REJEITADA porque a boca da Mia permaneceu normal demais;
-- somente a terceira candidata descrita acima está aprovada.
+- terceira candidata: APROVADA como referência exata dos rostos/poses de Chiu e Mia;
+- após essa aprovação, a usuária pediu que o cenário também se tornasse bem surreal e doido; portanto a composição completa da terceira candidata não é o asset final do café;
+- primeira variação de cenário surreal: NÃO APROVADA e proibida para integração, pois introduziu um gato extra cortado no canto.
 
 Uso autorizado:
-- pode ser derivada tecnicamente para asset Android da primeira história A1, preservando composição, proporção e identidade;
+- os personagens da terceira candidata podem orientar o asset Android final, preservando pose, proporção e identidade; o cenário deve antes receber aprovação final na direção surreal;
 - otimização de tamanho/formato não autoriza retoque, redesenho ou mudança facial;
 - versões rejeitadas nunca podem entrar no APK;
 - a aprovação desta cena não aprova automaticamente futuras poses ou cenas.
