@@ -1,5 +1,25 @@
 # CHIU KNOW? — VISUAL BIBLE
 
+## AUTORITATIVO — 2026-09-11 — IDENTIDADE FACIAL IMUTÁVEL / REFERÊNCIAS REENVIADAS
+
+A usuária reenviou neste chat as três pranchas visuais anteriormente aprovadas:
+- elenco canônico em fundo preto, incluindo o logo e os nove personagens internos;
+- amostras das primeiras atividades pedagógicas;
+- conceito amplo de telas do aplicativo.
+
+A **primeira prancha do elenco é a referência absoluta da identidade dos personagens**. Em qualquer nova cena ou pose:
+- preservar os rostos malucos exatamente reconhecíveis;
+- não suavizar, embelezar, humanizar ou normalizar olhos, expressões, dentes, focinhos, proporções, cores, roupas ou acessórios;
+- Chiu interno continua sendo exclusivamente o Chihuahua amarelo de olhos enormes/desalinhados, orelhas grandes e expressão exagerada;
+- Mia, Barto e todos os demais personagens devem manter seus traços canônicos igualmente excêntricos;
+- mudar somente a pose, a interação necessária e a situação/cenário;
+- a primeira prancha vence qualquer candidata gerada que derive a identidade, mesmo que a candidata pareça visualmente polida.
+
+Os arquivos reenviados continuam fora do repositório público. O reenvio permite usá-los como referências de trabalho, mas **não constitui autorização automática para publicá-los no GitHub, incorporá-los ao APK ou substituir masters**.
+
+Foi gerada uma primeira candidata de Chiu e Mia no café após o reenvio. Ela permanece **CANDIDATA NÃO APROVADA** e não pode ser integrada ao APK até manifestação explícita da usuária. Qualquer avaliação deve aplicar primeiro a regra de identidade facial imutável acima.
+
+
 ## IDENTIDADE
 Nome aprovado: **Chiu Know?**. O ponto de interrogação faz parte da identidade visual.
 
