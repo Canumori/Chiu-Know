@@ -75,6 +75,8 @@
     <string name="practice_again">다시 연습하기</string>
     <string name="read_story">이야기 읽기</string>
     <string name="next_story">다음 이야기</string>
+    <string name="practice_now">지금 연습하기</string>
+    <string name="practice_now_description">이 이야기에서 본 표현을 점점 더 적은 힌트로 직접 연습해 보세요.</string>
     <string name="view_observed_practice">관찰된 연습 보기</string>
     <string name="observed_practice_title">관찰된 연습</string>
     <string name="observed_practice_empty">아직 관찰된 학습 시도가 없어요.</string>

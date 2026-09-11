@@ -89,6 +89,8 @@
     <string name="practice_again">Practice again</string>
     <string name="read_story">Read the story</string>
     <string name="next_story">Next story</string>
+    <string name="practice_now">Practice now</string>
+    <string name="practice_now_description">Use the language from this story in active practice with progressively fewer cues.</string>
     <string name="view_observed_practice">View observed practice</string>
     <string name="observed_practice_title">Observed practice</string>
     <string name="observed_practice_empty">No learning attempts have been observed yet.</string>

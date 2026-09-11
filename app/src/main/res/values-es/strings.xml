@@ -75,6 +75,8 @@
     <string name="practice_again">Practicar de nuevo</string>
     <string name="read_story">Leer la historia</string>
     <string name="next_story">Siguiente historia</string>
+    <string name="practice_now">Practicar ahora</string>
+    <string name="practice_now_description">Usa lo que apareció en esta historia en una práctica activa con cada vez menos pistas.</string>
     <string name="view_observed_practice">Ver práctica observada</string>
     <string name="observed_practice_title">Práctica observada</string>
     <string name="observed_practice_empty">Todavía no hay intentos de aprendizaje observados.</string>
