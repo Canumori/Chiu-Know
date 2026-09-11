@@ -1,5 +1,25 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-11 — CONNECTED A1 NARRATIVES + SHARED CUE CONTRACT, CI #429 GREEN
+
+Latest verified production/test state before this documentation write:
+- `01da3053261507dfe5604a8b366183f964b84ccc` — A1 second-transfer tracks now validate their unchanged MULTIPLE_CHOICE → REORDER → FILL_IN order through the shared `LearningCueStage` contract — Android CI #426 SUCCESS.
+- `42080e5d60d60e9e7570a5738978301859d4ef9b` — integration test rejects unclassified FREE_TEXT inside the current A1 cue-withdrawal track — Android CI #427 SUCCESS.
+- `0f60865b9f6a4ace20084347ef05a5bb78e73d9c` — `NarrativeLearningSequence` connects the three existing A1 contexts structurally — Android CI #428 SUCCESS.
+- `e2ff9b6a2fb1b9a0571b9052e29a5cb705a1563f` — dedicated narrative-sequence tests for EN/PT/ES/FR/KO — Android CI #429, run `34621087204`: `COMPLETED / SUCCESS`.
+
+Protected semantics:
+- later narratives may reuse only review targets introduced by the first context;
+- sequence units must share language and CEFR level while keeping distinct IDs and settings;
+- this is curriculum structure only: it does not prove transfer, create evidence, unlock content, alter FSRS or enter the learning queue;
+- no narrative text, character, activity, UI or visual asset changed.
+
+Read-only UI audit after CI #429:
+- neither `ChiuKnowApp.kt` nor `LearningActivityQueue.kt` currently references narratives;
+- therefore exposing stories is a real product/visual decision, not a safe implicit wiring change;
+- next work must obtain the user's choice for the first story experience before integrating it.
+
+
 ## AUTORITATIVO — 2026-09-11 — PROGRESSIVE CUE-WITHDRAWAL MODEL, CI #424 GREEN
 
 Latest verified production/test state before this documentation write:
