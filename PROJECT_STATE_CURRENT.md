@@ -1,5 +1,27 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-11 — HONEST OBSERVED-PRACTICE SCREEN, CI #459 GREEN
+
+A concrete product gap was closed: descriptive evidence-by-skill summaries already existed and were tested, but were not visible in the app.
+
+Implemented:
+- localized observed-practice labels in EN/PT/ES/FR/KO;
+- localization commit `24ad7db267da8c4531deadaeb5592ef6f8a6dfbf` — Android CI #457 SUCCESS;
+- `ObservedPracticeScreen` displays only observed skill, CEFR level, total/correct/incorrect attempts and distinct practiced targets;
+- an empty state is shown honestly before any learning attempt;
+- the screen explicitly states that observations are not a proficiency score or mastery;
+- screen commit `ee4b8b6759159dacc96c4cd27e8a05aad8b23cb8` — Android CI #458 SUCCESS;
+- the learning trail now exposes “View observed practice” and feeds it only `summarizeLearningEvidenceBySkill(persistedLearningEvidence)` for the selected target language;
+- wiring commit `217178805f203c9772f8c32879857a682c3ffa6a` — Android CI #459, run `34657828705`: `COMPLETED / SUCCESS`.
+
+Protected semantics:
+- no percentages, grade, stars, ranking, mastery, CEFR sub-level or certification are calculated;
+- empty skills are omitted rather than assigned artificial zeroes;
+- the screen is read-only and does not change evidence, queue, FSRS, unlocks or learner preferences;
+- target-language separation follows the existing persisted evidence key;
+- the underlying summary model and its dedicated tests were not duplicated or rewritten.
+
+
 ## AUTORITATIVO — 2026-09-11 — COMPLETE THREE-CONTEXT A1 STORY CHAIN, CI #455 GREEN
 
 Approved third visual:
