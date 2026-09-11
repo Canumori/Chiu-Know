@@ -1,5 +1,34 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-11 — EXPLICIT CAFÉ → PARK STORY TRANSITION, CI #451 GREEN
+
+Approved second visual:
+- the user confirmed the **second** generated park candidate as approved;
+- exact master: `exec-d9eeaba2-6ee3-468e-90e9-00a1c1595fed.png`;
+- Android derivation: `app/src/main/res/drawable-nodpi/a1_story_park_surreal.webp`, 1280×853, approximately 259 KB;
+- asset commit `e1cee4e291d0dce9fb6d2bf27ef1b3f1bd582e96` — Android CI #446 SUCCESS;
+- `VISUAL_BIBLE.md` records the first park candidate as rejected for insufficient surrealism and the second as the only canonical version;
+- approval record commit `7db69617dc97acc0e9502db905a078fab5a21d20` — Android CI #447 SUCCESS.
+
+Connected story experience:
+- after the café cards and their dedicated comprehension, the app offers the park as **Next story**;
+- localized action exists in EN/PT/ES/FR/KO;
+- localization commit `af29f58329bec09475b197e48f439c4bbab1796d` — CI #449 SUCCESS;
+- `NextNarrativeScreen` shows the park title, setting and approved image, with a guarded explicit action and a clear Back to path;
+- component commit `3c50c36fb840c6cd359d1369d2a9ee1c46e90f7d` — CI #450 SUCCESS;
+- the final flow is café story → café comprehension → explicit Next story preview → park story → park comprehension → trail;
+- wiring commit `9c874a4cef0ac7936e94b2748e5c2ac307b45eb9` — Android CI #451, run `34651914665`: `COMPLETED / SUCCESS`.
+
+Protected semantics:
+- there is no silent auto-advance from café comprehension into the park;
+- rapid repeated taps on Next story are guarded;
+- Back to path remains available before starting the park;
+- story viewing writes no evidence, schedule, mastery or unlock;
+- comprehension attempts reuse existing LearningEvidence persistence guards and remain outside the review queue, so no orphan FSRS schedule is created;
+- no new persistence format, queue, scheduler or mastery state was introduced;
+- only the first two of the already-validated three A1 narrative contexts are exposed; the third remains unexposed and has no approved visual asset.
+
+
 ## AUTORITATIVO — 2026-09-11 — FIRST A1 STORY EXPERIENCE IN APP, CI #444 GREEN
 
 Approved visual:
