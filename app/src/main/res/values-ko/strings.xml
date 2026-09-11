@@ -73,4 +73,5 @@
     <string name="optional_practice_summary_title">추가 연습 완료</string>
     <string name="optional_practice_summary_description">추가 활동 %1$d개를 완료했습니다. 이 연습은 복습 일정을 변경하지 않았습니다.</string>
     <string name="practice_again">다시 연습하기</string>
+    <string name="read_story">이야기 읽기</string>
 </resources>

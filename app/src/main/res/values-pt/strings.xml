@@ -87,4 +87,5 @@
     <string name="optional_practice_summary_title">Prática concluída</string>
     <string name="optional_practice_summary_description">Você concluiu %1$d atividades extras. Esta prática não alterou seu calendário de revisão.</string>
     <string name="practice_again">Praticar novamente</string>
+    <string name="read_story">Ler a história</string>
 </resources>

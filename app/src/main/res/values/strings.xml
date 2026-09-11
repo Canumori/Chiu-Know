@@ -87,4 +87,5 @@
     <string name="optional_practice_summary_title">Practice complete</string>
     <string name="optional_practice_summary_description">You completed %1$d extra activities. This practice did not change your review schedule.</string>
     <string name="practice_again">Practice again</string>
+    <string name="read_story">Read the story</string>
 </resources>

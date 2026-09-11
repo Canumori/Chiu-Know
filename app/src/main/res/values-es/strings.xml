@@ -73,4 +73,5 @@
     <string name="optional_practice_summary_title">Práctica completada</string>
     <string name="optional_practice_summary_description">Completaste %1$d actividades adicionales. Esta práctica no modificó tu calendario de repaso.</string>
     <string name="practice_again">Practicar de nuevo</string>
+    <string name="read_story">Leer la historia</string>
 </resources>
