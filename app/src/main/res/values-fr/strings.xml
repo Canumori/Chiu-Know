@@ -75,4 +75,15 @@
     <string name="practice_again">Pratiquer à nouveau</string>
     <string name="read_story">Lire l’histoire</string>
     <string name="next_story">Histoire suivante</string>
+    <string name="view_observed_practice">Voir la pratique observée</string>
+    <string name="observed_practice_title">Pratique observée</string>
+    <string name="observed_practice_empty">Aucune tentative d’apprentissage n’a encore été observée.</string>
+    <string name="observed_practice_note">Il s’agit de tentatives observées, pas d’un score de compétence ni d’une maîtrise.</string>
+    <string name="observed_practice_item">%1$s · %2$d tentatives\n%3$d correctes · %4$d incorrectes · %5$d cibles</string>
+    <string name="skill_grammar">Grammaire</string>
+    <string name="skill_vocabulary">Vocabulaire</string>
+    <string name="skill_listening">Compréhension orale</string>
+    <string name="skill_reading">Lecture</string>
+    <string name="skill_writing">Écriture</string>
+    <string name="skill_speaking">Expression orale</string>
 </resources>

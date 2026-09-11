@@ -75,4 +75,15 @@
     <string name="practice_again">다시 연습하기</string>
     <string name="read_story">이야기 읽기</string>
     <string name="next_story">다음 이야기</string>
+    <string name="view_observed_practice">관찰된 연습 보기</string>
+    <string name="observed_practice_title">관찰된 연습</string>
+    <string name="observed_practice_empty">아직 관찰된 학습 시도가 없어요.</string>
+    <string name="observed_practice_note">이 기록은 관찰된 시도이며 숙련도 점수나 완전한 습득을 뜻하지 않아요.</string>
+    <string name="observed_practice_item">%1$s · 시도 %2$d회\n정답 %3$d회 · 오답 %4$d회 · 학습 목표 %5$d개</string>
+    <string name="skill_grammar">문법</string>
+    <string name="skill_vocabulary">어휘</string>
+    <string name="skill_listening">듣기</string>
+    <string name="skill_reading">읽기</string>
+    <string name="skill_writing">쓰기</string>
+    <string name="skill_speaking">말하기</string>
 </resources>
