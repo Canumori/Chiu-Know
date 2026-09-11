@@ -1,5 +1,31 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+
+## AUTORITATIVO — 2026-09-11 — EXPLICIT PRACTICE-NOW HANDOFF, CI #465 GREEN
+
+User decision:
+- option 1 was explicitly approved;
+- after the final square comprehension, the app now shows a localized **Practice now** transition instead of returning directly to the trail.
+
+Implemented in separately gated commits:
+- localized action and honest description in EN/PT/ES/FR/KO: `5aa93904c9d9846a91a657847c850751a0824a1e` — Android CI #462 SUCCESS;
+- guarded `PracticeNowScreen` with an explicit action and clear Back to path: `c71ebf3e83ffc8baa00920f15b8c1c7184b0ebdd` — Android CI #463 SUCCESS;
+- final square comprehension → Practice now → existing normal learning activity flow: `e55fc120821f207f84bcdaab2e8bf0a5d3b04886` — Android CI #464 SUCCESS;
+- all-language queue contract test for comprehension → related first retrieval step: `f33fa1c7143a8b92256bf443b4bffa62f2fc65a8` — Android CI #465, run `34659625287`: COMPLETED / SUCCESS.
+
+Protected semantics:
+- the transition creates no activity, queue, scheduler, FSRS state, mastery state or persistence format;
+- it enters the existing `AppStep.LEARNING_ACTIVITY` path;
+- the existing review-first priority remains authoritative;
+- when no due review outranks new work, observed square comprehension leads to the first not-yet-observed retrieval activity in the same second-transfer unit;
+- the validated target order and cue withdrawal remain `MULTIPLE_CHOICE → REORDER → FILL_IN`;
+- normal attempts continue through the existing serialized LearningEvidence and review-schedule path;
+- optional practice remains separate and non-persistent;
+- Back to path remains available;
+- no visual asset, voice file, Supabase resource or Chiu Player resource was changed.
+
+The previous pending choice between Practice now and direct return is resolved and must not be asked again.
+
 ## HANDOFF OPERACIONAL — 2026-09-11 — PAUSE AFTER CI #460
 
 Exact verified base before this handoff write:
