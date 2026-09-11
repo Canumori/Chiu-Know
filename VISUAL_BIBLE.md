@@ -1,5 +1,36 @@
 # CHIU KNOW? — VISUAL BIBLE
 
+## ASSET FINAL APROVADO — 2026-09-11 — PARQUE SURREAL A1
+
+A usuária identificou e aprovou explicitamente a **segunda candidata** do parque: “Foi na segunda”. A reação positiva aplicada à imagem foi confirmada pela própria usuária como referente a esta versão.
+
+Arquivo-mestre exato aprovado no ambiente de trabalho:
+- `exec-d9eeaba2-6ee3-468e-90e9-00a1c1595fed.png`.
+
+Derivação Android:
+- `app/src/main/res/drawable-nodpi/a1_story_park_surreal.webp`;
+- 1280×853, aproximadamente 259 KB;
+- derivada sem retoque, redesenho ou alteração de composição;
+- asset-only commit `e1cee4e291d0dce9fb6d2bf27ef1b3f1bd582e96` — Android CI #446 SUCCESS.
+
+Identificação visual inequívoca:
+- somente Chiu amarelo e Mia, conversando junto ao banco;
+- Chiu preserva olhos enormes/desalinhados, dentes e expressão maníaca;
+- Mia preserva olhos assimétricos, focinho torto e língua aparente;
+- caminho sobe e forma um looping impossível;
+- banco remendado sobre molas, roda e pés incompatíveis;
+- fonte montada com regadores, botas e guarda-chuva;
+- árvores atravessando xícaras, raízes suspensas com vasos;
+- nuvens penduradas por cordas, luminárias absurdas, cercas de lápis e talheres;
+- sem texto, logo, Chiu branco ou personagem adicional.
+
+Status das candidatas do parque:
+- primeira candidata `exec-f8085f1d-f48d-4b15-95e7-5d6309e52466.png`: **REJEITADA**, pois era um parque fantasioso polido, mas não verdadeiramente surreal e doido;
+- segunda candidata `exec-d9eeaba2-6ee3-468e-90e9-00a1c1595fed.png`: **APROVADA E CANÔNICA**;
+- somente derivações técnicas da segunda candidata podem ser usadas para esta cena;
+- a aprovação não autoriza retoques nem aprova automaticamente futuras cenas ou poses.
+
+
 ## ASSET FINAL APROVADO — 2026-09-11 — CAFÉ SURREAL A1
 
 A usuária aprovou explicitamente com “Está bom” a versão final surreal da primeira história A1.
