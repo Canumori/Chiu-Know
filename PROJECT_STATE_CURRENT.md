@@ -1,5 +1,38 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## HANDOFF OPERACIONAL — 2026-09-11 — PAUSE AFTER CI #460
+
+Exact verified base before this handoff write:
+- HEAD `73115c5ea9e72d2292cced5383aab48081552381`;
+- commit `docs: record observed practice screen through CI 459`;
+- Android CI #460, run `34657975904`: `COMPLETED / SUCCESS` on that exact SHA.
+
+Current user-visible A1 experience:
+- café story → café comprehension → explicit Next story preview;
+- park story → park comprehension → explicit Next story preview;
+- square story → square comprehension → trail;
+- all three approved surreal assets are in `drawable-nodpi`;
+- the trail exposes the normal compatible learning queue, the three-story experience, observed-practice summaries and temporary voice preview;
+- observed practice is descriptive only and cannot be called mastery, score or CEFR certification.
+
+Exact pending product decision — DO NOT ASSUME:
+After the final square comprehension, the current app returns directly to the learning trail. The assistant proposed:
+1. offer an explicit localized **Practice now** transition into active retrieval with fewer cues (recommended); or
+2. preserve the direct return to the trail.
+The user has not yet chosen. The next chat must ask/receive this choice before changing that final transition.
+
+If option 1 is approved:
+- first recheck real HEAD and exact-SHA Android CI;
+- inspect the existing compatible queue and the already-written A1 MULTIPLE_CHOICE → REORDER → FILL_IN tracks;
+- do not create a parallel activity sequence, queue, scheduler, FSRS implementation or mastery state;
+- determine whether the existing queue can supply the intended active retrieval without exposing unrelated/due work;
+- if a dedicated handoff into the existing activities cannot be made honestly, stop and request a narrower product decision;
+- add localized UI text, production wiring and tests as separate gated commits when practical;
+- preserve persistence serialization, retry, correct-feedback lock, review-first priority and optional-practice separation.
+
+No uncommitted GitHub write or code change is pending at this pause.
+
+
 ## AUTORITATIVO — 2026-09-11 — HONEST OBSERVED-PRACTICE SCREEN, CI #459 GREEN
 
 A concrete product gap was closed: descriptive evidence-by-skill summaries already existed and were tested, but were not visible in the app.
