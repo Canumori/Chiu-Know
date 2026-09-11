@@ -36,6 +36,31 @@ class LearningActivityQueueTest {
     }
 
     @Test
+    fun a1NarrativeComprehensionContinuesIntoRelatedRetrieval() {
+        languages.forEach { languageCode ->
+            val unit = requireNotNull(a1SecondTransferLearningUnitFor(languageCode))
+            val evidence = prerequisiteEvidence(unit) + learningEvidenceFor(
+                activity = unit.comprehension,
+                correct = true,
+                attemptedAtEpochMillis = 100L
+            )
+
+            val selection = learningActivityQueueSelection(
+                languageCode = languageCode,
+                level = CefrLevel.A1,
+                evidence = evidence,
+                schedules = emptyList(),
+                nowEpochMillis = now,
+                preferences = preferences
+            )
+
+            assertEquals(StarterQueueReason.NEW_TARGET, selection.reason)
+            assertEquals(unit.retrievalTracks.first().activities.first().id, selection.activity?.id)
+            assertEquals(ResponseType.MULTIPLE_CHOICE, selection.activity?.responseType)
+        }
+    }
+
+    @Test
     fun a1SecondTransferDueReviewMapsToDueReview() {
         languages.forEach { languageCode ->
             val unit = requireNotNull(a1SecondTransferLearningUnitFor(languageCode))
