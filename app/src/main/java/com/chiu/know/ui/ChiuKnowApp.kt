@@ -90,6 +90,7 @@ import com.chiu.know.model.rebuildReviewScheduleStates
 import com.chiu.know.model.restoredLearnerPreferences
 import com.chiu.know.model.startAdaptivePlacement
 import com.chiu.know.model.startPlacementSession
+import com.chiu.know.model.summarizeLearningEvidenceBySkill
 import com.chiu.know.model.starterLearningActivityFor
 import com.chiu.know.model.starterNarrativeMicroUnitFor
 import com.chiu.know.model.supportedInterfaceLanguages
@@ -112,7 +113,7 @@ private fun learningEvidenceKey(languageCode: String) = stringSetPreferencesKey(
 private fun reviewScheduleKey(languageCode: String) = stringSetPreferencesKey("review_schedule_$languageCode")
 private const val OPTIONAL_PRACTICE_SESSION_SIZE = 5
 
-private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, PLACEMENT_UNRESOLVED, LEARNER_PREFERENCES, LEARNING_TRAIL, NARRATIVE_STORY, NARRATIVE_NEXT, LEARNING_ACTIVITY, VOICE_PREVIEW }
+private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, PLACEMENT_UNRESOLVED, LEARNER_PREFERENCES, LEARNING_TRAIL, NARRATIVE_STORY, NARRATIVE_NEXT, LEARNING_ACTIVITY, OBSERVED_PRACTICE, VOICE_PREVIEW }
 
 @Composable
 fun ChiuKnowApp() {
@@ -347,6 +348,7 @@ fun ChiuKnowApp() {
                             step = AppStep.NARRATIVE_STORY
                         }
                     },
+                    onViewObservedPractice = { step = AppStep.OBSERVED_PRACTICE },
                     onPreviewVoices = { step = AppStep.VOICE_PREVIEW },
                     onBack = {
                         step = if (trailOpenedFromResult) {
@@ -506,6 +508,10 @@ fun ChiuKnowApp() {
                         }
                     )
                 }
+                AppStep.OBSERVED_PRACTICE -> ObservedPracticeScreen(
+                    summaries = summarizeLearningEvidenceBySkill(persistedLearningEvidence),
+                    onBack = { step = AppStep.LEARNING_TRAIL }
+                )
                 AppStep.VOICE_PREVIEW -> VoiceSampleScreen(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
                 AppStep.LEARNING_ACTIVITY -> {
                     var queueRefreshTick by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
@@ -658,6 +664,7 @@ private fun LearningTrailScreen(
     hasNarrative: Boolean,
     onStartFoundationActivity: () -> Unit,
     onStartNarrative: () -> Unit,
+    onViewObservedPractice: () -> Unit,
     onPreviewVoices: () -> Unit,
     onBack: () -> Unit
 ) {
@@ -724,6 +731,14 @@ private fun LearningTrailScreen(
             ) {
                 Text(stringResource(R.string.read_story))
             }
+        }
+        Spacer(Modifier.height(12.dp))
+        OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp),
+            onClick = onViewObservedPractice
+        ) {
+            Text(stringResource(R.string.view_observed_practice))
         }
         Spacer(Modifier.height(12.dp))
         Text(
