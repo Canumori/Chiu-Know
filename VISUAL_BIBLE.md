@@ -1,5 +1,35 @@
 # CHIU KNOW? — VISUAL BIBLE
 
+## ASSET FINAL APROVADO — 2026-09-11 — PRAÇA SURREAL A1
+
+A usuária aprovou explicitamente com “Está linda” a primeira candidata da terceira história A1.
+
+Arquivo-mestre exato aprovado:
+- `exec-7ec17e7d-fafa-4ada-a44d-f3fcaa53c325.png`.
+
+Derivação Android:
+- `app/src/main/res/drawable-nodpi/a1_story_square_surreal.webp`;
+- 1280×853, aproximadamente 258 KB;
+- derivada sem retoque, redesenho ou alteração de composição;
+- asset-only commit `326c9433df6a9ade4bd92b63ec080ecceb2bf1c2` — Android CI #453 SUCCESS.
+
+Identificação visual inequívoca:
+- somente Chiu amarelo e Barto, conversando no primeiro plano;
+- Chiu preserva olhos enormes/desalinhados, orelhas grandes, dentes e expressão maníaca;
+- Barto preserva corpo escuro, enormes olhos assimétricos, orelhas internas vermelhas, gravata-borboleta vermelha, medalhão e boca maluca;
+- praça com piso dobrado e pedras flutuantes;
+- torre-relógio torcida, com ponteiros amarrados;
+- fonte impossível montada com xícaras, trompetes e guarda-chuva;
+- casas inclinadas, escadas suspensas, luas/sol/nuvens pendurados por cordas;
+- banco remendado sobre molas e objetos com escalas e funções incompatíveis;
+- sem texto, logo, Chiu branco ou personagem adicional.
+
+Status:
+- primeira candidata: **APROVADA E CANÔNICA**;
+- somente derivações técnicas desta imagem podem ser usadas para a cena da praça;
+- a aprovação não autoriza retoques nem aprova automaticamente futuras cenas ou poses.
+
+
 ## ASSET FINAL APROVADO — 2026-09-11 — PARQUE SURREAL A1
 
 A usuária identificou e aprovou explicitamente a **segunda candidata** do parque: “Foi na segunda”. A reação positiva aplicada à imagem foi confirmada pela própria usuária como referente a esta versão.
