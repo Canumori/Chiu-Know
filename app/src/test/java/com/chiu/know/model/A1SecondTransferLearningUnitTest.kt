@@ -2,6 +2,7 @@ package com.chiu.know.model
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -96,6 +97,24 @@ class A1SecondTransferLearningUnitTest {
         val preferenceTrack = unit.retrievalTracks.first { it.target == A1SecondTransferTarget.PREFERENCE }
         assertEquals("리우에 살아요.", residenceTrack.activities[0].acceptedAnswers.single())
         assertEquals("커피를 좋아해요.", preferenceTrack.activities[0].acceptedAnswers.single())
+    }
+
+    @Test
+    fun retrievalTrackRejectsFormatsWithoutCurrentCueEvaluation() {
+        val original = requireNotNull(a1SecondTransferLearningUnitFor("en"))
+            .retrievalTracks
+            .first()
+        val unclassified = original.activities[2].copy(
+            responseType = ResponseType.FREE_TEXT,
+            responseOptions = emptyList()
+        )
+
+        assertThrows(IllegalArgumentException::class.java) {
+            A1SecondTransferRetrievalTrack(
+                target = original.target,
+                activities = original.activities.dropLast(1) + unclassified
+            )
+        }
     }
 
     @Test
