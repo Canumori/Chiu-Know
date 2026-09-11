@@ -66,6 +66,8 @@ import com.chiu.know.model.ResponseType
 import com.chiu.know.model.StarterQueueReason
 import com.chiu.know.model.TemporaryVoiceStyle
 import com.chiu.know.model.a1FirstNarrativeComprehensionActivitiesFor
+import com.chiu.know.model.a1TransferNarrativeComprehensionActivitiesFor
+import com.chiu.know.model.a1TransferNarrativeMicroUnitFor
 import com.chiu.know.model.advanceAdaptivePlacement
 import com.chiu.know.model.advanceNarrativeSessionComprehension
 import com.chiu.know.model.advanceNarrativeSessionStory
@@ -147,6 +149,23 @@ fun ChiuKnowApp() {
                 } else {
                     emptyList()
                 }
+            }
+            val transferNarrative = remember(targetLanguage.code, estimatedLevel) {
+                if (estimatedLevel == CefrLevel.A1) {
+                    a1TransferNarrativeMicroUnitFor(targetLanguage.code)
+                } else {
+                    null
+                }
+            }
+            val transferNarrativeComprehension = remember(targetLanguage.code, estimatedLevel) {
+                if (estimatedLevel == CefrLevel.A1) {
+                    a1TransferNarrativeComprehensionActivitiesFor(targetLanguage.code)
+                } else {
+                    emptyList()
+                }
+            }
+            var activeNarrativeIndex by remember(targetLanguage.code, estimatedLevel) {
+                mutableIntStateOf(0)
             }
             var narrativeSession by remember(targetLanguage.code, estimatedLevel) {
                 mutableStateOf<NarrativeSessionProgress?>(null)
@@ -304,6 +323,7 @@ fun ChiuKnowApp() {
                     onStartNarrative = {
                         val narrative = starterNarrative
                         if (narrative != null && starterNarrativeComprehension.isNotEmpty()) {
+                            activeNarrativeIndex = 0
                             narrativeSession = narrativeSessionProgressFor(
                                 narrative,
                                 starterNarrativeComprehension
@@ -321,24 +341,36 @@ fun ChiuKnowApp() {
                     }
                 )
                 AppStep.NARRATIVE_STORY -> {
-                    val narrative = requireNotNull(starterNarrative)
+                    val narrative = requireNotNull(
+                        if (activeNarrativeIndex == 0) starterNarrative else transferNarrative
+                    )
+                    val narrativeComprehension = if (activeNarrativeIndex == 0) {
+                        starterNarrativeComprehension
+                    } else {
+                        transferNarrativeComprehension
+                    }
                     val session = requireNotNull(narrativeSession)
                     when (session.phase) {
                         NarrativeSessionPhase.STORY -> NarrativeCardScreen(
                             narrative = narrative,
                             progress = session.cardProgress,
-                            imageResId = R.drawable.a1_story_cafe_surreal,
+                            imageResId = if (activeNarrativeIndex == 0) {
+                                R.drawable.a1_story_cafe_surreal
+                            } else {
+                                R.drawable.a1_story_park_surreal
+                            },
                             onAdvance = {
                                 narrativeSession = advanceNarrativeSessionStory(session)
                             },
                             onBack = {
+                                activeNarrativeIndex = 0
                                 narrativeSession = null
                                 step = AppStep.LEARNING_TRAIL
                             }
                         )
                         NarrativeSessionPhase.COMPREHENSION -> {
                             val activityIndex = requireNotNull(session.comprehensionIndex)
-                            val activity = starterNarrativeComprehension[activityIndex]
+                            val activity = narrativeComprehension[activityIndex]
                             LearningActivityScreen(
                                 activity = activity,
                                 onAttempt = { learnerAnswer ->
@@ -376,8 +408,22 @@ fun ChiuKnowApp() {
                                     ) {
                                         val next = advanceNarrativeSessionComprehension(current)
                                         if (next.phase == NarrativeSessionPhase.COMPLETE) {
-                                            narrativeSession = null
-                                            step = AppStep.LEARNING_TRAIL
+                                            val nextNarrative = transferNarrative
+                                            if (
+                                                activeNarrativeIndex == 0 &&
+                                                nextNarrative != null &&
+                                                transferNarrativeComprehension.isNotEmpty()
+                                            ) {
+                                                activeNarrativeIndex = 1
+                                                narrativeSession = narrativeSessionProgressFor(
+                                                    nextNarrative,
+                                                    transferNarrativeComprehension
+                                                )
+                                            } else {
+                                                activeNarrativeIndex = 0
+                                                narrativeSession = null
+                                                step = AppStep.LEARNING_TRAIL
+                                            }
                                         } else {
                                             narrativeSession = next
                                         }
