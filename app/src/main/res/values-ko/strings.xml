@@ -66,6 +66,8 @@
     <string name="voice_sample_neutral">기본 샘플</string>
     <string name="voice_sample_calm">차분한 샘플</string>
     <string name="voice_sample_lively">치우 목소리 재생</string>
+    <string name="voice_sample_mia">미아 목소리 재생</string>
+    <string name="voice_sample_mia_sentence">미아의 포르투갈어 샘플: “Olá, Chiu! Meu nome é Mia. Eu gosto de livros.”</string>
     <string name="voice_sample_playing">재생 중: %1$s</string>
     <string name="voice_samples_loading">치우의 목소리를 준비하는 중…</string>
     <string name="voice_samples_unavailable">이 기기에서 치우의 목소리를 재생할 수 없습니다.</string>

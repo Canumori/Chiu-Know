@@ -66,6 +66,8 @@
     <string name="voice_sample_neutral">Échantillon neutre</string>
     <string name="voice_sample_calm">Échantillon calme</string>
     <string name="voice_sample_lively">Écouter la voix de Chiu</string>
+    <string name="voice_sample_mia">Écouter la voix de Mia</string>
+    <string name="voice_sample_mia_sentence">Phrase de Mia en portugais : “Olá, Chiu! Meu nome é Mia. Eu gosto de livros.”</string>
     <string name="voice_sample_playing">Lecture : %1$s</string>
     <string name="voice_samples_loading">Préparation de la voix de Chiu…</string>
     <string name="voice_samples_unavailable">La voix de Chiu n’a pas pu être lue sur cet appareil.</string>

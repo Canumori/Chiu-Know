@@ -66,6 +66,8 @@
     <string name="voice_sample_neutral">Muestra neutra</string>
     <string name="voice_sample_calm">Muestra tranquila</string>
     <string name="voice_sample_lively">Reproducir la voz de Chiu</string>
+    <string name="voice_sample_mia">Reproducir la voz de Mia</string>
+    <string name="voice_sample_mia_sentence">Muestra de Mia en portugués: “Olá, Chiu! Meu nome é Mia. Eu gosto de livros.”</string>
     <string name="voice_sample_playing">Reproduciendo: %1$s</string>
     <string name="voice_samples_loading">Preparando la voz de Chiu…</string>
     <string name="voice_samples_unavailable">No se pudo reproducir la voz de Chiu en este dispositivo.</string>

@@ -64,6 +64,8 @@
     <string name="voice_sample_neutral">Neutral sample</string>
     <string name="voice_sample_calm">Calm sample</string>
     <string name="voice_sample_lively">Play Chiu’s voice</string>
+    <string name="voice_sample_mia">Play Mia’s voice</string>
+    <string name="voice_sample_mia_sentence">Mia’s Portuguese sample: “Olá, Chiu! Meu nome é Mia. Eu gosto de livros.”</string>
     <string name="voice_sample_playing">Playing: %1$s</string>
     <string name="voice_samples_loading">Preparing Chiu’s voice…</string>
     <string name="voice_samples_unavailable">Chiu’s voice could not be played on this device.</string>
