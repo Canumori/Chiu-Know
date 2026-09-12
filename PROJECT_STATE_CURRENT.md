@@ -1,7 +1,7 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
 
-## AUTORITATIVO — 2026-09-12 — APPROVED MIA VOICE IN GREEN APK, PHYSICAL PLAYBACK PENDING
+## AUTORITATIVO — 2026-09-12 — MIA VOICE PHYSICALLY APPROVED
 
 User-reviewed voice direction:
 - the user explicitly approved the final Mia candidate with **“Ficou ótimo”**;
@@ -16,6 +16,13 @@ Integrated in separately gated commits:
 - `8b34187bb77f3b36e8f28939bde6393ac770576d` — honest shared character-voice labels localized in EN/PT/ES/FR/KO — Android CI #479, run `34710485287`: SUCCESS;
 - `51c1d481393bc2a90bbf67fbda732169804b8ebc` — Chiu and Mia exposed in the existing voice preview with mutually exclusive playback and resource cleanup — Android CI #480, run `34710674198`: SUCCESS.
 
+Physical-device validation:
+- the user installed the APK artifact from the green documentation state, Android CI #481, run `34710836455`;
+- she tested the character-voice screen and confirmed the result with **“Ficou ok”**;
+- Mia's bundled sample and its playback in the tested Android device are therefore accepted;
+- the first attempt to install over an older debug APK ended with `App not installed`; uninstalling the older build and installing cleanly succeeded;
+- this update behavior is consistent with GitHub CI debug APKs being signed with non-stable debug keys, so future seamless in-place updates require a deliberately managed stable signing setup rather than an ad-hoc code change.
+
 Protected facts:
 - the already-approved Chiu sample and its replay behavior remain unchanged;
 - starting one character stops the other, so samples cannot overlap;
@@ -23,7 +30,7 @@ Protected facts:
 - the displayed Mia sentence is exactly the Portuguese sentence in the bundled file;
 - the private Chiu source recording is not in GitHub or the APK;
 - no LearningEvidence, queue, FSRS, schedule, mastery, Supabase resource or CHIU PLAYER resource changed;
-- physical-device playback of the Mia button is still required before device integration can be marked accepted;
+- Mia's physical-device playback is accepted;
 - voice directions for Jurandir, Barto, Lara, Caca, Onça, Perry and Lena still require individual review and approval.
 
 ## AUTORITATIVO — 2026-09-12 — PHYSICAL CHIU VOICE PLAYBACK APPROVED
