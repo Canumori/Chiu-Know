@@ -1,6 +1,29 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
 
+## AUTORITATIVO — 2026-09-12 — VOICE AUTHORIZATION RECONFIRMED
+
+The user corrected an incomplete historical record and explicitly reconfirmed:
+- the canonical Chiu source recording is `Chiu-animada-recorte-final.m4a`, approximately 15.4 seconds / 309 KB;
+- the recording may be uploaded to **private storage in the CHIU KNOW? Supabase project only**;
+- it may be used as the authorized source/reference for producing the remaining Chiu lines through voice cloning/generation;
+- the other official characters must also receive distinct generated voices;
+- every character voice must sound natural, expressive and non-robotic;
+- the previously approved “third option” remains the intended Chiu direction, and the same natural-quality standard applies to the other characters.
+
+Scope and safety:
+- this authorization supersedes the older blanket “do not upload without explicit authorization” gate for the specific private-storage and voice-production purposes above;
+- it does not authorize publishing the source recording in the public GitHub repository;
+- it does not authorize using the CHIU PLAYER project or mixing its storage, credentials or quotas;
+- before sending the source recording to a specific external voice provider, verify the provider, cost, retention/privacy terms and technical fit; do not silently choose a paid or privacy-sensitive provider;
+- generated character audio may enter the APK only after its voice direction is reviewed and accepted; the private source recording itself should not be committed to public GitHub.
+
+Current physical-test finding:
+- the APK's `VoiceSampleScreen` still uses Android `TextToSpeech` with temporary NEUTRAL/CALM/LIVELY pitch/rate variants;
+- therefore the voice heard in the current APK is not the approved recording and is not a clone;
+- replacing that temporary preview is now an approved workstream, subject to the provider/storage gates above.
+
+
 ## AUTORITATIVO — 2026-09-11 — EXPLICIT PRACTICE-NOW HANDOFF, CI #465 GREEN
 
 User decision:
