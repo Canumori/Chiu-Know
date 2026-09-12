@@ -760,7 +760,7 @@ private fun LearningTrailScreen(
             shape = RoundedCornerShape(18.dp),
             onClick = onPreviewVoices
         ) {
-            Text(stringResource(R.string.preview_temporary_voices))
+            Text(stringResource(R.string.character_voice_samples_entry))
         }
         Spacer(Modifier.height(12.dp))
         OutlinedButton(
@@ -776,51 +776,83 @@ private fun LearningTrailScreen(
 @Composable
 private fun VoiceSampleScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val player = remember(context) {
+    val chiuPlayer = remember(context) {
         MediaPlayer.create(context.applicationContext, R.raw.chiu_voice_sample_expressive)
     }
-    var playing by remember { mutableStateOf(false) }
-    val unavailable = player == null
-    val phrase = remember { voiceSamplePhrase("pt") }
+    val miaPlayer = remember(context) {
+        MediaPlayer.create(context.applicationContext, R.raw.mia_voice_sample_girl)
+    }
+    var playingSample by remember { mutableIntStateOf(0) }
+    val unavailable = chiuPlayer == null || miaPlayer == null
+    val chiuPhrase = remember { voiceSamplePhrase("pt") }
 
-    DisposableEffect(player) {
-        player?.setOnCompletionListener { playing = false }
+    DisposableEffect(chiuPlayer, miaPlayer) {
+        chiuPlayer?.setOnCompletionListener {
+            if (playingSample == R.raw.chiu_voice_sample_expressive) playingSample = 0
+        }
+        miaPlayer?.setOnCompletionListener {
+            if (playingSample == R.raw.mia_voice_sample_girl) playingSample = 0
+        }
         onDispose {
-            player?.setOnCompletionListener(null)
-            player?.release()
+            chiuPlayer?.setOnCompletionListener(null)
+            chiuPlayer?.release()
+            miaPlayer?.setOnCompletionListener(null)
+            miaPlayer?.release()
         }
     }
 
     CenteredColumn {
-        Text(stringResource(R.string.voice_samples_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.character_voice_samples_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.voice_samples_description), style = MaterialTheme.typography.bodyLarge)
+        Text(stringResource(R.string.character_voice_samples_description), style = MaterialTheme.typography.bodyLarge)
         Spacer(Modifier.height(12.dp))
         Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) {
-            Text(phrase, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium)
+            Text(chiuPhrase, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium)
         }
         Spacer(Modifier.height(16.dp))
-        val label = stringResource(R.string.voice_sample_lively)
+        val chiuLabel = stringResource(R.string.voice_sample_lively)
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
-            enabled = !unavailable,
+            enabled = chiuPlayer != null,
             onClick = {
-                player?.let {
+                chiuPlayer?.let {
+                    if (miaPlayer?.isPlaying == true) miaPlayer.pause()
                     it.seekTo(0)
                     it.start()
-                    playing = true
+                    playingSample = R.raw.chiu_voice_sample_expressive
                 }
             }
         ) {
-            Text(if (playing) stringResource(R.string.voice_sample_playing, label) else label)
+            Text(if (playingSample == R.raw.chiu_voice_sample_expressive) stringResource(R.string.voice_sample_playing, chiuLabel) else chiuLabel)
+        }
+        Spacer(Modifier.height(16.dp))
+        Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) {
+            Text(stringResource(R.string.voice_sample_mia_sentence), modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium)
+        }
+        Spacer(Modifier.height(16.dp))
+        val miaLabel = stringResource(R.string.voice_sample_mia)
+        OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp),
+            enabled = miaPlayer != null,
+            onClick = {
+                miaPlayer?.let {
+                    if (chiuPlayer?.isPlaying == true) chiuPlayer.pause()
+                    it.seekTo(0)
+                    it.start()
+                    playingSample = R.raw.mia_voice_sample_girl
+                }
+            }
+        ) {
+            Text(if (playingSample == R.raw.mia_voice_sample_girl) stringResource(R.string.voice_sample_playing, miaLabel) else miaLabel)
         }
         if (unavailable) {
             Spacer(Modifier.height(8.dp))
-            Text(stringResource(R.string.voice_samples_unavailable), style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.character_voice_samples_unavailable), style = MaterialTheme.typography.bodyMedium)
         }
         Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.voice_samples_temporary_note), style = MaterialTheme.typography.bodyMedium)
+        Text(stringResource(R.string.character_voice_samples_note), style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(20.dp))
         OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) }
     }
