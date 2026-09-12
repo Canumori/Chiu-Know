@@ -68,6 +68,11 @@
     <string name="voice_sample_lively">Écouter la voix de Chiu</string>
     <string name="voice_sample_mia">Écouter la voix de Mia</string>
     <string name="voice_sample_mia_sentence">Phrase de Mia en portugais : “Olá, Chiu! Meu nome é Mia. Eu gosto de livros.”</string>
+    <string name="character_voice_samples_entry">Écouter les voix approuvées des personnages</string>
+    <string name="character_voice_samples_title">Voix des personnages</string>
+    <string name="character_voice_samples_description">Écoutez les directions vocales approuvées pour Chiu et Mia.</string>
+    <string name="character_voice_samples_unavailable">Une ou plusieurs voix n’ont pas pu être lues sur cet appareil.</string>
+    <string name="character_voice_samples_note">Ces échantillons générés suivent des directions approuvées. L’enregistrement source privé de Chiu n’est pas inclus dans l’application.</string>
     <string name="voice_sample_playing">Lecture : %1$s</string>
     <string name="voice_samples_loading">Préparation de la voix de Chiu…</string>
     <string name="voice_samples_unavailable">La voix de Chiu n’a pas pu être lue sur cet appareil.</string>
