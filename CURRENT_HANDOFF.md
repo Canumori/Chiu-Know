@@ -1,6 +1,40 @@
 # CHIU KNOW? — CURRENT HANDOFF
 
 
+## AUTORITATIVO — 2026-09-12 — VOICE WORKSTREAM PAUSED FOR CHAT HANDOFF
+
+Verified green base before this documentation write:
+- HEAD `553f03a0682bcc3e2dab8567a25b5e9513124269`;
+- commit `docs: record physical Mia voice approval`;
+- Android CI #482, run `34712732515`: `COMPLETED / SUCCESS` on the exact SHA.
+
+Approved and physically validated:
+- Chiu's Expressiva voice remains approved and bundled;
+- Mia's delicate young `pt-BR-FranciscaNeural` direction remains approved and bundled;
+- the user installed the CI #481 APK and confirmed Mia playback with **“Ficou ok”**;
+- installing over an older debug APK failed, while uninstalling the old build and installing cleanly succeeded; stable in-place updates require a deliberately managed signing setup, not an ad-hoc code change.
+
+New user-defined artistic references, to be translated into original voices rather than recognizable clones:
+- Caca: Brazilian Marge Simpson energy — mature feminine, low, raspy, dry/strained and comic;
+- Barto: Brazilian Chef from South Park energy — deep adult masculine, warm, resonant, confident and theatrical;
+- Onça: Rita Lopes-like qualities — mature feminine, warm, agile, theatrical and expressive;
+- Perry: Brazilian Dragon Ball Z Goku energy — youthful heroic masculine, bright, intense and enthusiastic;
+- Lara: talking parrot from commercials — sharp, nasal, fast, noisy, opinionated and birdlike;
+- Lena: Betty Faria-like presence — mature feminine, warm, smoky, confident and elegant, with Lena's slow delivery;
+- Jurandir: Brazilian Eric Cartman energy — childlike, extremely nasal/high/strained, spoiled, irritable and explosive, while also suggesting an agitated mosquito through acting rather than a literal `bzzz`.
+
+Jurandir result — DO NOT MISREPORT:
+- all candidates made in the working chat were rejected;
+- the user repeatedly found them robotic, accented, lacking mosquito character, or wholly unlike the intended timbre and manner;
+- literal `bzzz` at the beginning is explicitly rejected;
+- Edge/Antonio, artificial buzz overlays, unprompted Chatterbox, Brazilian male-prompted Chatterbox, feminine/childlike prompted Chatterbox and rough-woman prompted Chatterbox all failed;
+- no candidate entered GitHub or the APK;
+- a user-supplied Brazilian Cartman excerpt exists only as a reference in the chat workspace and must not be published, bundled or used to clone a recognizable performance;
+- the assistant clarified that a new original authorized human performance could be used as a style prompt, but an existing Cartman clip cannot be treated as an authorized cloning source;
+- the exact next decision remains open: obtain an original authorized performance, redefine Jurandir, or pause him and proceed with an easier original character voice.
+
+No production, test, queue, FSRS, evidence, schedule, mastery, Supabase or Chiu Player change was made during the rejected-candidate exploration. `PROJECT_STATE_CURRENT.md` contains the matching detailed record.
+
 ## AUTORITATIVO — 2026-09-12 — SUPERSEDE O BLOCO #394 ABAIXO
 
 Estado real confirmado antes desta escrita:

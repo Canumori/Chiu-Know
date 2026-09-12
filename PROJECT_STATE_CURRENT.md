@@ -1,6 +1,28 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
 
+## AUTORITATIVO — 2026-09-12 — USER-DEFINED VOICE REFERENCES FOR REMAINING CAST
+
+The user supplied the following artistic references. They define character direction, not permission to clone or impersonate a specific actor or dub performance:
+- **Caca** — inspired by the Brazilian-dub energy associated with Marge Simpson: mature feminine voice, low and raspy, dry/strained comic texture, but still natural and intelligible;
+- **Barto** — inspired by Chef in the Brazilian version of South Park: deep adult masculine voice, warm, resonant, confident and comically theatrical;
+- **Onça** — inspired by Brazilian voice actor Rita Lopes: mature feminine voice, warm, agile, theatrical and strongly expressive;
+- **Perry** — inspired by Goku in the Brazilian version of Dragon Ball Z: bright heroic masculine energy, youthful, intense, enthusiastic and capable of explosive emphasis;
+- **Lara** — inspired by talking-parrot voices in commercials: sharp, nasal, fast, noisy, opinionated and birdlike, while remaining natural rather than electronically distorted;
+- **Lena** — inspired by Betty Faria's vocal presence: mature feminine voice, warm, smoky, confident and elegant, delivered with Lena's deliberately slow rhythm.
+
+Operational guardrails:
+- generate original character performances from these high-level traits; do not reproduce a recognizable person's identity or reuse copyrighted dialogue;
+- all voices must remain distinct, natural, expressive and non-robotic;
+- every character requires sample-level user review before any audio enters GitHub or the APK;
+- these directions do not approve any generated file in advance;
+- **Jurandir** — inspired by Eric Cartman in the Brazilian version of South Park: original male performance with a childlike, very nasal, high/strained, spoiled, irritable and explosive comic energy; it must also suggest an agitated mosquito through performance rather than an electronic sine-wave overlay;
+- every Jurandir attempt in this session was explicitly rejected: Edge/Antonio variants were robotic; synthetic buzz overlays did not sound like a mosquito; unprompted Chatterbox outputs had the wrong accent and character; Brazilian male, feminine/childlike and rough-woman prompted Chatterbox outputs still lacked the intended timbre and manner of speaking;
+- the user supplied a roughly 22-second MP3 excerpt of Brazilian-dub Eric Cartman only to clarify the reference; it remains outside GitHub and the APK and must not be used to clone or reproduce a recognizable protected performance;
+- no Jurandir candidate is approved or committed;
+- honest next options are: obtain an original human performance with permission as a style prompt, redefine Jurandir with a different original voice, or pause Jurandir and develop easier original voices first;
+- the user has not chosen among those options yet.
+
 ## AUTORITATIVO — 2026-09-12 — MIA VOICE PHYSICALLY APPROVED
 
 User-reviewed voice direction:
