@@ -60,16 +60,16 @@
     <string name="learning_priority_reading">Lectura</string>
     <string name="learning_priority_writing">Escritura</string>
 
-    <string name="preview_temporary_voices">Escuchar voces temporales</string>
-    <string name="voice_samples_title">Muestras de voz temporales</string>
-    <string name="voice_samples_description">Escucha tres estilos de prueba del dispositivo. Estas no son las voces oficiales de los personajes.</string>
+    <string name="preview_temporary_voices">Escuchar la voz aprobada de Chiu</string>
+    <string name="voice_samples_title">Voz de Chiu</string>
+    <string name="voice_samples_description">Escucha la dirección de voz expresiva aprobada para Chiu.</string>
     <string name="voice_sample_neutral">Muestra neutra</string>
     <string name="voice_sample_calm">Muestra tranquila</string>
-    <string name="voice_sample_lively">Muestra animada</string>
+    <string name="voice_sample_lively">Reproducir la voz de Chiu</string>
     <string name="voice_sample_playing">Reproduciendo: %1$s</string>
-    <string name="voice_samples_loading">Preparando la voz del dispositivo…</string>
-    <string name="voice_samples_unavailable">Este dispositivo no tiene actualmente una voz compatible con el idioma elegido.</string>
-    <string name="voice_samples_temporary_note">Estas muestras son solo para comparación técnica y no serán oficiales sin aprobación.</string>
+    <string name="voice_samples_loading">Preparando la voz de Chiu…</string>
+    <string name="voice_samples_unavailable">No se pudo reproducir la voz de Chiu en este dispositivo.</string>
+    <string name="voice_samples_temporary_note">Esta muestra generada usa la dirección aprobada. La grabación fuente privada no está incluida en la aplicación.</string>
     <string name="optional_practice_summary_title">Práctica completada</string>
     <string name="optional_practice_summary_description">Completaste %1$d actividades adicionales. Esta práctica no modificó tu calendario de repaso.</string>
     <string name="practice_again">Practicar de nuevo</string>

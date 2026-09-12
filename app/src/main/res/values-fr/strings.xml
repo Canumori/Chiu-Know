@@ -60,16 +60,16 @@
     <string name="learning_priority_reading">Lecture</string>
     <string name="learning_priority_writing">Écriture</string>
 
-    <string name="preview_temporary_voices">Écouter les voix temporaires</string>
-    <string name="voice_samples_title">Échantillons de voix temporaires</string>
-    <string name="voice_samples_description">Écoutez trois styles de test de l’appareil. Ce ne sont pas les voix officielles des personnages.</string>
+    <string name="preview_temporary_voices">Écouter la voix approuvée de Chiu</string>
+    <string name="voice_samples_title">Voix de Chiu</string>
+    <string name="voice_samples_description">Écoutez la direction vocale expressive approuvée pour Chiu.</string>
     <string name="voice_sample_neutral">Échantillon neutre</string>
     <string name="voice_sample_calm">Échantillon calme</string>
-    <string name="voice_sample_lively">Échantillon dynamique</string>
+    <string name="voice_sample_lively">Écouter la voix de Chiu</string>
     <string name="voice_sample_playing">Lecture : %1$s</string>
-    <string name="voice_samples_loading">Préparation de la voix de l’appareil…</string>
-    <string name="voice_samples_unavailable">Cet appareil ne dispose actuellement d’aucune voix compatible avec la langue choisie.</string>
-    <string name="voice_samples_temporary_note">Ces échantillons servent uniquement à une comparaison technique et ne deviendront pas officiels sans approbation.</string>
+    <string name="voice_samples_loading">Préparation de la voix de Chiu…</string>
+    <string name="voice_samples_unavailable">La voix de Chiu n’a pas pu être lue sur cet appareil.</string>
+    <string name="voice_samples_temporary_note">Cet échantillon généré suit la direction approuvée. L’enregistrement source privé n’est pas inclus dans l’application.</string>
     <string name="optional_practice_summary_title">Pratique terminée</string>
     <string name="optional_practice_summary_description">Vous avez terminé %1$d activités supplémentaires. Cette pratique n’a pas modifié votre calendrier de révision.</string>
     <string name="practice_again">Pratiquer à nouveau</string>
