@@ -1,6 +1,24 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
 
+## AUTORITATIVO — 2026-09-12 — PHYSICAL CHIU VOICE PLAYBACK APPROVED
+
+Physical-device validation:
+- the user installed the APK built from the green voice-integration state;
+- she opened the approved Chiu voice preview and confirmed: **“Ficou ótimo”**;
+- the bundled Expressiva sample is therefore accepted both as the Chiu voice direction and as working playback on the tested Android device.
+
+Locked result:
+- keep the approved generated sample and its current playback behavior;
+- do not return the preview to Android TextToSpeech;
+- do not publish or bundle the private source recording;
+- future Chiu lines should follow the approved expressive parameters and still be checked for generation artifacts before APK integration;
+- distinct voices for Mia, Jurandir, Barto, Lara, Caca, Onça, Perry and Lena remain a future reviewed workstream, not an implicit bulk-generation approval.
+
+Verified base before this documentation write:
+- HEAD `f0c538773077fb864bcf2bb6808e9949395d3646`;
+- Android CI #475, run `34674482511`: `COMPLETED / SUCCESS`.
+
 ## AUTORITATIVO — 2026-09-12 — APPROVED CHIU SAMPLE IN THE APK, CI #474 GREEN
 
 The user explicitly approved the **Expressiva** generated candidate.
