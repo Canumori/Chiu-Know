@@ -1,10 +1,7 @@
 package com.chiu.know.ui
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -64,7 +61,6 @@ import com.chiu.know.model.PlacementSessionState
 import com.chiu.know.model.PlacementTerminalReason
 import com.chiu.know.model.ResponseType
 import com.chiu.know.model.StarterQueueReason
-import com.chiu.know.model.TemporaryVoiceStyle
 import com.chiu.know.model.a1FirstNarrativeComprehensionActivitiesFor
 import com.chiu.know.model.a1SecondTransferNarrativeComprehensionActivitiesFor
 import com.chiu.know.model.a1SecondTransferNarrativeMicroUnitFor
@@ -95,7 +91,6 @@ import com.chiu.know.model.starterLearningActivityFor
 import com.chiu.know.model.starterNarrativeMicroUnitFor
 import com.chiu.know.model.supportedInterfaceLanguages
 import com.chiu.know.model.supportedTargetLanguages
-import com.chiu.know.model.temporaryVoiceSamples
 import com.chiu.know.model.updateReviewScheduleStateSet
 import com.chiu.know.model.voiceSamplePhrase
 import kotlinx.coroutines.delay
@@ -526,7 +521,7 @@ fun ChiuKnowApp() {
                     summaries = summarizeLearningEvidenceBySkill(persistedLearningEvidence),
                     onBack = { step = AppStep.LEARNING_TRAIL }
                 )
-                AppStep.VOICE_PREVIEW -> VoiceSampleScreen(targetLanguage.code) { step = AppStep.LEARNING_TRAIL }
+                AppStep.VOICE_PREVIEW -> VoiceSampleScreen { step = AppStep.LEARNING_TRAIL }
                 AppStep.LEARNING_ACTIVITY -> {
                     var queueRefreshTick by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
                     val queue = remember(targetLanguage.code, estimatedLevel, learnerPreferences, persistedLearningEvidence, persistedReviewSchedules, queueRefreshTick) {
@@ -779,52 +774,20 @@ private fun LearningTrailScreen(
 }
 
 @Composable
-private fun VoiceSampleScreen(languageCode: String, onBack: () -> Unit) {
+private fun VoiceSampleScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val mainHandler = remember { Handler(Looper.getMainLooper()) }
-    var engine by remember { mutableStateOf<TextToSpeech?>(null) }
-    var ready by remember { mutableStateOf(false) }
-    var unavailable by remember { mutableStateOf(false) }
-    var playingStyle by remember { mutableStateOf<TemporaryVoiceStyle?>(null) }
-    val phrase = remember(languageCode) { voiceSamplePhrase(languageCode) }
-
-    DisposableEffect(languageCode) {
-        val textToSpeech = TextToSpeech(context.applicationContext) { status ->
-            mainHandler.post {
-                ready = status == TextToSpeech.SUCCESS
-                unavailable = status != TextToSpeech.SUCCESS
-            }
-        }
-        textToSpeech.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-            override fun onStart(utteranceId: String?) {
-                mainHandler.post { playingStyle = TemporaryVoiceStyle.entries.firstOrNull { it.name == utteranceId } }
-            }
-
-            override fun onDone(utteranceId: String?) {
-                mainHandler.post { playingStyle = null }
-            }
-
-            @Deprecated("Android callback")
-            override fun onError(utteranceId: String?) {
-                mainHandler.post { playingStyle = null; unavailable = true }
-            }
-
-            override fun onError(utteranceId: String?, errorCode: Int) {
-                mainHandler.post { playingStyle = null; unavailable = true }
-            }
-        })
-        engine = textToSpeech
-        onDispose {
-            textToSpeech.stop()
-            textToSpeech.shutdown()
-        }
+    val player = remember(context) {
+        MediaPlayer.create(context.applicationContext, R.raw.chiu_voice_sample_expressive)
     }
+    var playing by remember { mutableStateOf(false) }
+    val unavailable = player == null
+    val phrase = remember { voiceSamplePhrase("pt") }
 
-    LaunchedEffect(ready, languageCode, engine) {
-        val textToSpeech = engine
-        if (ready && textToSpeech != null) {
-            val result = textToSpeech.setLanguage(Locale.forLanguageTag(languageCode))
-            unavailable = result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED
+    DisposableEffect(player) {
+        player?.setOnCompletionListener { playing = false }
+        onDispose {
+            player?.setOnCompletionListener(null)
+            player?.release()
         }
     }
 
@@ -837,30 +800,25 @@ private fun VoiceSampleScreen(languageCode: String, onBack: () -> Unit) {
             Text(phrase, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium)
         }
         Spacer(Modifier.height(16.dp))
-        temporaryVoiceSamples().forEach { sample ->
-            val label = when (sample.style) {
-                TemporaryVoiceStyle.NEUTRAL -> stringResource(R.string.voice_sample_neutral)
-                TemporaryVoiceStyle.CALM -> stringResource(R.string.voice_sample_calm)
-                TemporaryVoiceStyle.LIVELY -> stringResource(R.string.voice_sample_lively)
-            }
-            OutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
-                enabled = ready && !unavailable,
-                onClick = {
-                    engine?.apply {
-                        setSpeechRate(sample.speechRate)
-                        setPitch(sample.pitch)
-                        speak(phrase, TextToSpeech.QUEUE_FLUSH, null, sample.style.name)
-                    }
+        val label = stringResource(R.string.voice_sample_lively)
+        OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp),
+            enabled = !unavailable,
+            onClick = {
+                player?.let {
+                    it.seekTo(0)
+                    it.start()
+                    playing = true
                 }
-            ) {
-                Text(if (playingStyle == sample.style) stringResource(R.string.voice_sample_playing, label) else label)
             }
-            Spacer(Modifier.height(8.dp))
+        ) {
+            Text(if (playing) stringResource(R.string.voice_sample_playing, label) else label)
         }
-        if (!ready && !unavailable) Text(stringResource(R.string.voice_samples_loading))
-        if (unavailable) Text(stringResource(R.string.voice_samples_unavailable), style = MaterialTheme.typography.bodyMedium)
+        if (unavailable) {
+            Spacer(Modifier.height(8.dp))
+            Text(stringResource(R.string.voice_samples_unavailable), style = MaterialTheme.typography.bodyMedium)
+        }
         Spacer(Modifier.height(12.dp))
         Text(stringResource(R.string.voice_samples_temporary_note), style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(20.dp))
