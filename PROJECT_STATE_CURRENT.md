@@ -1,6 +1,24 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
 
+## AUTORITATIVO — 2026-09-12 — APPROVED CHIU SAMPLE IN THE APK, CI #474 GREEN
+
+The user explicitly approved the **Expressiva** generated candidate.
+
+Integrated in separately gated commits:
+- `a42605342a6de69de2e479db11fb432632821e26` — approved generated WAV added as `app/src/main/res/raw/chiu_voice_sample_expressive.wav` — Android CI #472 SUCCESS;
+- `3efa081b35bb5585b199543241ef02fd8035a579` — honest localized labels in EN/PT/ES/FR/KO — Android CI #473 SUCCESS;
+- `856cc35e79191fe50fc3255990527038f10e146e` — voice preview now plays the bundled approved WAV through `MediaPlayer` instead of Android TextToSpeech — Android CI #474 SUCCESS.
+
+Protected facts:
+- the APK contains only the reviewed generated sentence, not `Chiu-animada-recorte-final.m4a`;
+- the private source recording remains outside public GitHub and the APK;
+- the sample sentence is Portuguese and is displayed exactly as spoken;
+- replay restarts the same approved local asset and playback resources are released when leaving the screen;
+- no LearningEvidence, queue, FSRS, schedule, mastery, Supabase resource or CHIU PLAYER resource changed;
+- physical-device listening remains required before treating device playback as accepted;
+- bulk line generation remains subject to output validation; approval of the direction is not blanket approval of every future generated file.
+
 ## AUTORITATIVO — 2026-09-12 — CHIU EXPRESSIVE VOICE DIRECTION APPROVED
 
 User-reviewed result:
