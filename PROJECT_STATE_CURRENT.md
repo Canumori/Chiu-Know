@@ -1,6 +1,26 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
 
+## AUTORITATIVO — 2026-09-12 — CHIU EXPRESSIVE VOICE DIRECTION APPROVED
+
+User-reviewed result:
+- the user explicitly selected the **Expressiva** candidate as the approved Chiu voice direction;
+- approved sample phrase: `Olá! Eu sou o Chiu. Vamos aprender juntos.`;
+- generation settings used for that candidate: Chatterbox Multilingual, `language_id="pt"`, `exaggeration=0.78`, `cfg_weight=0.30`;
+- the approved direction is expressive, natural and non-robotic; it is a voice-direction approval, not permission to accept unreviewed bulk outputs blindly.
+
+Reproducible free workflow:
+- `tools/voice_generation/chiu_voice_colab.ipynb` contains the zero-cost Google Colab workflow;
+- `cd24a915faea57785836aff09c55e7dd0641c31c` added the notebook — Android CI #469 SUCCESS;
+- `b85c6895c2e2df13802338d6998b4ac8da8644b1` aligned dependencies, private upload steps and model loading with the execution that actually generated the reviewed samples — Android CI #470 SUCCESS.
+
+Privacy and integration gates remain:
+- neither the canonical source recording nor the generated WAV candidates is stored in public GitHub;
+- the source recording must never enter the public repository or APK;
+- generated final lines may enter the APK only after file-level validation and appropriate review;
+- CHIU PLAYER remains out of scope;
+- other official characters still require distinct reviewed natural voices.
+
 ## AUTORITATIVO — 2026-09-12 — VOICE AUTHORIZATION RECONFIRMED
 
 The user corrected an incomplete historical record and explicitly reconfirmed:
