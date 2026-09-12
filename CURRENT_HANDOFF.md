@@ -1,5 +1,47 @@
 # CHIU KNOW? — CURRENT HANDOFF
 
+
+## AUTORITATIVO — 2026-09-12 — SUPERSEDE O BLOCO #394 ABAIXO
+
+Estado real confirmado antes desta escrita:
+- HEAD `f6b50ba1610f0118d715bd63b45eed61d98525f4`;
+- commit `docs: record practice-now flow through CI 465`;
+- Android CI #466, run `34659772126`: `COMPLETED / SUCCESS` no SHA exato.
+
+Decisão de produto resolvida:
+- a usuária aprovou explicitamente a opção 1;
+- após a compreensão final da praça, o app mostra a transição localizada **Praticar agora**;
+- a ação entra em `AppStep.LEARNING_ACTIVITY` e reutiliza a fila normal;
+- revisões vencidas continuam prioritárias;
+- sem revisão vencida à frente, a compreensão observada encaminha ao primeiro passo de recuperação ainda não observado do mesmo second-transfer;
+- a sequência protegida continua `MULTIPLE_CHOICE → REORDER → FILL_IN`;
+- existe saída clara para voltar à trilha e proteção contra toque repetido.
+
+Commits verdes:
+- `5aa93904c9d9846a91a657847c850751a0824a1e` — textos EN/PT/ES/FR/KO — CI #462 SUCCESS;
+- `c71ebf3e83ffc8baa00920f15b8c1c7184b0ebdd` — `PracticeNowScreen` — CI #463 SUCCESS;
+- `e55fc120821f207f84bcdaab2e8bf0a5d3b04886` — ligação praça → prática normal — CI #464 SUCCESS;
+- `f33fa1c7143a8b92256bf443b4bffa62f2fc65a8` — teste de handoff nos cinco idiomas — CI #465 SUCCESS;
+- `f6b50ba1610f0118d715bd63b45eed61d98525f4` — checkpoint — CI #466 SUCCESS.
+
+Auditoria de continuidade após #466:
+- resposta correta já fica bloqueada para edição;
+- submissão, Continue e Back to path normais já respeitam `pendingLearningPersistenceCount`;
+- Continue normal apenas limpa `feedbackActivity` depois da persistência;
+- Continue de prática opcional já possui guarda por rodada;
+- avanço de compreensão narrativa já valida índice e persistência;
+- transições Next story e Practice now possuem guarda local;
+- nenhum defeito foi comprovado nesses seams, portanto nenhum código funcional foi alterado.
+
+Proteções permanentes:
+- não criar fila, scheduler, FSRS, persistência ou mastery paralelos;
+- não alterar a separação da prática opcional;
+- não tocar em voz privada, Supabase, Chiu Player ou assets sem o gate correspondente;
+- a escolha Praticar agora está resolvida e não deve ser perguntada novamente;
+- o próximo passo de produto exige escolher uma frente concreta; não fabricar trabalho apenas para continuar produzindo commits.
+
+`PROJECT_STATE_CURRENT.md` contém o registro operacional detalhado. O bloco antigo que começa no CI #394 permanece abaixo apenas como histórico e não define mais o estado atual.
+
 ## AUTORITATIVO — 2026-09-09 — SUPERSEDE O HANDOFF ANTIGO
 
 Este arquivo substitui o handoff antigo que ainda estava parado no CI #345. Ele registra o estado real e recente do projeto até o código verde no CI #394.
