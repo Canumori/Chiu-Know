@@ -142,7 +142,8 @@ fun starterLearningActivitiesFor(languageCode: String): List<LearningActivity> =
         a1ResidenceMicroInteractionActivitiesFor(languageCode) +
         a1ResidenceMicroInteractionRetrievalActivitiesFor(languageCode) +
         a1PreferenceMicroInteractionActivitiesFor(languageCode) +
-        a1PreferenceMicroInteractionRetrievalActivitiesFor(languageCode)
+        a1PreferenceMicroInteractionRetrievalActivitiesFor(languageCode) +
+        a1BasicRequestActivitiesFor(languageCode)
 
 fun starterLearningActivityFor(
     languageCode: String,
