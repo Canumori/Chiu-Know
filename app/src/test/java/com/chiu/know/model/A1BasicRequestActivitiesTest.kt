@@ -25,6 +25,16 @@ class A1BasicRequestActivitiesTest {
     }
 
     @Test
+    fun starterBankIncludesTheBasicRequestForEverySupportedLanguage() {
+        supportedLanguages.forEach { languageCode ->
+            val expectedId = a1BasicRequestActivitiesFor(languageCode).single().id
+            val starterIds = starterLearningActivitiesFor(languageCode).map { it.id }
+
+            assertTrue(starterIds.contains(expectedId))
+        }
+    }
+
+    @Test
     fun visibleTokensReconstructTheAcceptedRequest() {
         supportedLanguages.forEach { languageCode ->
             val activity = a1BasicRequestActivitiesFor(languageCode).single()
