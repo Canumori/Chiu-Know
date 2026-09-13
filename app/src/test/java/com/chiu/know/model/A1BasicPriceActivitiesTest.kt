@@ -45,6 +45,16 @@ class A1BasicPriceActivitiesTest {
     }
 
     @Test
+    fun starterBankIncludesBasicPriceQuestionForEverySupportedLanguage() {
+        supportedLanguages.forEach { languageCode ->
+            val expectedId = a1BasicPriceActivitiesFor(languageCode).single().id
+            val starterIds = starterLearningActivitiesFor(languageCode).map { it.id }
+
+            assertTrue(starterIds.contains(expectedId))
+        }
+    }
+
+    @Test
     fun unsupportedLanguageDoesNotExposePriceContent() {
         assertTrue(a1BasicPriceActivitiesFor("de").isEmpty())
     }
