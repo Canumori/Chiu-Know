@@ -144,7 +144,8 @@ fun starterLearningActivitiesFor(languageCode: String): List<LearningActivity> =
         a1PreferenceMicroInteractionActivitiesFor(languageCode) +
         a1PreferenceMicroInteractionRetrievalActivitiesFor(languageCode) +
         a1BasicRequestActivitiesFor(languageCode) +
-        a1BasicPriceActivitiesFor(languageCode)
+        a1BasicPriceActivitiesFor(languageCode) +
+        a1BasicTimeActivitiesFor(languageCode)
 
 fun starterLearningActivityFor(
     languageCode: String,
