@@ -1,5 +1,29 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-14 — RECUPERAÇÃO ATIVA APÓS A ESTAÇÃO INTEGRADA
+
+A aprovação física do CI #531 foi registrada e a história da estação agora conduz a duas reconstruções ativas coerentes com o diálogo.
+
+### Gates
+- `ce3a95030b41ca2908041f55c50e4c0a7d0be575` — registra aprovação física, repetição intencional de “café” e histórias somente leitura — Android CI #533 SUCCESS;
+- `2efc78e2240497f25f4640c90bbb589d6e06f864` — unidade estrutural liga narrativa, compreensão e dois alvos existentes — Android CI #534 SUCCESS;
+- `87cfed9113fd58360c828b76c9f2e8a9bd8a810d` — teste dedicado prova EN/PT/ES/FR/KO, ordem e reutilização exata — Android CI #535 SUCCESS;
+- `6a3396764bcb032536ad899d5a961f28b4b923f8` — interface executa as duas recuperações após “Praticar agora” — Android CI #536 SUCCESS.
+
+### Fluxo
+Após café → parque → praça → estação e a compreensão:
+1. “Praticar agora”;
+2. reconstrução da pergunta sobre o banheiro;
+3. reconstrução da frase de não compreensão;
+4. retorno à trilha.
+
+As duas tentativas geram evidência real, atualizam o agendamento e preservam a ordem da história. Ler a história continua não equivalendo a domínio. Não há áudio narrativo, speaking ou avaliação de pronúncia.
+
+### Próximo gate físico
+Confirmar que o novo APK instala por cima do CI #531 e que as duas reconstruções aparecem após a estação sem travamento.
+
+Nenhum componente do ChiuPlayer foi acessado ou alterado.
+
 ## AUTORITATIVO — 2026-09-14 — CI #531 APROVADO EM TESTE FÍSICO
 
 A usuária instalou o APK do CI #531 e confirmou que a sequência está correta.
