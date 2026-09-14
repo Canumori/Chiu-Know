@@ -1,5 +1,35 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-14 — ESTAÇÃO COM RECUPERAÇÃO PROGRESSIVA INTEGRADA
+
+A prática posterior à quarta história agora executa quatro atividades na ordem pedagógica aprovada:
+1. reconstruir a pergunta sobre o banheiro com banco de palavras;
+2. reconstruir a frase de não compreensão com banco de palavras;
+3. recuperar a palavra essencial da pergunta sobre o banheiro sem banco de palavras;
+4. recuperar o elemento ausente da frase de não compreensão sem banco de palavras.
+
+Regras preservadas:
+- os cinco idiomas EN/PT/ES/FR/KO usam a mesma progressão;
+- os dois graus de pista permanecem estruturalmente separados;
+- cada atividade com menos pistas reutiliza o `reviewKey` do alvo estabelecido;
+- não há alegação de speaking, listening, pronúncia, escrita livre ou domínio;
+- tentativas continuam produzindo evidência e atualização FSRS pelos caminhos existentes.
+
+Commits e gates:
+- `0d4b8101c4a8c415ce7a0a113fd41a10d8c1ebba` — conecta as duas recuperações sem banco à unidade da estação — Android CI #549 SUCCESS;
+- `a1426b601d4502d7e61b9f8842efffd66b21a331` — prova integração, ordem, ausência de banco e reutilização dos alvos nos cinco idiomas — Android CI #550 SUCCESS;
+- `e5369a04cb23cdd5508ae7f4960e1cc6531d28d2` — encadeia as quatro atividades na interface — Android CI #551 SUCCESS;
+- `4e1bdd6b5f9ec3ec7f65f4e4ff7d58bd13b3683f` — expõe a sequência executável como contrato único — Android CI #552 SUCCESS;
+- `c9fb0b6759973c73cc39e9bbf6e7e6d5b950e68c` — interface passa a consumir o contrato único — Android CI #553 SUCCESS;
+- `742acbd0bdf28a311f93869f980f5d9a87e4313a` — teste fixa `REORDER, REORDER, FILL_IN, FILL_IN` e a ordem dos alvos — Android CI #554 SUCCESS.
+
+### Próximo gate físico
+Gerar um APK deliberado para verificar no aparelho:
+- alternativas maiores no nivelamento e nas atividades, com atenção ao coreano;
+- após a história da estação, exatamente quatro práticas na ordem acima;
+- as duas últimas não mostram banco de palavras e exigem digitação do trecho ausente;
+- ao concluir a quarta, retorno normal à trilha.
+
 ## AUTORITATIVO — 2026-09-14 — QUALIDADE DO PLACEMENT E LEGIBILIDADE DAS ALTERNATIVAS
 
 ### Regra pedagógica permanente do nivelamento
