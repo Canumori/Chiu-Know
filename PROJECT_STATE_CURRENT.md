@@ -1,5 +1,32 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-14 — CORREÇÃO DO TESTE FÍSICO CI #531
+
+O teste físico do CI #528 revelou dois problemas reais:
+- o APK não instalou por cima do anterior;
+- com nível estimado C1, a trilha não mostrava o acesso às histórias, portanto a sequência e as quatro falas da estação não podiam ser testadas.
+
+As capturas fornecidas mostraram `C1 · Atual`, ausência do botão de histórias na trilha e prática observada vazia.
+
+### Causas confirmadas
+- todas as narrativas A1 e suas compreensões estavam condicionadas na interface a `estimatedLevel == CefrLevel.A1`; em C1, a UI produzia narrativa nula/listas vazias e escondia o acesso;
+- os APKs usavam a chave debug automática do runner efêmero, impedindo atualização quando a assinatura mudava.
+
+### Correções
+- `faaa47dddfa354834ff3768394bd64d77ff3ca30` — workflow passou a preservar a chave debug por cache estável; Android CI #530 SUCCESS, inclusive etapa de pós-cache;
+- `60116e45aae7afa1384eeb8e7e310296c7731124` — histórias A1 agora ficam disponíveis como revisão opcional em qualquer nível estimado, sem reduzir o nível CEFR nem transformar visualização em domínio; Android CI #531 SUCCESS;
+- CI #531 gerou o artefato `chiu-know-debug`, ID `10331955584`, com expiração em 2026-09-17T03:14:18Z;
+- APK extraído: 14.988.400 bytes;
+- SHA-256: `1bae3dd29f4ac3bc2f2aa20d8a76ad9cb48aaeb2185855140a54f44a17e88e29`.
+
+### Instalação esperada
+Como o CI #528 já instalado foi assinado antes da estabilização, será necessário desinstalá-lo uma última vez para instalar o CI #531. A partir do CI #531, builds futuros que restaurem a mesma chave devem instalar por cima.
+
+### Escopo do novo reteste
+Confirmar que, mesmo com C1 atual, a trilha mostra o botão de histórias e abre a sequência café → parque → praça → estação; na estação, validar imagem, quatro falas, compreensão e transição para prática.
+
+Nenhum componente do ChiuPlayer foi acessado ou alterado.
+
 ## AUTORITATIVO — 2026-09-14 — APK CI #528 PRONTO PARA TESTE FÍSICO
 
 A quarta história A1 já integrada foi empacotada deliberadamente para validação no aparelho.
