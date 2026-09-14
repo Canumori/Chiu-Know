@@ -190,51 +190,20 @@ fun ChiuKnowApp() {
             var correctAnswers by remember { mutableIntStateOf(0) }
             var trailOpenedFromResult by remember { mutableStateOf(false) }
             val placementRuntime = remember(targetLanguage.code) { placementRuntimeSelection(targetLanguage.code) }
-            // A1 stories remain available as optional foundation review at every
-            // estimated level. They do not lower the learner's CEFR estimate or
-            // create mastery merely by being viewed.
-            val starterNarrative = remember(targetLanguage.code) {
-                starterNarrativeMicroUnitFor(targetLanguage.code, CefrLevel.A1)
-            }
-            val starterNarrativeComprehension = remember(targetLanguage.code) {
-                a1FirstNarrativeComprehensionActivitiesFor(targetLanguage.code)
-            }
-            val transferNarrative = remember(targetLanguage.code) {
-                a1TransferNarrativeMicroUnitFor(targetLanguage.code)
-            }
-            val transferNarrativeComprehension = remember(targetLanguage.code) {
-                a1TransferNarrativeComprehensionActivitiesFor(targetLanguage.code)
-            }
-            val secondTransferNarrative = remember(targetLanguage.code) {
-                a1SecondTransferNarrativeMicroUnitFor(targetLanguage.code)
-            }
-            val secondTransferNarrativeComprehension = remember(targetLanguage.code) {
-                a1SecondTransferNarrativeComprehensionActivitiesFor(targetLanguage.code)
-            }
-            val stationNarrative = remember(targetLanguage.code) {
-                a1StationNarrativeMicroUnitFor(targetLanguage.code)
-            }
-            val stationNarrativeComprehension = remember(targetLanguage.code) {
-                a1StationNarrativeComprehensionActivitiesFor(targetLanguage.code)
-            }
-            val stationLearningUnit = remember(targetLanguage.code) {
-                a1StationLearningUnitFor(targetLanguage.code)
-            }
-            var stationRetrievalIndex by remember(targetLanguage.code) {
-                mutableIntStateOf(0)
-            }
-            var pendingStationRetrievalPersistenceCount by remember(targetLanguage.code) {
-                mutableIntStateOf(0)
-            }
-            var activeNarrativeIndex by remember(targetLanguage.code, estimatedLevel) {
-                mutableIntStateOf(0)
-            }
-            var narrativeSession by remember(targetLanguage.code, estimatedLevel) {
-                mutableStateOf<NarrativeSessionProgress?>(null)
-            }
-            var pendingNarrativePersistenceCount by remember(targetLanguage.code, estimatedLevel) {
-                mutableIntStateOf(0)
-            }
+            val starterNarrative = remember(targetLanguage.code) { starterNarrativeMicroUnitFor(targetLanguage.code, CefrLevel.A1) }
+            val starterNarrativeComprehension = remember(targetLanguage.code) { a1FirstNarrativeComprehensionActivitiesFor(targetLanguage.code) }
+            val transferNarrative = remember(targetLanguage.code) { a1TransferNarrativeMicroUnitFor(targetLanguage.code) }
+            val transferNarrativeComprehension = remember(targetLanguage.code) { a1TransferNarrativeComprehensionActivitiesFor(targetLanguage.code) }
+            val secondTransferNarrative = remember(targetLanguage.code) { a1SecondTransferNarrativeMicroUnitFor(targetLanguage.code) }
+            val secondTransferNarrativeComprehension = remember(targetLanguage.code) { a1SecondTransferNarrativeComprehensionActivitiesFor(targetLanguage.code) }
+            val stationNarrative = remember(targetLanguage.code) { a1StationNarrativeMicroUnitFor(targetLanguage.code) }
+            val stationNarrativeComprehension = remember(targetLanguage.code) { a1StationNarrativeComprehensionActivitiesFor(targetLanguage.code) }
+            val stationLearningUnit = remember(targetLanguage.code) { a1StationLearningUnitFor(targetLanguage.code) }
+            var stationRetrievalIndex by remember(targetLanguage.code) { mutableIntStateOf(0) }
+            var pendingStationRetrievalPersistenceCount by remember(targetLanguage.code) { mutableIntStateOf(0) }
+            var activeNarrativeIndex by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
+            var narrativeSession by remember(targetLanguage.code, estimatedLevel) { mutableStateOf<NarrativeSessionProgress?>(null) }
+            var pendingNarrativePersistenceCount by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
 
             LaunchedEffect(persistedInterfaceCode) {
                 val code = persistedInterfaceCode ?: return@LaunchedEffect
@@ -253,31 +222,7 @@ fun ChiuKnowApp() {
                     placementSession = null
                     coroutineScope.launch { context.languagePreferencesDataStore.edit { it[targetLanguageCodeKey] = selected.code } }
                 }) { step = AppStep.PLACEMENT_INTRO }
-
-                AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(
-                    targetLanguage,
-                    persistedEstimatedLevel,
-                    { level ->
-                        estimatedLevel = level
-                        trailOpenedFromResult = false
-                        step = if (learnerPreferences == null) AppStep.LEARNER_PREFERENCES else AppStep.LEARNING_TRAIL
-                    },
-                    {
-                        adaptiveState = startAdaptivePlacement()
-                        placementSession = if (placementRuntime.mode == PlacementRuntimeMode.QUALITY_SESSION) {
-                            startPlacementSession(placementRuntime.questions)
-                        } else null
-                        estimatedLevel = CefrLevel.A1
-                        correctAnswers = 0
-                        step = if (placementSession?.phase == PlacementSessionPhase.BANK_INSUFFICIENT) {
-                            AppStep.PLACEMENT_UNRESOLVED
-                        } else {
-                            AppStep.PLACEMENT_TEST
-                        }
-                    },
-                    { step = AppStep.LANGUAGE_SELECTION }
-                )
-
+                AppStep.PLACEMENT_INTRO -> PlacementTestIntroScreen(targetLanguage, persistedEstimatedLevel, { level -> estimatedLevel = level; trailOpenedFromResult = false; step = if (learnerPreferences == null) AppStep.LEARNER_PREFERENCES else AppStep.LEARNING_TRAIL }, { adaptiveState = startAdaptivePlacement(); placementSession = if (placementRuntime.mode == PlacementRuntimeMode.QUALITY_SESSION) startPlacementSession(placementRuntime.questions) else null; estimatedLevel = CefrLevel.A1; correctAnswers = 0; step = if (placementSession?.phase == PlacementSessionPhase.BANK_INSUFFICIENT) AppStep.PLACEMENT_UNRESOLVED else AppStep.PLACEMENT_TEST }, { step = AppStep.LANGUAGE_SELECTION })
                 AppStep.PLACEMENT_TEST -> {
                     if (placementRuntime.mode == PlacementRuntimeMode.QUALITY_SESSION) {
                         val session = requireNotNull(placementSession)
@@ -285,33 +230,19 @@ fun ChiuKnowApp() {
                         PlacementQuestionScreen(sessionQuestion, session.answeredQuestions + 1, null) { selected ->
                             val answeredCorrectly = selected == sessionQuestion.correctIndex
                             if (answeredCorrectly) correctAnswers++
-                            val next = advancePlacementSession(
-                                state = session,
-                                answeredCorrectly = answeredCorrectly,
-                                questions = placementRuntime.questions
-                            )
+                            val next = advancePlacementSession(state = session, answeredCorrectly = answeredCorrectly, questions = placementRuntime.questions)
                             placementSession = next
                             if (next.phase == PlacementSessionPhase.COMPLETE) {
                                 val decidedLevel = requireNotNull(next.finalDecision?.decidedLevel)
                                 estimatedLevel = decidedLevel
                                 val completedLanguageCode = targetLanguage.code
-                                coroutineScope.launch {
-                                    context.languagePreferencesDataStore.edit {
-                                        it[estimatedLevelKey(completedLanguageCode)] = decidedLevel.name
-                                    }
-                                }
+                                coroutineScope.launch { context.languagePreferencesDataStore.edit { it[estimatedLevelKey(completedLanguageCode)] = decidedLevel.name } }
                                 step = AppStep.PLACEMENT_RESULT
-                            } else if (next.phase == PlacementSessionPhase.BANK_INSUFFICIENT) {
-                                step = AppStep.PLACEMENT_UNRESOLVED
-                            }
+                            } else if (next.phase == PlacementSessionPhase.BANK_INSUFFICIENT) step = AppStep.PLACEMENT_UNRESOLVED
                         }
                     } else {
                         val placementQuestions = placementRuntime.questions
-                        val currentQuestion = placementQuestionForLevel(
-                            placementQuestions,
-                            adaptiveState.currentLevel,
-                            adaptiveState.answeredQuestions
-                        )
+                        val currentQuestion = placementQuestionForLevel(placementQuestions, adaptiveState.currentLevel, adaptiveState.answeredQuestions)
                         PlacementQuestionScreen(currentQuestion, adaptiveState.answeredQuestions + 1, placementQuestions.size) { selected ->
                             val answeredCorrectly = selected == currentQuestion.correctIndex
                             if (answeredCorrectly) correctAnswers++
@@ -320,336 +251,50 @@ fun ChiuKnowApp() {
                             estimatedLevel = result.estimatedLevel
                             if (result.finished) {
                                 val completedLanguageCode = targetLanguage.code
-                                coroutineScope.launch {
-                                    context.languagePreferencesDataStore.edit {
-                                        it[estimatedLevelKey(completedLanguageCode)] = result.estimatedLevel.name
-                                    }
-                                }
+                                coroutineScope.launch { context.languagePreferencesDataStore.edit { it[estimatedLevelKey(completedLanguageCode)] = result.estimatedLevel.name } }
                                 step = AppStep.PLACEMENT_RESULT
                             }
                         }
                     }
                 }
-
                 AppStep.PLACEMENT_RESULT -> {
-                    val answeredQuestions = if (placementRuntime.mode == PlacementRuntimeMode.QUALITY_SESSION) {
-                        placementSession?.answeredQuestions ?: 0
-                    } else adaptiveState.answeredQuestions
-                    PlacementResultScreen(
-                        estimatedLevel,
-                        correctAnswers,
-                        answeredQuestions,
-                        {
-                            trailOpenedFromResult = true
-                            step = if (learnerPreferences == null) AppStep.LEARNER_PREFERENCES else AppStep.LEARNING_TRAIL
-                        },
-                        { step = AppStep.PLACEMENT_INTRO },
-                        { step = AppStep.LANGUAGE_SELECTION }
-                    )
+                    val answeredQuestions = if (placementRuntime.mode == PlacementRuntimeMode.QUALITY_SESSION) placementSession?.answeredQuestions ?: 0 else adaptiveState.answeredQuestions
+                    PlacementResultScreen(estimatedLevel, correctAnswers, answeredQuestions, { trailOpenedFromResult = true; step = if (learnerPreferences == null) AppStep.LEARNER_PREFERENCES else AppStep.LEARNING_TRAIL }, { step = AppStep.PLACEMENT_INTRO }, { step = AppStep.LANGUAGE_SELECTION })
                 }
-
-                AppStep.PLACEMENT_UNRESOLVED -> PlacementUnresolvedScreen(
-                    reason = placementSession?.terminalReason ?: PlacementTerminalReason.BANK_INSUFFICIENT,
-                    onRetry = {
-                        placementSession = null
-                        step = AppStep.PLACEMENT_INTRO
-                    },
-                    onChangeLanguage = {
-                        placementSession = null
-                        step = AppStep.LANGUAGE_SELECTION
-                    }
-                )
-
-                AppStep.LEARNER_PREFERENCES -> LearnerPreferencesScreen(
-                    initialPreferences = learnerPreferences ?: LearnerPreferences(),
-                    onContinue = { selectedPreferences ->
-                        learnerPreferences = selectedPreferences
-                        val preferencesLanguageCode = targetLanguage.code
-                        coroutineScope.launch {
-                            context.languagePreferencesDataStore.edit { stored ->
-                                persistedLearnerPreferences(selectedPreferences)?.let { encoded ->
-                                    stored[learnerPreferencesKey(preferencesLanguageCode)] = encoded
-                                }
-                            }
-                        }
-                        step = AppStep.LEARNING_TRAIL
-                    },
-                    onBack = { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO }
-                )
-
-                AppStep.LEARNING_TRAIL -> LearningTrailScreen(
-                    estimatedLevel = estimatedLevel,
-                    hasFoundationActivity = starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null,
-                    hasNarrative = starterNarrative != null && starterNarrativeComprehension.isNotEmpty(),
-                    onStartFoundationActivity = { step = AppStep.LEARNING_ACTIVITY },
-                    onStartNarrative = {
-                        val narrative = starterNarrative
-                        if (narrative != null && starterNarrativeComprehension.isNotEmpty()) {
-                            activeNarrativeIndex = 0
-                            narrativeSession = narrativeSessionProgressFor(
-                                narrative,
-                                starterNarrativeComprehension
-                            )
-                            step = AppStep.NARRATIVE_STORY
-                        }
-                    },
-                    onViewObservedPractice = { step = AppStep.OBSERVED_PRACTICE },
-                    onPreviewVoices = { step = AppStep.VOICE_PREVIEW },
-                    onBack = {
-                        step = if (trailOpenedFromResult) {
-                            AppStep.PLACEMENT_RESULT
-                        } else {
-                            AppStep.PLACEMENT_INTRO
-                        }
-                    }
-                )
+                AppStep.PLACEMENT_UNRESOLVED -> PlacementUnresolvedScreen(reason = placementSession?.terminalReason ?: PlacementTerminalReason.BANK_INSUFFICIENT, onRetry = { placementSession = null; step = AppStep.PLACEMENT_INTRO }, onChangeLanguage = { placementSession = null; step = AppStep.LANGUAGE_SELECTION })
+                AppStep.LEARNER_PREFERENCES -> LearnerPreferencesScreen(initialPreferences = learnerPreferences ?: LearnerPreferences(), onContinue = { selectedPreferences -> learnerPreferences = selectedPreferences; val preferencesLanguageCode = targetLanguage.code; coroutineScope.launch { context.languagePreferencesDataStore.edit { stored -> persistedLearnerPreferences(selectedPreferences)?.let { encoded -> stored[learnerPreferencesKey(preferencesLanguageCode)] = encoded } } }; step = AppStep.LEARNING_TRAIL }, onBack = { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO })
+                AppStep.LEARNING_TRAIL -> LearningTrailScreen(estimatedLevel = estimatedLevel, hasFoundationActivity = starterLearningActivityFor(targetLanguage.code, estimatedLevel) != null, hasNarrative = starterNarrative != null && starterNarrativeComprehension.isNotEmpty(), onStartFoundationActivity = { step = AppStep.LEARNING_ACTIVITY }, onStartNarrative = { val narrative = starterNarrative; if (narrative != null && starterNarrativeComprehension.isNotEmpty()) { activeNarrativeIndex = 0; narrativeSession = narrativeSessionProgressFor(narrative, starterNarrativeComprehension); step = AppStep.NARRATIVE_STORY } }, onViewObservedPractice = { step = AppStep.OBSERVED_PRACTICE }, onPreviewVoices = { step = AppStep.VOICE_PREVIEW }, onBack = { step = if (trailOpenedFromResult) AppStep.PLACEMENT_RESULT else AppStep.PLACEMENT_INTRO })
                 AppStep.NARRATIVE_STORY -> {
-                    val narrative = requireNotNull(
-                        when (activeNarrativeIndex) {
-                            0 -> starterNarrative
-                            1 -> transferNarrative
-                            2 -> secondTransferNarrative
-                            else -> stationNarrative
-                        }
-                    )
-                    val narrativeComprehension = when (activeNarrativeIndex) {
-                        0 -> starterNarrativeComprehension
-                        1 -> transferNarrativeComprehension
-                        2 -> secondTransferNarrativeComprehension
-                        else -> stationNarrativeComprehension
-                    }
+                    val narrative = requireNotNull(when (activeNarrativeIndex) { 0 -> starterNarrative; 1 -> transferNarrative; 2 -> secondTransferNarrative; else -> stationNarrative })
+                    val narrativeComprehension = when (activeNarrativeIndex) { 0 -> starterNarrativeComprehension; 1 -> transferNarrativeComprehension; 2 -> secondTransferNarrativeComprehension; else -> stationNarrativeComprehension }
                     val session = requireNotNull(narrativeSession)
                     when (session.phase) {
-                        NarrativeSessionPhase.STORY -> NarrativeCardScreen(
-                            narrative = narrative,
-                            progress = session.cardProgress,
-                            imageResId = when (activeNarrativeIndex) {
-                                0 -> R.drawable.a1_story_cafe_surreal
-                                1 -> R.drawable.a1_story_park_surreal
-                                2 -> R.drawable.a1_story_square_surreal
-                                else -> R.drawable.a1_story_station_surreal
-                            },
-                            onAdvance = {
-                                narrativeSession = advanceNarrativeSessionStory(session)
-                            },
-                            onBack = {
-                                activeNarrativeIndex = 0
-                                narrativeSession = null
-                                step = AppStep.LEARNING_TRAIL
-                            }
-                        )
+                        NarrativeSessionPhase.STORY -> NarrativeCardScreen(narrative = narrative, progress = session.cardProgress, imageResId = when (activeNarrativeIndex) { 0 -> R.drawable.a1_story_cafe_surreal; 1 -> R.drawable.a1_story_park_surreal; 2 -> R.drawable.a1_story_square_surreal; else -> R.drawable.a1_story_station_surreal }, onAdvance = { narrativeSession = advanceNarrativeSessionStory(session) }, onBack = { activeNarrativeIndex = 0; narrativeSession = null; step = AppStep.LEARNING_TRAIL })
                         NarrativeSessionPhase.COMPREHENSION -> {
                             val activityIndex = requireNotNull(session.comprehensionIndex)
                             val activity = narrativeComprehension[activityIndex]
-                            LearningActivityScreen(
-                                activity = activity,
-                                onAttempt = { learnerAnswer ->
-                                    if (pendingNarrativePersistenceCount == 0) {
-                                        val correct = isLearningAnswerCorrect(activity, learnerAnswer)
-                                        val evidence = learningEvidenceFor(
-                                            activity,
-                                            correct,
-                                            System.currentTimeMillis()
-                                        )
-                                        val completedLanguageCode = targetLanguage.code
-                                        pendingNarrativePersistenceCount++
-                                        coroutineScope.launch {
-                                            try {
-                                                context.languagePreferencesDataStore.edit { prefs ->
-                                                    val evidenceKey = learningEvidenceKey(completedLanguageCode)
-                                                    prefs[evidenceKey] = prefs[evidenceKey].orEmpty() +
-                                                        encodeLearningEvidence(evidence)
-                                                }
-                                            } finally {
-                                                pendingNarrativePersistenceCount--
-                                            }
-                                        }
-                                    }
-                                },
-                                canSubmit = pendingNarrativePersistenceCount == 0,
-                                canContinue = pendingNarrativePersistenceCount == 0,
-                                canExit = pendingNarrativePersistenceCount == 0,
-                                onContinue = {
-                                    val current = narrativeSession
-                                    if (
-                                        pendingNarrativePersistenceCount == 0 &&
-                                        current?.phase == NarrativeSessionPhase.COMPREHENSION &&
-                                        current.comprehensionIndex == activityIndex
-                                    ) {
-                                        val next = advanceNarrativeSessionComprehension(current)
-                                        if (next.phase == NarrativeSessionPhase.COMPLETE) {
-                                            val nextNarrative = when (activeNarrativeIndex) {
-                                                0 -> transferNarrative
-                                                1 -> secondTransferNarrative
-                                                2 -> stationNarrative
-                                                else -> null
-                                            }
-                                            val nextComprehension = when (activeNarrativeIndex) {
-                                                0 -> transferNarrativeComprehension
-                                                1 -> secondTransferNarrativeComprehension
-                                                2 -> stationNarrativeComprehension
-                                                else -> emptyList()
-                                            }
-                                            if (
-                                                nextNarrative != null &&
-                                                nextComprehension.isNotEmpty()
-                                            ) {
-                                                narrativeSession = null
-                                                step = AppStep.NARRATIVE_NEXT
-                                            } else {
-                                                narrativeSession = null
-                                                if (activeNarrativeIndex == 3) {
-                                                    step = AppStep.NARRATIVE_PRACTICE
-                                                } else {
-                                                    activeNarrativeIndex = 0
-                                                    step = AppStep.LEARNING_TRAIL
-                                                }
-                                            }
-                                        } else {
-                                            narrativeSession = next
-                                        }
-                                    }
-                                },
-                                onBack = {
-                                    if (pendingNarrativePersistenceCount == 0) {
-                                        narrativeSession = null
-                                        step = AppStep.LEARNING_TRAIL
-                                    }
-                                }
-                            )
+                            LearningActivityScreen(activity = activity, onAttempt = { learnerAnswer -> if (pendingNarrativePersistenceCount == 0) { val correct = isLearningAnswerCorrect(activity, learnerAnswer); val evidence = learningEvidenceFor(activity, correct, System.currentTimeMillis()); val completedLanguageCode = targetLanguage.code; pendingNarrativePersistenceCount++; coroutineScope.launch { try { context.languagePreferencesDataStore.edit { prefs -> val evidenceKey = learningEvidenceKey(completedLanguageCode); prefs[evidenceKey] = prefs[evidenceKey].orEmpty() + encodeLearningEvidence(evidence) } } finally { pendingNarrativePersistenceCount-- } } } }, canSubmit = pendingNarrativePersistenceCount == 0, canContinue = pendingNarrativePersistenceCount == 0, canExit = pendingNarrativePersistenceCount == 0, onContinue = { val current = narrativeSession; if (pendingNarrativePersistenceCount == 0 && current?.phase == NarrativeSessionPhase.COMPREHENSION && current.comprehensionIndex == activityIndex) { val next = advanceNarrativeSessionComprehension(current); if (next.phase == NarrativeSessionPhase.COMPLETE) { val nextNarrative = when (activeNarrativeIndex) { 0 -> transferNarrative; 1 -> secondTransferNarrative; 2 -> stationNarrative; else -> null }; val nextComprehension = when (activeNarrativeIndex) { 0 -> transferNarrativeComprehension; 1 -> secondTransferNarrativeComprehension; 2 -> stationNarrativeComprehension; else -> emptyList() }; if (nextNarrative != null && nextComprehension.isNotEmpty()) { narrativeSession = null; step = AppStep.NARRATIVE_NEXT } else { narrativeSession = null; if (activeNarrativeIndex == 3) step = AppStep.NARRATIVE_PRACTICE else { activeNarrativeIndex = 0; step = AppStep.LEARNING_TRAIL } } } else narrativeSession = next } }, onBack = { if (pendingNarrativePersistenceCount == 0) { narrativeSession = null; step = AppStep.LEARNING_TRAIL } })
                         }
-                        NarrativeSessionPhase.COMPLETE -> {
-                            narrativeSession = null
-                            step = AppStep.LEARNING_TRAIL
-                        }
+                        NarrativeSessionPhase.COMPLETE -> { narrativeSession = null; step = AppStep.LEARNING_TRAIL }
                     }
                 }
                 AppStep.NARRATIVE_NEXT -> {
-                    val nextNarrative = requireNotNull(
-                        when (activeNarrativeIndex) {
-                            0 -> transferNarrative
-                            1 -> secondTransferNarrative
-                            else -> stationNarrative
-                        }
-                    )
-                    val nextComprehension = when (activeNarrativeIndex) {
-                        0 -> transferNarrativeComprehension
-                        1 -> secondTransferNarrativeComprehension
-                        else -> stationNarrativeComprehension
-                    }
-                    NextNarrativeScreen(
-                        narrative = nextNarrative,
-                        imageResId = when (activeNarrativeIndex) {
-                            0 -> R.drawable.a1_story_park_surreal
-                            1 -> R.drawable.a1_story_square_surreal
-                            else -> R.drawable.a1_story_station_surreal
-                        },
-                        onContinue = {
-                            val expectedNarrativeIndex = activeNarrativeIndex
-                            if (
-                                expectedNarrativeIndex in 0..2 &&
-                                narrativeSession == null &&
-                                nextComprehension.isNotEmpty()
-                            ) {
-                                activeNarrativeIndex = expectedNarrativeIndex + 1
-                                narrativeSession = narrativeSessionProgressFor(
-                                    nextNarrative,
-                                    nextComprehension
-                                )
-                                step = AppStep.NARRATIVE_STORY
-                            }
-                        },
-                        onBack = {
-                            activeNarrativeIndex = 0
-                            narrativeSession = null
-                            step = AppStep.LEARNING_TRAIL
-                        }
-                    )
+                    val nextNarrative = requireNotNull(when (activeNarrativeIndex) { 0 -> transferNarrative; 1 -> secondTransferNarrative; else -> stationNarrative })
+                    val nextComprehension = when (activeNarrativeIndex) { 0 -> transferNarrativeComprehension; 1 -> secondTransferNarrativeComprehension; else -> stationNarrativeComprehension }
+                    NextNarrativeScreen(narrative = nextNarrative, imageResId = when (activeNarrativeIndex) { 0 -> R.drawable.a1_story_park_surreal; 1 -> R.drawable.a1_story_square_surreal; else -> R.drawable.a1_story_station_surreal }, onContinue = { val expectedNarrativeIndex = activeNarrativeIndex; if (expectedNarrativeIndex in 0..2 && narrativeSession == null && nextComprehension.isNotEmpty()) { activeNarrativeIndex = expectedNarrativeIndex + 1; narrativeSession = narrativeSessionProgressFor(nextNarrative, nextComprehension); step = AppStep.NARRATIVE_STORY } }, onBack = { activeNarrativeIndex = 0; narrativeSession = null; step = AppStep.LEARNING_TRAIL })
                 }
-                AppStep.NARRATIVE_PRACTICE -> PracticeNowScreen(
-                    onContinue = {
-                        activeNarrativeIndex = 0
-                        stationRetrievalIndex = 0
-                        step = AppStep.NARRATIVE_RETRIEVAL
-                    },
-                    onBack = {
-                        activeNarrativeIndex = 0
-                        stationRetrievalIndex = 0
-                        step = AppStep.LEARNING_TRAIL
-                    }
-                )
+                AppStep.NARRATIVE_PRACTICE -> PracticeNowScreen(onContinue = { activeNarrativeIndex = 0; stationRetrievalIndex = 0; step = AppStep.NARRATIVE_RETRIEVAL }, onBack = { activeNarrativeIndex = 0; stationRetrievalIndex = 0; step = AppStep.LEARNING_TRAIL })
                 AppStep.NARRATIVE_RETRIEVAL -> {
                     val unit = requireNotNull(stationLearningUnit)
                     val stationActivities = unit.practiceSequence
                     val activity = stationActivities[stationRetrievalIndex].activity
-                    LearningActivityScreen(
-                        activity = activity,
-                        onAttempt = { learnerAnswer ->
-                            if (pendingStationRetrievalPersistenceCount == 0) {
-                                val correct = isLearningAnswerCorrect(activity, learnerAnswer)
-                                val evidence = learningEvidenceFor(
-                                    activity,
-                                    correct,
-                                    System.currentTimeMillis()
-                                )
-                                val completedLanguageCode = targetLanguage.code
-                                pendingStationRetrievalPersistenceCount++
-                                coroutineScope.launch {
-                                    try {
-                                        context.languagePreferencesDataStore.edit { prefs ->
-                                            val evidenceKey = learningEvidenceKey(completedLanguageCode)
-                                            prefs[evidenceKey] = prefs[evidenceKey].orEmpty() +
-                                                encodeLearningEvidence(evidence)
-                                            val scheduleKey = reviewScheduleKey(completedLanguageCode)
-                                            prefs[scheduleKey] = updateReviewScheduleStateSet(
-                                                encoded = prefs[scheduleKey].orEmpty(),
-                                                evidence = evidence
-                                            )
-                                        }
-                                    } finally {
-                                        pendingStationRetrievalPersistenceCount--
-                                    }
-                                }
-                            }
-                        },
-                        canSubmit = pendingStationRetrievalPersistenceCount == 0,
-                        canContinue = pendingStationRetrievalPersistenceCount == 0,
-                        canExit = pendingStationRetrievalPersistenceCount == 0,
-                        onContinue = {
-                            if (pendingStationRetrievalPersistenceCount == 0) {
-                                if (stationRetrievalIndex < stationActivities.lastIndex) {
-                                    stationRetrievalIndex++
-                                } else {
-                                    stationRetrievalIndex = 0
-                                    step = AppStep.LEARNING_TRAIL
-                                }
-                            }
-                        },
-                        onBack = {
-                            if (pendingStationRetrievalPersistenceCount == 0) {
-                                stationRetrievalIndex = 0
-                                step = AppStep.LEARNING_TRAIL
-                            }
-                        }
-                    )
+                    LearningActivityScreen(activity = activity, onAttempt = { learnerAnswer -> if (pendingStationRetrievalPersistenceCount == 0) { val correct = isLearningAnswerCorrect(activity, learnerAnswer); val evidence = learningEvidenceFor(activity, correct, System.currentTimeMillis()); val completedLanguageCode = targetLanguage.code; pendingStationRetrievalPersistenceCount++; coroutineScope.launch { try { context.languagePreferencesDataStore.edit { prefs -> val evidenceKey = learningEvidenceKey(completedLanguageCode); prefs[evidenceKey] = prefs[evidenceKey].orEmpty() + encodeLearningEvidence(evidence); val scheduleKey = reviewScheduleKey(completedLanguageCode); prefs[scheduleKey] = updateReviewScheduleStateSet(encoded = prefs[scheduleKey].orEmpty(), evidence = evidence) } } finally { pendingStationRetrievalPersistenceCount-- } } } }, canSubmit = pendingStationRetrievalPersistenceCount == 0, canContinue = pendingStationRetrievalPersistenceCount == 0, canExit = pendingStationRetrievalPersistenceCount == 0, onContinue = { if (pendingStationRetrievalPersistenceCount == 0) { if (stationRetrievalIndex < stationActivities.lastIndex) stationRetrievalIndex++ else { stationRetrievalIndex = 0; step = AppStep.LEARNING_TRAIL } } }, onBack = { if (pendingStationRetrievalPersistenceCount == 0) { stationRetrievalIndex = 0; step = AppStep.LEARNING_TRAIL } })
                 }
-                AppStep.OBSERVED_PRACTICE -> ObservedPracticeScreen(
-                    summaries = summarizeLearningEvidenceBySkill(persistedLearningEvidence),
-                    onBack = { step = AppStep.LEARNING_TRAIL }
-                )
+                AppStep.OBSERVED_PRACTICE -> ObservedPracticeScreen(summaries = summarizeLearningEvidenceBySkill(persistedLearningEvidence), onBack = { step = AppStep.LEARNING_TRAIL })
                 AppStep.VOICE_PREVIEW -> VoiceSampleScreen { step = AppStep.LEARNING_TRAIL }
                 AppStep.LEARNING_ACTIVITY -> {
                     var queueRefreshTick by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
-                    val queue = remember(targetLanguage.code, estimatedLevel, learnerPreferences, persistedLearningEvidence, persistedReviewSchedules, queueRefreshTick) {
-                        learningActivityQueueSelection(
-                            languageCode = targetLanguage.code,
-                            level = estimatedLevel,
-                            evidence = persistedLearningEvidence,
-                            schedules = persistedReviewSchedules,
-                            nowEpochMillis = System.currentTimeMillis(),
-                            preferences = learnerPreferences
-                        )
-                    }
+                    val queue = remember(targetLanguage.code, estimatedLevel, learnerPreferences, persistedLearningEvidence, persistedReviewSchedules, queueRefreshTick) { learningActivityQueueSelection(languageCode = targetLanguage.code, level = estimatedLevel, evidence = persistedLearningEvidence, schedules = persistedReviewSchedules, nowEpochMillis = System.currentTimeMillis(), preferences = learnerPreferences) }
                     var optionalPracticeRequested by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(false) }
                     var optionalPracticeSessionEvidence by remember(targetLanguage.code, estimatedLevel) { mutableStateOf(emptyList<LearningEvidence>()) }
                     var optionalPracticeLastContinuedRound by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(-1) }
@@ -657,96 +302,14 @@ fun ChiuKnowApp() {
                     var pendingLearningPersistenceCount by remember(targetLanguage.code, estimatedLevel) { mutableIntStateOf(0) }
                     val optionalPracticeRound = optionalPracticeSessionEvidence.size
                     val optionalPracticeComplete = optionalPracticeRound >= OPTIONAL_PRACTICE_SESSION_SIZE
-                    val optionalPracticeActivity = if (optionalPracticeRequested && !optionalPracticeComplete) {
-                        learningActivityForOptionalPractice(
-                            targetLanguage.code,
-                            estimatedLevel,
-                            persistedLearningEvidence + optionalPracticeSessionEvidence
-                        )
-                    } else {
-                        null
-                    }
+                    val optionalPracticeActivity = if (optionalPracticeRequested && !optionalPracticeComplete) learningActivityForOptionalPractice(targetLanguage.code, estimatedLevel, persistedLearningEvidence + optionalPracticeSessionEvidence) else null
                     val activity = if (optionalPracticeRequested) optionalPracticeActivity else feedbackActivity ?: queue.activity
-
-                    LaunchedEffect(queue.reason, queue.nextDueAtEpochMillis, optionalPracticeRequested) {
-                        val nextDueAtEpochMillis = queue.nextDueAtEpochMillis
-                        if (queue.reason == StarterQueueReason.NONE_DUE && !optionalPracticeRequested && nextDueAtEpochMillis != null) {
-                            val delayMillis = nextDueAtEpochMillis - System.currentTimeMillis()
-                            if (delayMillis > 0L) delay(delayMillis)
-                            queueRefreshTick++
-                        }
-                    }
-
+                    LaunchedEffect(queue.reason, queue.nextDueAtEpochMillis, optionalPracticeRequested) { val nextDueAtEpochMillis = queue.nextDueAtEpochMillis; if (queue.reason == StarterQueueReason.NONE_DUE && !optionalPracticeRequested && nextDueAtEpochMillis != null) { val delayMillis = nextDueAtEpochMillis - System.currentTimeMillis(); if (delayMillis > 0L) delay(delayMillis); queueRefreshTick++ } }
                     when {
-                        optionalPracticeRequested && optionalPracticeComplete ->
-                            OptionalPracticeSummaryScreen(
-                                completedCount = optionalPracticeSessionEvidence.size,
-                                onPracticeAgain = {
-                                    optionalPracticeSessionEvidence = emptyList()
-                                    optionalPracticeLastContinuedRound = -1
-                                },
-                                onBack = { step = AppStep.LEARNING_TRAIL }
-                            )
-                        activity != null ->
-                            LearningActivityScreen(
-                                activity = activity,
-                                onAttempt = { learnerAnswer ->
-                                    if (!optionalPracticeRequested) {
-                                        feedbackActivity = activity
-                                        val correct = isLearningAnswerCorrect(activity, learnerAnswer)
-                                        val evidence = learningEvidenceFor(activity, correct, System.currentTimeMillis())
-                                        pendingLearningPersistenceCount++
-                                        coroutineScope.launch {
-                                            try {
-                                                context.languagePreferencesDataStore.edit { prefs ->
-                                                    val key = learningEvidenceKey(targetLanguage.code)
-                                                    val current = prefs[key].orEmpty()
-                                                    prefs[key] = current + encodeLearningEvidence(evidence)
-                                                    val scheduleKey = reviewScheduleKey(targetLanguage.code)
-                                                    prefs[scheduleKey] = updateReviewScheduleStateSet(
-                                                        encoded = prefs[scheduleKey].orEmpty(),
-                                                        evidence = evidence
-                                                    )
-                                                }
-                                            } finally {
-                                                pendingLearningPersistenceCount--
-                                            }
-                                        }
-                                    }
-                                },
-                                canSubmit = optionalPracticeRequested || pendingLearningPersistenceCount == 0,
-                                canContinue = optionalPracticeRequested || pendingLearningPersistenceCount == 0,
-                                canExit = optionalPracticeRequested || pendingLearningPersistenceCount == 0,
-                                onContinue = if (optionalPracticeRequested) {
-                                    {
-                                        if (optionalPracticeLastContinuedRound != optionalPracticeRound) {
-                                            optionalPracticeLastContinuedRound = optionalPracticeRound
-                                            optionalPracticeSessionEvidence = optionalPracticeSessionEvidence +
-                                                learningEvidenceFor(activity, correct = true, System.currentTimeMillis())
-                                        }
-                                    }
-                                } else {
-                                    { feedbackActivity = null }
-                                },
-                                onBack = {
-                                    if (optionalPracticeRequested || pendingLearningPersistenceCount == 0) {
-                                        feedbackActivity = null
-                                        step = AppStep.LEARNING_TRAIL
-                                    }
-                                }
-                            )
-                        queue.reason == StarterQueueReason.NO_CONTENT ->
-                            LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
-                        queue.reason == StarterQueueReason.NONE_DUE && !optionalPracticeRequested ->
-                            ReviewUpToDateScreen(
-                                nextDueAtEpochMillis = queue.nextDueAtEpochMillis,
-                                onPracticeMore = {
-                                    optionalPracticeSessionEvidence = emptyList()
-                                    optionalPracticeLastContinuedRound = -1
-                                    optionalPracticeRequested = true
-                                },
-                                onBack = { step = AppStep.LEARNING_TRAIL }
-                            )
+                        optionalPracticeRequested && optionalPracticeComplete -> OptionalPracticeSummaryScreen(completedCount = optionalPracticeSessionEvidence.size, onPracticeAgain = { optionalPracticeSessionEvidence = emptyList(); optionalPracticeLastContinuedRound = -1 }, onBack = { step = AppStep.LEARNING_TRAIL })
+                        activity != null -> LearningActivityScreen(activity = activity, onAttempt = { learnerAnswer -> if (!optionalPracticeRequested) { feedbackActivity = activity; val correct = isLearningAnswerCorrect(activity, learnerAnswer); val evidence = learningEvidenceFor(activity, correct, System.currentTimeMillis()); pendingLearningPersistenceCount++; coroutineScope.launch { try { context.languagePreferencesDataStore.edit { prefs -> val key = learningEvidenceKey(targetLanguage.code); val current = prefs[key].orEmpty(); prefs[key] = current + encodeLearningEvidence(evidence); val scheduleKey = reviewScheduleKey(targetLanguage.code); prefs[scheduleKey] = updateReviewScheduleStateSet(encoded = prefs[scheduleKey].orEmpty(), evidence = evidence) } } finally { pendingLearningPersistenceCount-- } } } }, canSubmit = optionalPracticeRequested || pendingLearningPersistenceCount == 0, canContinue = optionalPracticeRequested || pendingLearningPersistenceCount == 0, canExit = optionalPracticeRequested || pendingLearningPersistenceCount == 0, onContinue = if (optionalPracticeRequested) ({ if (optionalPracticeLastContinuedRound != optionalPracticeRound) { optionalPracticeLastContinuedRound = optionalPracticeRound; optionalPracticeSessionEvidence = optionalPracticeSessionEvidence + learningEvidenceFor(activity, correct = true, System.currentTimeMillis()) } }) else ({ feedbackActivity = null }), onBack = { if (optionalPracticeRequested || pendingLearningPersistenceCount == 0) { feedbackActivity = null; step = AppStep.LEARNING_TRAIL } })
+                        queue.reason == StarterQueueReason.NO_CONTENT -> LaunchedEffect(targetLanguage.code, estimatedLevel) { step = AppStep.LEARNING_TRAIL }
+                        queue.reason == StarterQueueReason.NONE_DUE && !optionalPracticeRequested -> ReviewUpToDateScreen(nextDueAtEpochMillis = queue.nextDueAtEpochMillis, onPracticeMore = { optionalPracticeSessionEvidence = emptyList(); optionalPracticeLastContinuedRound = -1; optionalPracticeRequested = true }, onBack = { step = AppStep.LEARNING_TRAIL })
                     }
                 }
             }
@@ -768,11 +331,7 @@ private fun PlacementTestIntroScreen(targetLanguage: LanguageOption, previousLev
 private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, total: Int?, onAnswer: (Int) -> Unit) {
     var submitted by remember(question.id) { mutableStateOf(false) }
     CenteredColumn {
-        if (total != null) {
-            Text(stringResource(R.string.question_progress, number, total), style = MaterialTheme.typography.labelLarge)
-        } else {
-            Text("${stringResource(R.string.placement_title)} · $number", style = MaterialTheme.typography.labelLarge)
-        }
+        if (total != null) Text(stringResource(R.string.question_progress, number, total), style = MaterialTheme.typography.labelLarge) else Text("${stringResource(R.string.placement_title)} · $number", style = MaterialTheme.typography.labelLarge)
         Spacer(Modifier.height(12.dp)); Text(question.level.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(20.dp)); Text(question.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(28.dp)); question.options.forEachIndexed { index, option -> OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = !submitted, onClick = { if (!submitted) { submitted = true; onAnswer(index) } }) { Text(option, style = MaterialTheme.typography.titleMedium) }; Spacer(Modifier.height(10.dp)) }
     }
 }
@@ -780,329 +339,64 @@ private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, to
 @Composable
 private fun PlacementResultScreen(level: CefrLevel, correctAnswers: Int, total: Int, onContinue: () -> Unit, onRestart: () -> Unit, onChangeLanguage: () -> Unit) {
     CenteredColumn { Text(stringResource(R.string.estimated_level), style = MaterialTheme.typography.titleLarge); Spacer(Modifier.height(12.dp)); Text(level.name, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.correct_answers, correctAnswers, total)); Spacer(Modifier.height(8.dp)); Text(stringResource(R.string.prototype_score_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(28.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onContinue) { Text(stringResource(R.string.continue_to_path)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onRestart) { Text(stringResource(R.string.try_again)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onChangeLanguage) { Text(stringResource(R.string.change_languages)) } }
+}
 
 @Composable
-private fun LearningTrailScreen(
-    estimatedLevel: CefrLevel,
-    hasFoundationActivity: Boolean,
-    hasNarrative: Boolean,
-    onStartFoundationActivity: () -> Unit,
-    onStartNarrative: () -> Unit,
-    onViewObservedPractice: () -> Unit,
-    onPreviewVoices: () -> Unit,
-    onBack: () -> Unit
-) {
+private fun LearningTrailScreen(estimatedLevel: CefrLevel, hasFoundationActivity: Boolean, hasNarrative: Boolean, onStartFoundationActivity: () -> Unit, onStartNarrative: () -> Unit, onViewObservedPractice: () -> Unit, onPreviewVoices: () -> Unit, onBack: () -> Unit) {
     val trail = remember(estimatedLevel) { buildCefrTrail(estimatedLevel) }
     val scrollState = rememberScrollState()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(horizontal = 24.dp, vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            stringResource(R.string.learning_path_title),
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(Modifier.height(12.dp))
-        Text(
-            stringResource(R.string.learning_path_description),
-            style = MaterialTheme.typography.bodyLarge
-        )
-        Spacer(Modifier.height(20.dp))
-        trail.forEach { item ->
-            val statusLabel = when (item.status) {
-                CefrTrailStatus.COMPLETED -> stringResource(R.string.trail_completed)
-                CefrTrailStatus.CURRENT -> stringResource(R.string.trail_current)
-                CefrTrailStatus.LOCKED -> stringResource(R.string.trail_locked)
-            }
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                tonalElevation = if (item.status == CefrTrailStatus.CURRENT) 6.dp else 1.dp
-            ) {
-                Text(
-                    "${item.level.name} · $statusLabel",
-                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = if (item.status == CefrTrailStatus.CURRENT) {
-                        FontWeight.Bold
-                    } else {
-                        FontWeight.Normal
-                    }
-                )
-            }
-            Spacer(Modifier.height(8.dp))
-        }
-        if (hasFoundationActivity) {
-            Spacer(Modifier.height(8.dp))
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
-                onClick = onStartFoundationActivity
-            ) {
-                Text(stringResource(R.string.start_foundation_activity))
-            }
-        }
-        if (hasNarrative) {
-            Spacer(Modifier.height(12.dp))
-            OutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
-                onClick = onStartNarrative
-            ) {
-                Text(stringResource(R.string.read_story))
-            }
-        }
-        Spacer(Modifier.height(12.dp))
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp),
-            onClick = onViewObservedPractice
-        ) {
-            Text(stringResource(R.string.view_observed_practice))
-        }
-        Spacer(Modifier.height(12.dp))
-        Text(
-            stringResource(R.string.trail_foundation_note),
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Spacer(Modifier.height(16.dp))
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp),
-            onClick = onPreviewVoices
-        ) {
-            Text(stringResource(R.string.character_voice_samples_entry))
-        }
-        Spacer(Modifier.height(12.dp))
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp),
-            onClick = onBack
-        ) {
-            Text(stringResource(R.string.back_button))
-        }
+    Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(horizontal = 24.dp, vertical = 32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(stringResource(R.string.learning_path_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.learning_path_description), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(20.dp))
+        trail.forEach { item -> val statusLabel = when (item.status) { CefrTrailStatus.COMPLETED -> stringResource(R.string.trail_completed); CefrTrailStatus.CURRENT -> stringResource(R.string.trail_current); CefrTrailStatus.LOCKED -> stringResource(R.string.trail_locked) }; Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = if (item.status == CefrTrailStatus.CURRENT) 6.dp else 1.dp) { Text("${item.level.name} · $statusLabel", modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = if (item.status == CefrTrailStatus.CURRENT) FontWeight.Bold else FontWeight.Normal) }; Spacer(Modifier.height(8.dp)) }
+        if (hasFoundationActivity) { Spacer(Modifier.height(8.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStartFoundationActivity) { Text(stringResource(R.string.start_foundation_activity)) } }
+        if (hasNarrative) { Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onStartNarrative) { Text(stringResource(R.string.read_story)) } }
+        Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onViewObservedPractice) { Text(stringResource(R.string.view_observed_practice)) }; Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.trail_foundation_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(16.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onPreviewVoices) { Text(stringResource(R.string.character_voice_samples_entry)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_button)) }
     }
 }
 
 @Composable
 private fun VoiceSampleScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val chiuPlayer = remember(context) {
-        MediaPlayer.create(context.applicationContext, R.raw.chiu_voice_sample_expressive)
-    }
-    val miaPlayer = remember(context) {
-        MediaPlayer.create(context.applicationContext, R.raw.mia_voice_sample_girl)
-    }
+    val chiuPlayer = remember(context) { MediaPlayer.create(context.applicationContext, R.raw.chiu_voice_sample_expressive) }
+    val miaPlayer = remember(context) { MediaPlayer.create(context.applicationContext, R.raw.mia_voice_sample_girl) }
     var playingSample by remember { mutableIntStateOf(0) }
     val unavailable = chiuPlayer == null || miaPlayer == null
     val chiuPhrase = remember { voiceSamplePhrase("pt") }
-
-    DisposableEffect(chiuPlayer, miaPlayer) {
-        chiuPlayer?.setOnCompletionListener {
-            if (playingSample == R.raw.chiu_voice_sample_expressive) playingSample = 0
-        }
-        miaPlayer?.setOnCompletionListener {
-            if (playingSample == R.raw.mia_voice_sample_girl) playingSample = 0
-        }
-        onDispose {
-            chiuPlayer?.setOnCompletionListener(null)
-            chiuPlayer?.release()
-            miaPlayer?.setOnCompletionListener(null)
-            miaPlayer?.release()
-        }
-    }
-
+    DisposableEffect(chiuPlayer, miaPlayer) { chiuPlayer?.setOnCompletionListener { if (playingSample == R.raw.chiu_voice_sample_expressive) playingSample = 0 }; miaPlayer?.setOnCompletionListener { if (playingSample == R.raw.mia_voice_sample_girl) playingSample = 0 }; onDispose { chiuPlayer?.setOnCompletionListener(null); chiuPlayer?.release(); miaPlayer?.setOnCompletionListener(null); miaPlayer?.release() } }
     CenteredColumn {
-        Text(stringResource(R.string.character_voice_samples_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.character_voice_samples_description), style = MaterialTheme.typography.bodyLarge)
-        Spacer(Modifier.height(12.dp))
-        Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) {
-            Text(chiuPhrase, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium)
-        }
-        Spacer(Modifier.height(16.dp))
-        val chiuLabel = stringResource(R.string.voice_sample_lively)
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp),
-            enabled = chiuPlayer != null,
-            onClick = {
-                chiuPlayer?.let {
-                    if (miaPlayer?.isPlaying == true) miaPlayer.pause()
-                    it.seekTo(0)
-                    it.start()
-                    playingSample = R.raw.chiu_voice_sample_expressive
-                }
-            }
-        ) {
-            Text(if (playingSample == R.raw.chiu_voice_sample_expressive) stringResource(R.string.voice_sample_playing, chiuLabel) else chiuLabel)
-        }
-        Spacer(Modifier.height(16.dp))
-        Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) {
-            Text(stringResource(R.string.voice_sample_mia_sentence), modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium)
-        }
-        Spacer(Modifier.height(16.dp))
-        val miaLabel = stringResource(R.string.voice_sample_mia)
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp),
-            enabled = miaPlayer != null,
-            onClick = {
-                miaPlayer?.let {
-                    if (chiuPlayer?.isPlaying == true) chiuPlayer.pause()
-                    it.seekTo(0)
-                    it.start()
-                    playingSample = R.raw.mia_voice_sample_girl
-                }
-            }
-        ) {
-            Text(if (playingSample == R.raw.mia_voice_sample_girl) stringResource(R.string.voice_sample_playing, miaLabel) else miaLabel)
-        }
-        if (unavailable) {
-            Spacer(Modifier.height(8.dp))
-            Text(stringResource(R.string.character_voice_samples_unavailable), style = MaterialTheme.typography.bodyMedium)
-        }
-        Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.character_voice_samples_note), style = MaterialTheme.typography.bodyMedium)
-        Spacer(Modifier.height(20.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) }
+        Text(stringResource(R.string.character_voice_samples_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.character_voice_samples_description), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(12.dp)); Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) { Text(chiuPhrase, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium) }; Spacer(Modifier.height(16.dp)); val chiuLabel = stringResource(R.string.voice_sample_lively); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = chiuPlayer != null, onClick = { chiuPlayer?.let { if (miaPlayer?.isPlaying == true) miaPlayer.pause(); it.seekTo(0); it.start(); playingSample = R.raw.chiu_voice_sample_expressive } }) { Text(if (playingSample == R.raw.chiu_voice_sample_expressive) stringResource(R.string.voice_sample_playing, chiuLabel) else chiuLabel) }; Spacer(Modifier.height(16.dp)); Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) { Text(stringResource(R.string.voice_sample_mia_sentence), modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium) }; Spacer(Modifier.height(16.dp)); val miaLabel = stringResource(R.string.voice_sample_mia); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = miaPlayer != null, onClick = { miaPlayer?.let { if (chiuPlayer?.isPlaying == true) chiuPlayer.pause(); it.seekTo(0); it.start(); playingSample = R.raw.mia_voice_sample_girl } }) { Text(if (playingSample == R.raw.mia_voice_sample_girl) stringResource(R.string.voice_sample_playing, miaLabel) else miaLabel) }; if (unavailable) { Spacer(Modifier.height(8.dp)); Text(stringResource(R.string.character_voice_samples_unavailable), style = MaterialTheme.typography.bodyMedium) }; Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.character_voice_samples_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(20.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) }
     }
 }
 
 @Composable
-private fun ReviewUpToDateScreen(
-    nextDueAtEpochMillis: Long?,
-    onPracticeMore: () -> Unit,
-    onBack: () -> Unit
-) {
-    val nextReview = nextDueAtEpochMillis?.let {
-        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(it))
-    }
-
-    CenteredColumn {
-        Text(stringResource(R.string.review_up_to_date_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.review_up_to_date_description), style = MaterialTheme.typography.bodyLarge)
-        if (nextReview != null) {
-            Spacer(Modifier.height(12.dp))
-            Text(stringResource(R.string.next_review_time, nextReview), style = MaterialTheme.typography.titleMedium)
-        }
-        Spacer(Modifier.height(24.dp))
-        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onPracticeMore) {
-            Text(stringResource(R.string.practice_more))
-        }
-        Spacer(Modifier.height(8.dp))
-        Text(stringResource(R.string.optional_practice_note), style = MaterialTheme.typography.bodyMedium)
-        Spacer(Modifier.height(12.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) {
-            Text(stringResource(R.string.back_to_path))
-        }
-    }
+private fun ReviewUpToDateScreen(nextDueAtEpochMillis: Long?, onPracticeMore: () -> Unit, onBack: () -> Unit) {
+    val nextReview = nextDueAtEpochMillis?.let { DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(it)) }
+    CenteredColumn { Text(stringResource(R.string.review_up_to_date_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.review_up_to_date_description), style = MaterialTheme.typography.bodyLarge); if (nextReview != null) { Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.next_review_time, nextReview), style = MaterialTheme.typography.titleMedium) }; Spacer(Modifier.height(24.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onPracticeMore) { Text(stringResource(R.string.practice_more)) }; Spacer(Modifier.height(8.dp)); Text(stringResource(R.string.optional_practice_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) } }
 }
 
 @Composable
-private fun OptionalPracticeSummaryScreen(
-    completedCount: Int,
-    onPracticeAgain: () -> Unit,
-    onBack: () -> Unit
-) {
-    CenteredColumn {
-        Text(stringResource(R.string.optional_practice_summary_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.optional_practice_summary_description, completedCount), style = MaterialTheme.typography.bodyLarge)
-        Spacer(Modifier.height(24.dp))
-        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onPracticeAgain) {
-            Text(stringResource(R.string.practice_again))
-        }
-        Spacer(Modifier.height(12.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) {
-            Text(stringResource(R.string.back_to_path))
-        }
-    }
+private fun OptionalPracticeSummaryScreen(completedCount: Int, onPracticeAgain: () -> Unit, onBack: () -> Unit) {
+    CenteredColumn { Text(stringResource(R.string.optional_practice_summary_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.optional_practice_summary_description, completedCount), style = MaterialTheme.typography.bodyLarge); Spacer(Modifier.height(24.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onPracticeAgain) { Text(stringResource(R.string.practice_again)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onBack) { Text(stringResource(R.string.back_to_path)) } }
 }
 
 @Composable
-private fun LearningActivityScreen(
-    activity: LearningActivity,
-    onAttempt: (String) -> Unit,
-    canSubmit: Boolean,
-    canContinue: Boolean,
-    canExit: Boolean,
-    onContinue: (() -> Unit)?,
-    onBack: () -> Unit
-) {
+private fun LearningActivityScreen(activity: LearningActivity, onAttempt: (String) -> Unit, canSubmit: Boolean, canContinue: Boolean, canExit: Boolean, onContinue: (() -> Unit)?, onBack: () -> Unit) {
     var answer by remember(activity.id) { mutableStateOf("") }
     var selectedTokenIndices by remember(activity.id) { mutableStateOf(emptyList<Int>()) }
     var checked by remember(activity.id) { mutableStateOf(false) }
     val effectiveAnswer = if (activity.responseType == ResponseType.REORDER) selectedTokenIndices.joinToString(" ") { activity.responseOptions[it] } else answer
     val correct = checked && isLearningAnswerCorrect(activity, effectiveAnswer)
     val canEditAnswer = !correct
-    val editAnswer = { edit: () -> Unit ->
-        if (!checked || !isLearningAnswerCorrect(activity, effectiveAnswer)) edit()
-    }
+    val editAnswer = { edit: () -> Unit -> if (!checked || !isLearningAnswerCorrect(activity, effectiveAnswer)) edit() }
     val localizedInstruction = learningActivityInstruction(activity.responseType, currentInterfaceLanguageCode())
-
     CenteredColumn {
-        Text(stringResource(R.string.activity_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(8.dp))
-        Text("${activity.level.name} · ${activity.primarySkill.name}", style = MaterialTheme.typography.labelLarge)
-        Spacer(Modifier.height(20.dp))
-        Text(localizedInstruction, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(8.dp))
-        Text(activity.prompt, style = MaterialTheme.typography.headlineSmall)
-        Spacer(Modifier.height(20.dp))
-
+        Text(stringResource(R.string.activity_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(8.dp)); Text("${activity.level.name} · ${activity.primarySkill.name}", style = MaterialTheme.typography.labelLarge); Spacer(Modifier.height(20.dp)); Text(localizedInstruction, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(8.dp)); Text(activity.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(20.dp))
         when (activity.responseType) {
-            ResponseType.REORDER -> {
-                Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) { Text(text = if (effectiveAnswer.isBlank()) "…" else effectiveAnswer, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium) }
-                Spacer(Modifier.height(12.dp))
-                activity.responseOptions.forEachIndexed { index, token ->
-                    if (index !in selectedTokenIndices) {
-                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { selectedTokenIndices = selectedTokenIndices + index; checked = false } }) { Text(token, style = MaterialTheme.typography.titleMedium) }
-                        Spacer(Modifier.height(8.dp))
-                    }
-                }
-                if (selectedTokenIndices.isNotEmpty()) {
-                    OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { selectedTokenIndices = selectedTokenIndices.dropLast(1); checked = false } }) { Text("↶") }
-                    Spacer(Modifier.height(8.dp))
-                }
-            }
-            ResponseType.MULTIPLE_CHOICE -> {
-                activity.responseOptions.forEach { option ->
-                    val selected = answer == option
-                    if (selected) {
-                        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { if (answer != option) { answer = option; checked = false } } }) { Text(option, style = MaterialTheme.typography.titleMedium) }
-                    } else {
-                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { if (answer != option) { answer = option; checked = false } } }) { Text(option, style = MaterialTheme.typography.titleMedium) }
-                    }
-                    Spacer(Modifier.height(8.dp))
-                }
-            }
-            else -> {
-                OutlinedTextField(value = answer, onValueChange = { updated -> editAnswer { answer = updated; checked = false } }, modifier = Modifier.fillMaxWidth(), enabled = canEditAnswer, label = { Text(stringResource(R.string.activity_answer_hint)) }, singleLine = true, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done))
-            }
+            ResponseType.REORDER -> { Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), tonalElevation = 1.dp) { Text(text = if (effectiveAnswer.isBlank()) "…" else effectiveAnswer, modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp), style = MaterialTheme.typography.titleMedium) }; Spacer(Modifier.height(12.dp)); activity.responseOptions.forEachIndexed { index, token -> if (index !in selectedTokenIndices) { OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { selectedTokenIndices = selectedTokenIndices + index; checked = false } }) { Text(token, style = MaterialTheme.typography.titleMedium) }; Spacer(Modifier.height(8.dp)) } }; if (selectedTokenIndices.isNotEmpty()) { OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { selectedTokenIndices = selectedTokenIndices.dropLast(1); checked = false } }) { Text("↶") }; Spacer(Modifier.height(8.dp)) } }
+            ResponseType.MULTIPLE_CHOICE -> { activity.responseOptions.forEach { option -> val selected = answer == option; if (selected) Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { if (answer != option) { answer = option; checked = false } } }) { Text(option, style = MaterialTheme.typography.titleMedium) } else OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { if (answer != option) { answer = option; checked = false } } }) { Text(option, style = MaterialTheme.typography.titleMedium) }; Spacer(Modifier.height(8.dp)) } }
+            else -> OutlinedTextField(value = answer, onValueChange = { updated -> editAnswer { answer = updated; checked = false } }, modifier = Modifier.fillMaxWidth(), enabled = canEditAnswer, label = { Text(stringResource(R.string.activity_answer_hint)) }, singleLine = true, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done))
         }
-
-        Spacer(Modifier.height(16.dp))
-        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = effectiveAnswer.isNotBlank() && !checked && canSubmit, onClick = { if (!checked && canSubmit) { checked = true; onAttempt(effectiveAnswer) } }) { Text(stringResource(R.string.check_answer)) }
-        if (checked) {
-            Spacer(Modifier.height(20.dp))
-            Text(if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(8.dp))
-            Text("${stringResource(R.string.activity_feedback)}: ${activity.feedback}", style = MaterialTheme.typography.bodyLarge)
-            if (correct && onContinue != null) {
-                Spacer(Modifier.height(16.dp))
-                Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = canContinue, onClick = onContinue) {
-                    Text(stringResource(R.string.continue_button))
-                }
-            }
-        }
-        Spacer(Modifier.height(20.dp))
-        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = canExit, onClick = { if (canExit) onBack() }) { Text(stringResource(R.string.back_to_path)) }
+        Spacer(Modifier.height(16.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = effectiveAnswer.isNotBlank() && !checked && canSubmit, onClick = { if (!checked && canSubmit) { checked = true; onAttempt(effectiveAnswer) } }) { Text(stringResource(R.string.check_answer)) }; if (checked) { Spacer(Modifier.height(20.dp)); Text(if (correct) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(8.dp)); Text("${stringResource(R.string.activity_feedback)}: ${activity.feedback}", style = MaterialTheme.typography.bodyLarge); if (correct && onContinue != null) { Spacer(Modifier.height(16.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = canContinue, onClick = onContinue) { Text(stringResource(R.string.continue_button)) } } }; Spacer(Modifier.height(20.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), enabled = canExit, onClick = { if (canExit) onBack() }) { Text(stringResource(R.string.back_to_path)) }
     }
 }
 
