@@ -14,8 +14,11 @@ data class A1StationRetrieval(
         require(activity.primarySkill == LearningSkill.VOCABULARY) {
             "Station retrieval must remain controlled vocabulary production"
         }
-        require(activity.responseType == ResponseType.REORDER) {
-            "Station retrieval must reconstruct the established phrase"
+        require(
+            activity.responseType == ResponseType.REORDER ||
+                activity.responseType == ResponseType.FILL_IN
+        ) {
+            "Station retrieval must reconstruct the established phrase or retrieve its missing element"
         }
         require(activity.acceptedAnswers.size == 1) {
             "Station retrieval must define one deterministic answer"
@@ -26,7 +29,8 @@ data class A1StationRetrieval(
 data class A1StationLearningUnit(
     val narrative: NarrativeMicroUnit,
     val comprehension: LearningActivity,
-    val retrievals: List<A1StationRetrieval>
+    val retrievals: List<A1StationRetrieval>,
+    val reducedCueRetrievals: List<A1StationRetrieval>
 ) {
     init {
         require(narrative.level == CefrLevel.A1) { "Station narrative must remain A1" }
@@ -46,6 +50,15 @@ data class A1StationLearningUnit(
         require(retrievals.map { it.activity.reviewKey } == narrative.linkedReviewKeys) {
             "Station retrievals must reuse the narrative's established targets"
         }
+        require(reducedCueRetrievals.map { it.target } == retrievals.map { it.target }) {
+            "Reduced-cue retrievals must preserve the established target order"
+        }
+        require(reducedCueRetrievals.all { it.activity.responseType == ResponseType.FILL_IN }) {
+            "Reduced-cue retrievals must remove the word bank"
+        }
+        require(reducedCueRetrievals.map { it.activity.reviewKey } == narrative.linkedReviewKeys) {
+            "Reduced-cue retrievals must reuse the narrative's established targets"
+        }
     }
 }
 
@@ -64,6 +77,12 @@ fun a1StationLearningUnitFor(languageCode: String): A1StationLearningUnit? {
         ?: return null
     val repair = a1ComprehensionRepairActivitiesFor(languageCode).singleOrNull()
         ?: return null
+    val reducedCueLocation =
+        a1StationLocationFillInRetrievalActivitiesFor(languageCode).singleOrNull()
+            ?: return null
+    val reducedCueRepair =
+        a1StationRepairFillInRetrievalActivitiesFor(languageCode).singleOrNull()
+            ?: return null
 
     return A1StationLearningUnit(
         narrative = narrative,
@@ -71,6 +90,10 @@ fun a1StationLearningUnitFor(languageCode: String): A1StationLearningUnit? {
         retrievals = listOf(
             A1StationRetrieval(A1StationTarget.RESTROOM_LOCATION, location),
             A1StationRetrieval(A1StationTarget.COMPREHENSION_REPAIR, repair)
+        ),
+        reducedCueRetrievals = listOf(
+            A1StationRetrieval(A1StationTarget.RESTROOM_LOCATION, reducedCueLocation),
+            A1StationRetrieval(A1StationTarget.COMPREHENSION_REPAIR, reducedCueRepair)
         )
     )
 }
