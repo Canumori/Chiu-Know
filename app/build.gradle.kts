@@ -17,6 +17,18 @@ android {
         versionName = "0.1.0"
     }
 
+    signingConfigs {
+        getByName("debug") {
+            val stableDebugKey = rootProject.file(".ci-signing/debug.keystore")
+            if (stableDebugKey.exists()) {
+                storeFile = stableDebugKey
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
+            }
+        }
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
