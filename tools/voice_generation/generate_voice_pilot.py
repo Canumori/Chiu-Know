@@ -94,10 +94,10 @@ def main() -> None:
             "pronunciation source and automated QA path are proved."
         )
 
+    import numpy as np
+    import soundfile as sf
     import torch
     import torchaudio as ta
-    from chatterbox.tts_turbo import ChatterboxTurboTTS
-    from chatterbox.vc import ChatterboxVC
 
     torch.set_num_threads(max(1, min(4, os.cpu_count() or 1)))
     device = "cpu"
@@ -106,18 +106,42 @@ def main() -> None:
     source_path = args.output_dir / f"source_{language}.wav"
     final_path = args.output_dir / f"{character}_{language}_pilot.wav"
 
-    # Stage 1: pronunciation. English uses the dedicated English Nano model and its bundled
-    # voice, not Mia/Chiu. This prevents a Portuguese reference clip from contaminating the
-    # English pronunciation.
-    source_model_name = "chatterbox-nano-english-builtin-voice"
-    source_model = ChatterboxTurboTTS.from_pretrained(device=device, nano=True)
-    source_wav = source_model.generate(text)
-    ta.save(str(source_path), source_wav.cpu(), source_model.sr)
-    del source_wav, source_model
+    # Stage 1: pronunciation. English uses Kokoro's American-English G2P/TTS path and a
+    # neutral bundled voice. The character reference is deliberately absent here so a
+    # Portuguese reference cannot contaminate English pronunciation. Kokoro also exposes the
+    # generated phoneme sequence, which is recorded for later phonetic QA.
+    if language != "en":
+        raise RuntimeError(f"No proved pronunciation source configured for '{language}'")
+
+    from kokoro import KPipeline
+
+    source_model_name = "kokoro-82m-v1.0-en-us-af_heart"
+    pipeline = KPipeline(lang_code="a")
+    chunks = []
+    grapheme_chunks = []
+    phoneme_chunks = []
+    for graphemes, phonemes, audio in pipeline(text, voice="af_heart", speed=1.0):
+        grapheme_chunks.append(graphemes)
+        phoneme_chunks.append(phonemes)
+        chunks.append(np.asarray(audio, dtype=np.float32))
+
+    if not chunks:
+        raise RuntimeError("Kokoro produced no English source audio")
+
+    source_audio = np.concatenate(chunks)
+    sf.write(str(source_path), source_audio, 24000)
+    source_graphemes = " ".join(str(value).strip() for value in grapheme_chunks if value).strip()
+    source_phonemes = " ".join(str(value).strip() for value in phoneme_chunks if value).strip()
+    print(f"Source graphemes: {source_graphemes}")
+    print(f"Source phonemes: {source_phonemes}")
+
+    del source_audio, chunks, pipeline
     gc.collect()
 
     # Stage 2: identity. Voice conversion changes the timbre to the approved character
-    # reference while keeping the linguistic content from the source utterance.
+    # reference while keeping the linguistic content/prosody from the native source.
+    from chatterbox.vc import ChatterboxVC
+
     vc_model_name = "chatterbox-vc"
     vc_model = ChatterboxVC.from_pretrained(device)
     final_wav = vc_model.generate(
@@ -136,6 +160,8 @@ def main() -> None:
         "device": device,
         "pipeline": "native_source_then_voice_conversion",
         "source_model": source_model_name,
+        "source_graphemes": source_graphemes,
+        "source_phonemes": source_phonemes,
         "voice_conversion_model": vc_model_name,
         "reference_path": str(reference.relative_to(ROOT)),
         "reference_sha256": sha256(reference),
