@@ -76,6 +76,33 @@ class A1StationLearningUnitTest {
     }
 
     @Test
+    fun connectsReducedCueRetrievalsAfterTheEstablishedTargetsPerLanguage() {
+        supportedLanguages.forEach { languageCode ->
+            val unit = requireNotNull(a1StationLearningUnitFor(languageCode))
+
+            assertEquals(
+                unit.retrievals.map { it.target },
+                unit.reducedCueRetrievals.map { it.target }
+            )
+            assertEquals(
+                unit.narrative.linkedReviewKeys,
+                unit.reducedCueRetrievals.map { it.activity.reviewKey }
+            )
+            assertTrue(
+                unit.reducedCueRetrievals.all {
+                    it.activity.responseType == ResponseType.FILL_IN &&
+                        it.activity.responseOptions.isEmpty()
+                }
+            )
+            assertTrue(
+                unit.reducedCueRetrievals.map { it.activity.id }.toSet()
+                    .intersect(unit.retrievals.map { it.activity.id }.toSet())
+                    .isEmpty()
+            )
+        }
+    }
+
+    @Test
     fun unsupportedLanguageDoesNotInventAStationUnit() {
         assertNull(a1StationLearningUnitFor("de"))
         assertNull(a1StationLearningUnitFor(""))
