@@ -13,8 +13,9 @@ android {
         applicationId = "com.chiu.know"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        val ciRunNumber = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()
+        versionCode = ciRunNumber ?: 1
+        versionName = ciRunNumber?.let { "0.1.0-ci.$it" } ?: "0.1.0"
     }
 
     signingConfigs {
