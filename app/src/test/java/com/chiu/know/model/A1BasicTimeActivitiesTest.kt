@@ -45,6 +45,16 @@ class A1BasicTimeActivitiesTest {
     }
 
     @Test
+    fun starterBankIncludesBasicTimeQuestionForEverySupportedLanguage() {
+        supportedLanguages.forEach { languageCode ->
+            val expectedId = a1BasicTimeActivitiesFor(languageCode).single().id
+            val starterIds = starterLearningActivitiesFor(languageCode).map { it.id }
+
+            assertTrue(starterIds.contains(expectedId))
+        }
+    }
+
+    @Test
     fun unsupportedLanguageDoesNotExposeTimeContent() {
         assertTrue(a1BasicTimeActivitiesFor("de").isEmpty())
     }
