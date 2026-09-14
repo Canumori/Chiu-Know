@@ -1,0 +1,70 @@
+name: Verificar Supabase do Chiu Know
+
+on:
+  schedule:
+    # 07:17 de Brasília. Uma leitura diária mínima evita inatividade
+    # enquanto o aplicativo ainda não usa o Supabase regularmente.
+    - cron: '17 10 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/supabase-health.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SUPABASE_URL: https://uskxabsodcnzlovuaurp.supabase.co
+      # Chave publicável, própria para clientes públicos; nunca service_role.
+      SUPABASE_PUBLISHABLE_KEY: sb_publishable_AwCki0ovkuwypZoERBGqjQ_t7CBOTD6
+    steps:
+      - name: Ler linha mínima de saúde
+        shell: bash
+        run: |
+          set -euo pipefail
+          CODE=$(curl --silent --show-error --location \
+            --retry 3 --retry-delay 5 --retry-all-errors \
+            --connect-timeout 15 --max-time 35 \
+            --output /tmp/chiu-know-health.json \
+            --write-out '%{http_code}' \
+            -H "apikey: ${SUPABASE_PUBLISHABLE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_PUBLISHABLE_KEY}" \
+            "${SUPABASE_URL}/rest/v1/health_probe?select=id%2Clabel&id=eq.1" || echo 000)
+          echo "Supabase HTTP ${CODE}"
+          cat /tmp/chiu-know-health.json 2>/dev/null || true
+          [[ "${CODE}" == "200" ]]
+          grep -Eq '"id"[[:space:]]*:[[:space:]]*1' /tmp/chiu-know-health.json
+          grep -Eq '"label"[[:space:]]*:[[:space:]]*"chiu-know"' /tmp/chiu-know-health.json
+
+      - name: Fechar alerta após recuperação
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          TITLE="Alerta automático: Supabase do Chiu Know indisponível"
+          EXISTING=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')
+          if [[ -n "$EXISTING" ]]; then
+            gh issue close "$EXISTING" --repo "$GITHUB_REPOSITORY" --comment "Health check normalizado em $(date -u '+%Y-%m-%d %H:%M UTC'): a leitura mínima do Supabase respondeu corretamente."
+          fi
+
+      - name: Abrir alerta se houver falha
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          TITLE="Alerta automático: Supabase do Chiu Know indisponível"
+          EXISTING=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')
+          BODY="A leitura automática diária do Supabase do Chiu Know falhou. Não é necessário tentar consertar nada sozinha. Leve esta Issue ao ChatGPT para diagnóstico. Execução: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          if [[ -z "$EXISTING" ]]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITLE" --body "$BODY"
+          else
+            gh issue comment "$EXISTING" --repo "$GITHUB_REPOSITORY" --body "A falha foi detectada novamente. ${BODY}"
+          fi
