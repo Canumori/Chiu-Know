@@ -1,6 +1,38 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
 
+## AUTORITATIVO — 2026-09-14 — A1 LOCATION AND COMPREHENSION-REPAIR SLICES GREEN
+
+Two small high-value A1 gaps were closed through isolated content, isolated tests, starter activation and dedicated integration proof.
+
+### Basic location — restroom
+- `97cdb0e68c15d1c628bac28cefaa5ad63835f208` — one controlled REORDER question for EN/PT/ES/FR/KO equivalent to “Where is the restroom?” — Android CI #510 SUCCESS;
+- `02f611d1ed26f63e6d39f728af0f76fb9e687f4f` — isolated tests for all five languages, correct reconstruction, reversed-order rejection and unsupported-language exclusion — CI #511 SUCCESS;
+- `ba6dfb0b1af23fe31cabd955a6d797d7a21bbf9f` — activation in the existing starter bank — CI #512 SUCCESS;
+- `40facc6ca8ee689c769ddcab28e368052cf11faa` — dedicated all-language starter-integration assertion — CI #513 SUCCESS.
+
+### Comprehension repair — “I don’t understand”
+- `5c0fd964e7a2ce957b1e9beaac875f399f2ef412` — one controlled REORDER repair phrase for EN/PT/ES/FR/KO — Android CI #514 SUCCESS;
+- `5952cd239412cdb247e50f3d2d691588c33d473e` — isolated tests for all five languages, correct reconstruction, reversed-order rejection and unsupported-language exclusion — CI #515 SUCCESS;
+- `138162b6be2777642cfcd3a420c15b5c1353f4fa` — activation in the existing starter bank — CI #516 SUCCESS;
+- `b7bfc7edd70be5ed9f86a9c23233f5ae2e0f3553` — dedicated all-language starter-integration assertion — CI #517, run `34797249134`: SUCCESS.
+
+Protected semantics for both slices:
+- closed REORDER evidence only; no claim of free writing, speaking, pronunciation, open conversation, mastery or CEFR certification;
+- existing starter selection, LearningEvidence, review keys and FSRS/review schedule remain authoritative;
+- no parallel queue, scheduler, persistence format or mastery state was created;
+- review-first priority, optional-practice separation and all retry/feedback/persistence guards remain unchanged;
+- no visual, voice, Supabase or CHIU PLAYER resource was accessed or changed;
+- normal pushes compiled and tested without uploading new APK artifacts; the three-artifact cap remains active.
+
+Quality gate for the next product step:
+- the starter now has several isolated formulaic REORDER additions (request, price, time, family, location and comprehension repair);
+- do not keep adding disconnected phrases indefinitely merely to produce commits;
+- the next substantial pedagogical step should reconnect selected targets inside a coherent comprehensible context and cue-withdrawal sequence, or deliberately open a different CEFR/content front;
+- any new visual story scene requires user approval under `VISUAL_BIBLE.md`; do not generate or integrate one automatically.
+
+This documentation write creates a newer HEAD and CI. Fetch real `main` and verify the exact-SHA Android CI before any later write.
+
 ## AUTORITATIVO — 2026-09-14 — A1 FAMILY STARTER INTEGRATION GREEN; THREE-APK LIMIT
 
 A1 family-identification slice completed through the normal staged gates:
