@@ -64,6 +64,8 @@ import com.chiu.know.model.StarterQueueReason
 import com.chiu.know.model.a1FirstNarrativeComprehensionActivitiesFor
 import com.chiu.know.model.a1SecondTransferNarrativeComprehensionActivitiesFor
 import com.chiu.know.model.a1SecondTransferNarrativeMicroUnitFor
+import com.chiu.know.model.a1StationNarrativeComprehensionActivitiesFor
+import com.chiu.know.model.a1StationNarrativeMicroUnitFor
 import com.chiu.know.model.a1TransferNarrativeComprehensionActivitiesFor
 import com.chiu.know.model.a1TransferNarrativeMicroUnitFor
 import com.chiu.know.model.advanceAdaptivePlacement
@@ -172,6 +174,20 @@ fun ChiuKnowApp() {
             val secondTransferNarrativeComprehension = remember(targetLanguage.code, estimatedLevel) {
                 if (estimatedLevel == CefrLevel.A1) {
                     a1SecondTransferNarrativeComprehensionActivitiesFor(targetLanguage.code)
+                } else {
+                    emptyList()
+                }
+            }
+            val stationNarrative = remember(targetLanguage.code, estimatedLevel) {
+                if (estimatedLevel == CefrLevel.A1) {
+                    a1StationNarrativeMicroUnitFor(targetLanguage.code)
+                } else {
+                    null
+                }
+            }
+            val stationNarrativeComprehension = remember(targetLanguage.code, estimatedLevel) {
+                if (estimatedLevel == CefrLevel.A1) {
+                    a1StationNarrativeComprehensionActivitiesFor(targetLanguage.code)
                 } else {
                     emptyList()
                 }
@@ -358,13 +374,15 @@ fun ChiuKnowApp() {
                         when (activeNarrativeIndex) {
                             0 -> starterNarrative
                             1 -> transferNarrative
-                            else -> secondTransferNarrative
+                            2 -> secondTransferNarrative
+                            else -> stationNarrative
                         }
                     )
                     val narrativeComprehension = when (activeNarrativeIndex) {
                         0 -> starterNarrativeComprehension
                         1 -> transferNarrativeComprehension
-                        else -> secondTransferNarrativeComprehension
+                        2 -> secondTransferNarrativeComprehension
+                        else -> stationNarrativeComprehension
                     }
                     val session = requireNotNull(narrativeSession)
                     when (session.phase) {
@@ -374,7 +392,8 @@ fun ChiuKnowApp() {
                             imageResId = when (activeNarrativeIndex) {
                                 0 -> R.drawable.a1_story_cafe_surreal
                                 1 -> R.drawable.a1_story_park_surreal
-                                else -> R.drawable.a1_story_square_surreal
+                                2 -> R.drawable.a1_story_square_surreal
+                                else -> R.drawable.a1_story_station_surreal
                             },
                             onAdvance = {
                                 narrativeSession = advanceNarrativeSessionStory(session)
@@ -428,11 +447,13 @@ fun ChiuKnowApp() {
                                             val nextNarrative = when (activeNarrativeIndex) {
                                                 0 -> transferNarrative
                                                 1 -> secondTransferNarrative
+                                                2 -> stationNarrative
                                                 else -> null
                                             }
                                             val nextComprehension = when (activeNarrativeIndex) {
                                                 0 -> transferNarrativeComprehension
                                                 1 -> secondTransferNarrativeComprehension
+                                                2 -> stationNarrativeComprehension
                                                 else -> emptyList()
                                             }
                                             if (
@@ -443,7 +464,7 @@ fun ChiuKnowApp() {
                                                 step = AppStep.NARRATIVE_NEXT
                                             } else {
                                                 narrativeSession = null
-                                                if (activeNarrativeIndex == 2) {
+                                                if (activeNarrativeIndex == 3) {
                                                     step = AppStep.NARRATIVE_PRACTICE
                                                 } else {
                                                     activeNarrativeIndex = 0
@@ -471,24 +492,28 @@ fun ChiuKnowApp() {
                 }
                 AppStep.NARRATIVE_NEXT -> {
                     val nextNarrative = requireNotNull(
-                        if (activeNarrativeIndex == 0) transferNarrative else secondTransferNarrative
+                        when (activeNarrativeIndex) {
+                            0 -> transferNarrative
+                            1 -> secondTransferNarrative
+                            else -> stationNarrative
+                        }
                     )
-                    val nextComprehension = if (activeNarrativeIndex == 0) {
-                        transferNarrativeComprehension
-                    } else {
-                        secondTransferNarrativeComprehension
+                    val nextComprehension = when (activeNarrativeIndex) {
+                        0 -> transferNarrativeComprehension
+                        1 -> secondTransferNarrativeComprehension
+                        else -> stationNarrativeComprehension
                     }
                     NextNarrativeScreen(
                         narrative = nextNarrative,
-                        imageResId = if (activeNarrativeIndex == 0) {
-                            R.drawable.a1_story_park_surreal
-                        } else {
-                            R.drawable.a1_story_square_surreal
+                        imageResId = when (activeNarrativeIndex) {
+                            0 -> R.drawable.a1_story_park_surreal
+                            1 -> R.drawable.a1_story_square_surreal
+                            else -> R.drawable.a1_story_station_surreal
                         },
                         onContinue = {
                             val expectedNarrativeIndex = activeNarrativeIndex
                             if (
-                                expectedNarrativeIndex in 0..1 &&
+                                expectedNarrativeIndex in 0..2 &&
                                 narrativeSession == null &&
                                 nextComprehension.isNotEmpty()
                             ) {
