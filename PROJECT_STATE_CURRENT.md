@@ -1,5 +1,28 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-14 — ATUALIZAÇÃO POR CIMA VALIDADA FISICAMENTE
+
+A usuária executou o teste controlado de assinatura:
+1. desinstalou o APK antigo, anterior à chave persistente;
+2. instalou o APK CI #540;
+3. instalou o APK CI #541 por cima, sem desinstalar;
+4. confirmou: “Deu certo”.
+
+### Resultado
+- atualização por cima: **APROVADA EM TESTE FÍSICO**;
+- CI #540 e CI #541 usam o mesmo certificado SHA-256: `81902da298eb872c4c55fc7d995f98acfe390a660b6d0237022a77eec7f953fe`;
+- o `versionCode` cresce com o número do CI;
+- futuros APKs gerados pelo workflow devem restaurar a chave `chiu-know-debug-keystore-v2` e instalar sobre o CI #541;
+- não voltar ao cache inválido de `~/.android/debug.keystore`;
+- não pedir nova desinstalação salvo se houver mudança deliberada de assinatura ou pacote.
+
+### Base física atual
+- APK instalado: CI #541;
+- build commit: `4b329cc4d877f1faf0e5e2055fb366d6b4b57d48`;
+- SHA-256 do APK: `81b011c844c76788f8c0454ec1e6fc6edfbf7e4da0b2325730614c44a7f55299`.
+
+Nenhum componente do ChiuPlayer foi acessado ou alterado.
+
 ## AUTORITATIVO — 2026-09-14 — ASSINATURA DEBUG: CAUSA REAL E CORREÇÃO VERIFICÁVEL
 
 O APK CI #537 não instalou por cima do CI #531. A comparação binária confirmou certificados diferentes:
