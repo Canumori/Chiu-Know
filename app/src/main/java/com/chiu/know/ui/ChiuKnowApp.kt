@@ -64,6 +64,7 @@ import com.chiu.know.model.StarterQueueReason
 import com.chiu.know.model.a1FirstNarrativeComprehensionActivitiesFor
 import com.chiu.know.model.a1SecondTransferNarrativeComprehensionActivitiesFor
 import com.chiu.know.model.a1SecondTransferNarrativeMicroUnitFor
+import com.chiu.know.model.a1StationLearningUnitFor
 import com.chiu.know.model.a1StationNarrativeComprehensionActivitiesFor
 import com.chiu.know.model.a1StationNarrativeMicroUnitFor
 import com.chiu.know.model.a1TransferNarrativeComprehensionActivitiesFor
@@ -110,7 +111,7 @@ private fun learningEvidenceKey(languageCode: String) = stringSetPreferencesKey(
 private fun reviewScheduleKey(languageCode: String) = stringSetPreferencesKey("review_schedule_$languageCode")
 private const val OPTIONAL_PRACTICE_SESSION_SIZE = 5
 
-private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, PLACEMENT_UNRESOLVED, LEARNER_PREFERENCES, LEARNING_TRAIL, NARRATIVE_STORY, NARRATIVE_NEXT, NARRATIVE_PRACTICE, LEARNING_ACTIVITY, OBSERVED_PRACTICE, VOICE_PREVIEW }
+private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, PLACEMENT_UNRESOLVED, LEARNER_PREFERENCES, LEARNING_TRAIL, NARRATIVE_STORY, NARRATIVE_NEXT, NARRATIVE_PRACTICE, NARRATIVE_RETRIEVAL, LEARNING_ACTIVITY, OBSERVED_PRACTICE, VOICE_PREVIEW }
 
 @Composable
 fun ChiuKnowApp() {
@@ -166,6 +167,15 @@ fun ChiuKnowApp() {
             }
             val stationNarrativeComprehension = remember(targetLanguage.code) {
                 a1StationNarrativeComprehensionActivitiesFor(targetLanguage.code)
+            }
+            val stationLearningUnit = remember(targetLanguage.code) {
+                a1StationLearningUnitFor(targetLanguage.code)
+            }
+            var stationRetrievalIndex by remember(targetLanguage.code) {
+                mutableIntStateOf(0)
+            }
+            var pendingStationRetrievalPersistenceCount by remember(targetLanguage.code) {
+                mutableIntStateOf(0)
             }
             var activeNarrativeIndex by remember(targetLanguage.code, estimatedLevel) {
                 mutableIntStateOf(0)
@@ -510,13 +520,69 @@ fun ChiuKnowApp() {
                 AppStep.NARRATIVE_PRACTICE -> PracticeNowScreen(
                     onContinue = {
                         activeNarrativeIndex = 0
-                        step = AppStep.LEARNING_ACTIVITY
+                        stationRetrievalIndex = 0
+                        step = AppStep.NARRATIVE_RETRIEVAL
                     },
                     onBack = {
                         activeNarrativeIndex = 0
+                        stationRetrievalIndex = 0
                         step = AppStep.LEARNING_TRAIL
                     }
                 )
+                AppStep.NARRATIVE_RETRIEVAL -> {
+                    val unit = requireNotNull(stationLearningUnit)
+                    val activity = unit.retrievals[stationRetrievalIndex].activity
+                    LearningActivityScreen(
+                        activity = activity,
+                        onAttempt = { learnerAnswer ->
+                            if (pendingStationRetrievalPersistenceCount == 0) {
+                                val correct = isLearningAnswerCorrect(activity, learnerAnswer)
+                                val evidence = learningEvidenceFor(
+                                    activity,
+                                    correct,
+                                    System.currentTimeMillis()
+                                )
+                                val completedLanguageCode = targetLanguage.code
+                                pendingStationRetrievalPersistenceCount++
+                                coroutineScope.launch {
+                                    try {
+                                        context.languagePreferencesDataStore.edit { prefs ->
+                                            val evidenceKey = learningEvidenceKey(completedLanguageCode)
+                                            prefs[evidenceKey] = prefs[evidenceKey].orEmpty() +
+                                                encodeLearningEvidence(evidence)
+                                            val scheduleKey = reviewScheduleKey(completedLanguageCode)
+                                            prefs[scheduleKey] = updateReviewScheduleStateSet(
+                                                encoded = prefs[scheduleKey].orEmpty(),
+                                                evidence = evidence
+                                            )
+                                        }
+                                    } finally {
+                                        pendingStationRetrievalPersistenceCount--
+                                    }
+                                }
+                            }
+                        },
+                        canSubmit = pendingStationRetrievalPersistenceCount == 0,
+                        canContinue = pendingStationRetrievalPersistenceCount == 0,
+                        canExit = pendingStationRetrievalPersistenceCount == 0,
+                        onContinue = {
+                            if (pendingStationRetrievalPersistenceCount == 0) {
+                                if (stationRetrievalIndex < unit.retrievals.lastIndex) {
+                                    stationRetrievalIndex++
+                                } else {
+                                    stationRetrievalIndex = 0
+                                    step = AppStep.LEARNING_TRAIL
+                                }
+                            }
+                        },
+                        onBack = {
+                            if (pendingStationRetrievalPersistenceCount == 0) {
+                                stationRetrievalIndex = 0
+                                step = AppStep.LEARNING_TRAIL
+                            }
+                        }
+                    )
+                }
                 AppStep.OBSERVED_PRACTICE -> ObservedPracticeScreen(
                     summaries = summarizeLearningEvidenceBySkill(persistedLearningEvidence),
                     onBack = { step = AppStep.LEARNING_TRAIL }
