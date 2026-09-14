@@ -1,5 +1,37 @@
 # CHIU KNOW? — VISUAL BIBLE
 
+## ASSET FINAL APROVADO — 2026-09-14 — ESTAÇÃO SURREAL A1
+
+A usuária escolheu “Nova história surreal com imagem” e aprovou explicitamente a primeira candidata com “Está ótimo”.
+
+Arquivo-mestre exato aprovado:
+- `exec-087d23dc-110a-45ac-8e76-315b7ed1c582.png`;
+- 1536×1024.
+
+Derivação Android:
+- `app/src/main/res/drawable-nodpi/a1_story_station_surreal.webp`;
+- 1280×853, 207.532 bytes;
+- SHA-256 `fca5f725b6c316a8f012e31f03f314f87c4283d505fb231dd9d2c38c914a1bd0`;
+- derivada somente por redimensionamento e otimização técnica, sem retoque ou redesenho;
+- árvore completa e asset preservados no commit `8695c5726df577c49f1793e379d195c752e62550`.
+
+Identificação visual inequívoca:
+- somente o Chiu amarelo e a Mia canônica;
+- Chiu aponta para direções contraditórias;
+- Mia aparece urgente e confusa;
+- estação impossível com trilhos em laço, escadas suspensas e sinalização contraditória;
+- porta de banheiro suspensa, identificável apenas por pictogramas universais;
+- sem texto verbal, balões, logo, Chiu branco ou personagens adicionais.
+
+Função pedagógica:
+- base visual de uma nova história A1 que conecta os equivalentes de “Onde fica o banheiro?” e “Eu não entendo” nos cinco idiomas;
+- a imagem cria contexto e memória, mas não vale sozinha como evidência de domínio.
+
+Status:
+- primeira candidata: **APROVADA E CANÔNICA**;
+- somente derivações técnicas desta imagem podem ser usadas nessa história;
+- a aprovação não autoriza retoques, redesenho ou novas poses sem nova amostra explícita.
+
 ## ASSET FINAL APROVADO — 2026-09-11 — PRAÇA SURREAL A1
 
 A usuária aprovou explicitamente com “Está linda” a primeira candidata da terceira história A1.
