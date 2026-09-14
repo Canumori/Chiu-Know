@@ -111,6 +111,55 @@ private fun learningEvidenceKey(languageCode: String) = stringSetPreferencesKey(
 private fun reviewScheduleKey(languageCode: String) = stringSetPreferencesKey("review_schedule_$languageCode")
 private const val OPTIONAL_PRACTICE_SESSION_SIZE = 5
 
+private fun learningActivityInstruction(responseType: ResponseType, interfaceLanguageCode: String): String {
+    val languageCode = interfaceLanguageCode.lowercase().substringBefore('-')
+    return when (languageCode) {
+        "pt" -> when (responseType) {
+            ResponseType.MULTIPLE_CHOICE -> "Escolha a resposta correta."
+            ResponseType.FILL_IN -> "Complete a parte que está faltando."
+            ResponseType.REORDER -> "Toque nas palavras na ordem correta."
+            ResponseType.FREE_TEXT -> "Digite sua resposta."
+            ResponseType.LISTEN_AND_RESPOND -> "Ouça e responda."
+            ResponseType.SPEAK -> "Fale sua resposta em voz alta."
+        }
+        "es" -> when (responseType) {
+            ResponseType.MULTIPLE_CHOICE -> "Elige la respuesta correcta."
+            ResponseType.FILL_IN -> "Completa la parte que falta."
+            ResponseType.REORDER -> "Toca las palabras en el orden correcto."
+            ResponseType.FREE_TEXT -> "Escribe tu respuesta."
+            ResponseType.LISTEN_AND_RESPOND -> "Escucha y responde."
+            ResponseType.SPEAK -> "Di tu respuesta en voz alta."
+        }
+        "fr" -> when (responseType) {
+            ResponseType.MULTIPLE_CHOICE -> "Choisissez la bonne réponse."
+            ResponseType.FILL_IN -> "Complétez la partie manquante."
+            ResponseType.REORDER -> "Touchez les mots dans le bon ordre."
+            ResponseType.FREE_TEXT -> "Saisissez votre réponse."
+            ResponseType.LISTEN_AND_RESPOND -> "Écoutez et répondez."
+            ResponseType.SPEAK -> "Dites votre réponse à voix haute."
+        }
+        "ko" -> when (responseType) {
+            ResponseType.MULTIPLE_CHOICE -> "알맞은 답을 고르세요."
+            ResponseType.FILL_IN -> "빈 부분을 완성하세요."
+            ResponseType.REORDER -> "단어를 올바른 순서대로 누르세요."
+            ResponseType.FREE_TEXT -> "답을 입력하세요."
+            ResponseType.LISTEN_AND_RESPOND -> "듣고 답하세요."
+            ResponseType.SPEAK -> "답을 소리 내어 말하세요."
+        }
+        else -> when (responseType) {
+            ResponseType.MULTIPLE_CHOICE -> "Choose the correct answer."
+            ResponseType.FILL_IN -> "Complete the missing part."
+            ResponseType.REORDER -> "Tap the words in the correct order."
+            ResponseType.FREE_TEXT -> "Type your answer."
+            ResponseType.LISTEN_AND_RESPOND -> "Listen and respond."
+            ResponseType.SPEAK -> "Say your answer aloud."
+        }
+    }
+}
+
+private fun currentInterfaceLanguageCode(): String =
+    AppCompatDelegate.getApplicationLocales().get(0)?.language ?: Locale.getDefault().language
+
 private enum class AppStep { LANGUAGE_SELECTION, PLACEMENT_INTRO, PLACEMENT_TEST, PLACEMENT_RESULT, PLACEMENT_UNRESOLVED, LEARNER_PREFERENCES, LEARNING_TRAIL, NARRATIVE_STORY, NARRATIVE_NEXT, NARRATIVE_PRACTICE, NARRATIVE_RETRIEVAL, LEARNING_ACTIVITY, OBSERVED_PRACTICE, VOICE_PREVIEW }
 
 @Composable
@@ -731,7 +780,6 @@ private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, to
 @Composable
 private fun PlacementResultScreen(level: CefrLevel, correctAnswers: Int, total: Int, onContinue: () -> Unit, onRestart: () -> Unit, onChangeLanguage: () -> Unit) {
     CenteredColumn { Text(stringResource(R.string.estimated_level), style = MaterialTheme.typography.titleLarge); Spacer(Modifier.height(12.dp)); Text(level.name, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold); Spacer(Modifier.height(12.dp)); Text(stringResource(R.string.correct_answers, correctAnswers, total)); Spacer(Modifier.height(8.dp)); Text(stringResource(R.string.prototype_score_note), style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(28.dp)); Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onContinue) { Text(stringResource(R.string.continue_to_path)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onRestart) { Text(stringResource(R.string.try_again)) }; Spacer(Modifier.height(12.dp)); OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp), onClick = onChangeLanguage) { Text(stringResource(R.string.change_languages)) } }
-}
 
 @Composable
 private fun LearningTrailScreen(
@@ -996,12 +1044,15 @@ private fun LearningActivityScreen(
     val editAnswer = { edit: () -> Unit ->
         if (!checked || !isLearningAnswerCorrect(activity, effectiveAnswer)) edit()
     }
+    val localizedInstruction = learningActivityInstruction(activity.responseType, currentInterfaceLanguageCode())
 
     CenteredColumn {
         Text(stringResource(R.string.activity_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
         Text("${activity.level.name} · ${activity.primarySkill.name}", style = MaterialTheme.typography.labelLarge)
         Spacer(Modifier.height(20.dp))
+        Text(localizedInstruction, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(8.dp))
         Text(activity.prompt, style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.height(20.dp))
 
