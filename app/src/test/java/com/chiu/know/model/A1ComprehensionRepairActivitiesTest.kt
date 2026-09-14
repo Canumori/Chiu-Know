@@ -45,6 +45,16 @@ class A1ComprehensionRepairActivitiesTest {
     }
 
     @Test
+    fun starterBankIncludesComprehensionRepairForEverySupportedLanguage() {
+        supportedLanguages.forEach { languageCode ->
+            val expectedId = a1ComprehensionRepairActivitiesFor(languageCode).single().id
+            val starterIds = starterLearningActivitiesFor(languageCode).map { it.id }
+
+            assertTrue(starterIds.contains(expectedId))
+        }
+    }
+
+    @Test
     fun unsupportedLanguageDoesNotExposeRepairContent() {
         assertTrue(a1ComprehensionRepairActivitiesFor("de").isEmpty())
     }
