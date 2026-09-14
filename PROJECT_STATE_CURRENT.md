@@ -1,5 +1,31 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-14 — QUARTA HISTÓRIA A1 DA ESTAÇÃO INTEGRADA
+
+A nova história surreal aprovada conecta localização do banheiro e reparo de compreensão nos cinco idiomas, sem alterar os critérios de domínio ou o starter.
+
+### Asset e integridade
+- asset Android: `app/src/main/res/drawable-nodpi/a1_story_station_surreal.webp`, 1280×853, 207.532 bytes;
+- SHA-256: `fca5f725b6c316a8f012e31f03f314f87c4283d505fb231dd9d2c38c914a1bd0`;
+- durante o upload binário, o commit `65a7a4c30b0ac70936f251d445183546411e5b4f` apontou temporariamente para uma árvore incompleta;
+- a árvore completa foi restaurada imediatamente por fast-forward em `8695c5726df577c49f1793e379d195c752e62550`, sem reescrever histórico;
+- verificação: 267 entradas, árvore não truncada, workflow e documentos presentes;
+- aprovação visual registrada em `7a5af67192f54ee1671e0fb0ac3280d9acb56305` — Android CI #520 SUCCESS.
+
+### Fatias pedagógicas e gates
+- `ef3749b0d7c6678662c5f2c0e64a29e48f06adea` — modelo isolado da estação em EN/PT/ES/FR/KO — Android CI #521 SUCCESS;
+- `e14a81dbc7391bbb69caf12aa6f50cacc923f2c7` — teste do diálogo, ordem, alvos e idiomas — Android CI #522 SUCCESS;
+- `6c9797b12e989325f7c97e12810c658e27393ce1` — compreensão fechada isolada — Android CI #523 SUCCESS;
+- `743496fe78721a9a86cdd9364e58fb2e92f828ca` — teste dedicado de compreensão — Android CI #524 encontrou incompatibilidade literal de pontuação no feedback;
+- `44bed92b939324bae7c306f73963bead6246dc71` — feedback alinhado às frases-alvo exatas — Android CI #525 SUCCESS;
+- `be064579e29f59529b98f62038bc88d2128c86a5` — integração visual na sequência café → parque → praça → estação → prática — Android CI #526 SUCCESS.
+
+### Semântica preservada
+- a imagem e a leitura contextual não contam sozinhas como domínio;
+- a compreensão permanece fechada e determinística;
+- não há alegação de conversa livre, escrita livre, fala ou pronúncia;
+- nenhum artefato, repositório, CI ou código do ChiuPlayer foi tocado.
+
 
 ## AUTORITATIVO — 2026-09-14 — A1 LOCATION AND COMPREHENSION-REPAIR SLICES GREEN
 
