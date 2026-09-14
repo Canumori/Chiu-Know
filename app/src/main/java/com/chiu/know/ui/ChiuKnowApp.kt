@@ -531,7 +531,9 @@ fun ChiuKnowApp() {
                 )
                 AppStep.NARRATIVE_RETRIEVAL -> {
                     val unit = requireNotNull(stationLearningUnit)
-                    val activity = unit.retrievals[stationRetrievalIndex].activity
+                    val stationActivities =
+                        unit.retrievals + unit.reducedCueRetrievals
+                    val activity = stationActivities[stationRetrievalIndex].activity
                     LearningActivityScreen(
                         activity = activity,
                         onAttempt = { learnerAnswer ->
@@ -567,7 +569,7 @@ fun ChiuKnowApp() {
                         canExit = pendingStationRetrievalPersistenceCount == 0,
                         onContinue = {
                             if (pendingStationRetrievalPersistenceCount == 0) {
-                                if (stationRetrievalIndex < unit.retrievals.lastIndex) {
+                                if (stationRetrievalIndex < stationActivities.lastIndex) {
                                     stationRetrievalIndex++
                                 } else {
                                     stationRetrievalIndex = 0
