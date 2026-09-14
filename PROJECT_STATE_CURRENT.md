@@ -1,6 +1,30 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
 
+## AUTORITATIVO — 2026-09-14 — A1 FAMILY STARTER INTEGRATION GREEN; THREE-APK LIMIT
+
+A1 family-identification slice completed through the normal staged gates:
+- `d424bdad91cad9580800b197d5e97d4ad144312f` — added one isolated controlled REORDER activity for EN/PT/ES/FR/KO;
+- `fa24fdee96c2e7d21ca1d52156ca04081972810b` — isolated tests validate one activity per supported language, correct sentence reconstruction, rejection of reversed order and no content for unsupported languages — Android CI #503 SUCCESS;
+- `562a924e8b6cf11308aa4d99253c49ed483197e3` — activated the family-identification activity in the existing A1 starter bank without creating another queue, scheduler or persistence path — Android CI #507, run `34795822977`: SUCCESS;
+- `8831458991fc9d1d2ef6cd258d418ccca0eb755f` — added the dedicated all-language starter-integration assertion — Android CI #508, run `34795940289`: SUCCESS.
+
+Protected behavior:
+- the activity remains a closed REORDER task and does not claim open writing, speaking, ASR, mastery or CEFR certification;
+- its vocabulary target and review key remain distinct per language;
+- it flows through the existing starter selection, LearningEvidence and review-schedule architecture;
+- review-first priority, optional-practice separation, serialized persistence and retry/feedback guards remain unchanged;
+- no visual, voice, Supabase or CHIU PLAYER resource was touched.
+
+Artifact policy tightened at the user's request, exclusively in CHIU KNOW?:
+- `f80767bf443468a6bbae0d0eb8b3094af13d3c5b` — `ci: keep only three debug APK artifacts`;
+- Android CI #506, run `34795660636`: SUCCESS;
+- it found 10 active debug APK artifacts, deleted the 7 older ones and preserved exactly the 3 newest;
+- pushes still test and compile without uploading an APK; manual workflow runs alone upload an APK for 3 days;
+- no repository, workflow, APK, site, Cloudflare or Supabase resource belonging to CHIU PLAYER was accessed or changed.
+
+This documentation write creates a newer HEAD and CI. Fetch real `main` and verify the exact-SHA Android CI before any later write.
+
 ## AUTORITATIVO — 2026-09-14 — GITHUB ACTIONS ARTIFACT CLEANUP COMPLETE, CI #504 GREEN
 
 Storage maintenance completed without changing application code or release history:
