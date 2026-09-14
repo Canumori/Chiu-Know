@@ -1,5 +1,24 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-14 — CI #531 APROVADO EM TESTE FÍSICO
+
+A usuária instalou o APK do CI #531 e confirmou que a sequência está correta.
+
+### Confirmações
+- acesso às histórias disponível mesmo com nível estimado C1;
+- sequência narrativa presente e funcional;
+- quatro falas da história da estação presentes;
+- repetição de “café” compreendida e aprovada como transferência pedagógica intencional: primeira história no café e retomada da preferência de Chiu na praça;
+- histórias são atualmente somente leitura;
+- ausência de áudio sincronizado nas falas é comportamento esperado nesta etapa;
+- o botão de vozes contém amostras separadas e não narração das histórias.
+
+### Estado
+- APK validado: CI #531, commit `60116e45aae7afa1384eeb8e7e310296c7731124`;
+- SHA-256: `1bae3dd29f4ac3bc2f2aa20d8a76ad9cb48aaeb2185855140a54f44a17e88e29`;
+- áudio narrativo permanece trabalho futuro e só deve usar vozes aprovadas;
+- nenhuma alteração ou acesso ao ChiuPlayer.
+
 ## AUTORITATIVO — 2026-09-14 — CORREÇÃO DO TESTE FÍSICO CI #531
 
 O teste físico do CI #528 revelou dois problemas reais:
