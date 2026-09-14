@@ -32,6 +32,9 @@ data class A1StationLearningUnit(
     val retrievals: List<A1StationRetrieval>,
     val reducedCueRetrievals: List<A1StationRetrieval>
 ) {
+    val practiceSequence: List<A1StationRetrieval>
+        get() = retrievals + reducedCueRetrievals
+
     init {
         require(narrative.level == CefrLevel.A1) { "Station narrative must remain A1" }
         require(comprehension.level == CefrLevel.A1) { "Station comprehension must remain A1" }
