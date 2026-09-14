@@ -35,8 +35,8 @@ jobs:
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
 
-      - name: Upload debug APK for manual runs only
-        if: github.event_name == 'workflow_dispatch'
+      - name: Upload debug APK for deliberate runs only
+        if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[apk]')
         uses: actions/upload-artifact@v4
         with:
           name: chiu-know-debug
