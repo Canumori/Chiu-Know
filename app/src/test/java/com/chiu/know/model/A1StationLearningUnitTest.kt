@@ -103,6 +103,32 @@ class A1StationLearningUnitTest {
     }
 
     @Test
+    fun practiceSequenceProgressesFromWordBankToReducedCue() {
+        supportedLanguages.forEach { languageCode ->
+            val sequence = requireNotNull(a1StationLearningUnitFor(languageCode)).practiceSequence
+
+            assertEquals(
+                listOf(
+                    A1StationTarget.RESTROOM_LOCATION,
+                    A1StationTarget.COMPREHENSION_REPAIR,
+                    A1StationTarget.RESTROOM_LOCATION,
+                    A1StationTarget.COMPREHENSION_REPAIR
+                ),
+                sequence.map { it.target }
+            )
+            assertEquals(
+                listOf(
+                    ResponseType.REORDER,
+                    ResponseType.REORDER,
+                    ResponseType.FILL_IN,
+                    ResponseType.FILL_IN
+                ),
+                sequence.map { it.activity.responseType }
+            )
+        }
+    }
+
+    @Test
     fun unsupportedLanguageDoesNotInventAStationUnit() {
         assertNull(a1StationLearningUnitFor("de"))
         assertNull(a1StationLearningUnitFor(""))
