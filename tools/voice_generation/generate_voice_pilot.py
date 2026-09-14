@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
-"""Generate one review-only CHIU KNOW? character voice pilot with open-source Chatterbox.
+"""Generate one review-only CHIU KNOW? character voice pilot.
 
-This script never writes generated audio into Android resources. It produces a temporary
-pilot for human review. Only already-approved bundled character samples are accepted as
-voice references.
+Pronunciation and character identity are deliberately separated:
+1. create a source utterance with a native-language TTS model and NO character reference;
+2. convert that utterance to an approved character timbre with Chatterbox VC.
+
+Generated audio is never written into Android resources automatically. Every result remains
+PILOT_ONLY_NOT_APPROVED until automated linguistic QA passes and the user approves only
+character identity/naturalness.
 """
 
 from __future__ import annotations
 
 import argparse
+import gc
 import hashlib
 import json
 import os
@@ -16,21 +21,15 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-
 CHARACTERS = {
-    "mia": {
-        "reference": ROOT / "app/src/main/res/raw/mia_voice_sample_girl.mp3",
-        "exaggeration": 0.45,
-        "cfg_weight": 0.45,
-    },
-    "chiu": {
-        "reference": ROOT / "app/src/main/res/raw/chiu_voice_sample_expressive.wav",
-        "exaggeration": 0.78,
-        "cfg_weight": 0.30,
-    },
+    "mia": ROOT / "app/src/main/res/raw/mia_voice_sample_girl.mp3",
+    "chiu": ROOT / "app/src/main/res/raw/chiu_voice_sample_expressive.wav",
 }
-
 SUPPORTED_LANGUAGES = {"en", "pt", "es", "fr", "ko"}
+# Generation is enabled language-by-language only after its pronunciation source and QA path
+# have been proved. English is the first controlled pilot because the rejected sample failed
+# specifically on "where".
+GENERATION_READY_LANGUAGES = {"en"}
 
 
 def sha256(path: Path) -> str:
@@ -42,16 +41,14 @@ def sha256(path: Path) -> str:
 
 
 def load_request(path: Path) -> dict:
-    with path.open("r", encoding="utf-8") as handle:
-        request = json.load(handle)
-    required = {"character", "language", "text"}
-    missing = sorted(required - set(request))
+    request = json.loads(path.read_text(encoding="utf-8"))
+    missing = sorted({"character", "language", "text"} - set(request))
     if missing:
         raise ValueError(f"Missing request fields: {', '.join(missing)}")
     return request
 
 
-def validate_request(request: dict) -> tuple[str, str, str, float, float]:
+def validate_request(request: dict) -> tuple[str, str, str]:
     character = str(request["character"]).strip().lower()
     language = str(request["language"]).strip().lower()
     text = str(request["text"]).strip()
@@ -64,16 +61,7 @@ def validate_request(request: dict) -> tuple[str, str, str, float, float]:
         raise ValueError("Text must not be empty")
     if len(text) > 300:
         raise ValueError("Pilot text must be 300 characters or fewer")
-
-    defaults = CHARACTERS[character]
-    exaggeration = float(request.get("exaggeration", defaults["exaggeration"]))
-    cfg_weight = float(request.get("cfg_weight", defaults["cfg_weight"]))
-    if not 0.0 <= exaggeration <= 1.0:
-        raise ValueError("exaggeration must be between 0 and 1")
-    if not 0.0 <= cfg_weight <= 1.0:
-        raise ValueError("cfg_weight must be between 0 and 1")
-
-    return character, language, text, exaggeration, cfg_weight
+    return character, language, text
 
 
 def main() -> None:
@@ -84,77 +72,87 @@ def main() -> None:
     args = parser.parse_args()
 
     request = load_request(args.request)
-    character, language, text, exaggeration, cfg_weight = validate_request(request)
-    reference = CHARACTERS[character]["reference"]
+    character, language, text = validate_request(request)
+    reference = CHARACTERS[character]
     if not reference.is_file():
         raise FileNotFoundError(f"Approved reference not found: {reference}")
 
-    model_family = "chatterbox-english" if language == "en" else "chatterbox-multilingual-v3"
     print(f"Character: {character}")
     print(f"Language: {language}")
-    print(f"Model: {model_family}")
     print(f"Reference: {reference.relative_to(ROOT)}")
     print(f"Reference SHA-256: {sha256(reference)}")
     print(f"Text: {text}")
+    print("Pipeline: native pronunciation source -> character voice conversion")
 
     if args.validate_only:
         print("Validation only: generation skipped.")
         return
 
+    if language not in GENERATION_READY_LANGUAGES:
+        raise RuntimeError(
+            f"Generation for '{language}' is intentionally blocked until its language-specific "
+            "pronunciation source and automated QA path are proved."
+        )
+
     import torch
     import torchaudio as ta
+    from chatterbox.tts_turbo import ChatterboxTurboTTS
+    from chatterbox.vc import ChatterboxVC
 
-    # GitHub's standard public Linux runner has four CPUs. Keep inference bounded to the
-    # available runner instead of oversubscribing threads.
     torch.set_num_threads(max(1, min(4, os.cpu_count() or 1)))
-    device = "cpu"  # Pass a string; this also avoids the known torch.device CPU loader bug.
-
-    if language == "en":
-        from chatterbox.tts import ChatterboxTTS
-
-        model = ChatterboxTTS.from_pretrained(device=device)
-        wav = model.generate(
-            text,
-            audio_prompt_path=str(reference),
-            exaggeration=exaggeration,
-            cfg_weight=cfg_weight,
-        )
-    else:
-        from chatterbox.mtl_tts import ChatterboxMultilingualTTS
-
-        model = ChatterboxMultilingualTTS.from_pretrained(device=device, t3_model="v3")
-        wav = model.generate(
-            text,
-            language_id=language,
-            audio_prompt_path=str(reference),
-            exaggeration=exaggeration,
-            cfg_weight=cfg_weight,
-        )
-
+    device = "cpu"
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    audio_path = args.output_dir / f"{character}_{language}_pilot.wav"
-    ta.save(str(audio_path), wav.cpu(), model.sr)
+
+    source_path = args.output_dir / f"source_{language}.wav"
+    final_path = args.output_dir / f"{character}_{language}_pilot.wav"
+
+    # Stage 1: pronunciation. English uses the dedicated English Nano model and its bundled
+    # voice, not Mia/Chiu. This prevents a Portuguese reference clip from contaminating the
+    # English pronunciation.
+    source_model_name = "chatterbox-nano-english-builtin-voice"
+    source_model = ChatterboxTurboTTS.from_pretrained(device=device, nano=True)
+    source_wav = source_model.generate(text)
+    ta.save(str(source_path), source_wav.cpu(), source_model.sr)
+    del source_wav, source_model
+    gc.collect()
+
+    # Stage 2: identity. Voice conversion changes the timbre to the approved character
+    # reference while keeping the linguistic content from the source utterance.
+    vc_model_name = "chatterbox-vc"
+    vc_model = ChatterboxVC.from_pretrained(device)
+    final_wav = vc_model.generate(
+        audio=str(source_path),
+        target_voice_path=str(reference),
+    )
+    ta.save(str(final_path), final_wav.cpu(), vc_model.sr)
+    del final_wav, vc_model
+    gc.collect()
 
     metadata = {
         "status": "PILOT_ONLY_NOT_APPROVED",
         "character": character,
         "language": language,
         "text": text,
-        "model": model_family,
         "device": device,
+        "pipeline": "native_source_then_voice_conversion",
+        "source_model": source_model_name,
+        "voice_conversion_model": vc_model_name,
         "reference_path": str(reference.relative_to(ROOT)),
         "reference_sha256": sha256(reference),
-        "exaggeration": exaggeration,
-        "cfg_weight": cfg_weight,
-        "audio_filename": audio_path.name,
-        "audio_sha256": sha256(audio_path),
+        "source_audio_filename": source_path.name,
+        "source_audio_sha256": sha256(source_path),
+        "audio_filename": final_path.name,
+        "audio_sha256": sha256(final_path),
+        "linguistic_qa": "PENDING",
     }
-    metadata_path = args.output_dir / "metadata.json"
-    metadata_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (args.output_dir / "metadata.json").write_text(
+        json.dumps(metadata, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
-    print(f"Generated pilot: {audio_path}")
-    print(f"Audio SHA-256: {metadata['audio_sha256']}")
-    print("Status: PILOT_ONLY_NOT_APPROVED")
+    print(f"Generated source: {source_path}")
+    print(f"Generated pilot: {final_path}")
+    print("Status: PILOT_ONLY_NOT_APPROVED; linguistic QA still required")
 
 
 if __name__ == "__main__":
