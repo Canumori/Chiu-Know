@@ -1,5 +1,44 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-14 — APK CI #528 PRONTO PARA TESTE FÍSICO
+
+A quarta história A1 já integrada foi empacotada deliberadamente para validação no aparelho.
+
+### Build exato
+- HEAD/build commit: `15f4d8058eeeff3ae01878264c756aceaf864c53`;
+- commit: `[apk] ci: allow explicit APK builds`;
+- Android CI #528, run `34800004528`: **COMPLETED / SUCCESS**;
+- artifact ID: `10331146400`;
+- artifact: `chiu-know-debug`;
+- tamanho do arquivo APK extraído: 14.988.400 bytes;
+- SHA-256 do APK: `12967d8a01b8d8370616656bd3b66edea9f9beeb310e15a567782aaa8ff169a4`;
+- expiração do artefato no GitHub: 2026-09-17T02:41:55Z.
+
+### Política de geração intencional
+O workflow continua testando e compilando todo push, mas só armazena APK quando:
+- a execução é manual por `workflow_dispatch`; ou
+- a mensagem do commit contém a marca explícita `[apk]`.
+
+Pushes comuns continuam sem guardar APK. Artefatos deliberados têm retenção de 3 dias, e a rotina mantém no máximo os três APKs ativos mais recentes.
+
+### Validação física pendente neste APK
+Verificar somente:
+1. instalação/atualização normal e abertura sem falha;
+2. acesso à sequência de histórias A1;
+3. ordem completa café → parque → praça → estação;
+4. exibição da imagem aprovada da estação, sem corte problemático, distorção ou troca de personagens;
+5. presença apenas de Chiu amarelo e Mia na cena, com aparência caricata preservada;
+6. diálogo da estação avançando nos quatro beats sem travar;
+7. frases-alvo corretas no idioma escolhido: pergunta sobre o banheiro e frase de não compreensão;
+8. pergunta fechada de compreensão após a história, com resposta e feedback funcionando;
+9. transição da estação para a etapa de prática;
+10. botão voltar funcionando sem deixar a narrativa presa ou reiniciar incorretamente.
+
+Não é necessário retestar nivelamento, login, vozes ou todo o restante do aplicativo nesta rodada, salvo se surgir regressão visível durante o caminho até a história.
+
+### Isolamento absoluto
+Nenhum repositório, APK, workflow, site, Supabase, Cloudflare ou código do ChiuPlayer foi tocado.
+
 ## AUTORITATIVO — 2026-09-14 — QUARTA HISTÓRIA A1 DA ESTAÇÃO INTEGRADA
 
 A nova história surreal aprovada conecta localização do banheiro e reparo de compreensão nos cinco idiomas, sem alterar os critérios de domínio ou o starter.
