@@ -723,7 +723,7 @@ private fun PlacementQuestionScreen(question: PlacementQuestion, number: Int, to
         } else {
             Text("${stringResource(R.string.placement_title)} · $number", style = MaterialTheme.typography.labelLarge)
         }
-        Spacer(Modifier.height(12.dp)); Text(question.level.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(20.dp)); Text(question.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(28.dp)); question.options.forEachIndexed { index, option -> OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = !submitted, onClick = { if (!submitted) { submitted = true; onAnswer(index) } }) { Text(option) }; Spacer(Modifier.height(10.dp)) }
+        Spacer(Modifier.height(12.dp)); Text(question.level.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(20.dp)); Text(question.prompt, style = MaterialTheme.typography.headlineSmall); Spacer(Modifier.height(28.dp)); question.options.forEachIndexed { index, option -> OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = !submitted, onClick = { if (!submitted) { submitted = true; onAnswer(index) } }) { Text(option, style = MaterialTheme.typography.titleMedium) }; Spacer(Modifier.height(10.dp)) }
     }
 }
 
@@ -1010,7 +1010,7 @@ private fun LearningActivityScreen(
                 Spacer(Modifier.height(12.dp))
                 activity.responseOptions.forEachIndexed { index, token ->
                     if (index !in selectedTokenIndices) {
-                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { selectedTokenIndices = selectedTokenIndices + index; checked = false } }) { Text(token) }
+                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { selectedTokenIndices = selectedTokenIndices + index; checked = false } }) { Text(token, style = MaterialTheme.typography.titleMedium) }
                         Spacer(Modifier.height(8.dp))
                     }
                 }
@@ -1023,9 +1023,9 @@ private fun LearningActivityScreen(
                 activity.responseOptions.forEach { option ->
                     val selected = answer == option
                     if (selected) {
-                        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { if (answer != option) { answer = option; checked = false } } }) { Text(option) }
+                        Button(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { if (answer != option) { answer = option; checked = false } } }) { Text(option, style = MaterialTheme.typography.titleMedium) }
                     } else {
-                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { if (answer != option) { answer = option; checked = false } } }) { Text(option) }
+                        OutlinedButton(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), enabled = canEditAnswer, onClick = { editAnswer { if (answer != option) { answer = option; checked = false } } }) { Text(option, style = MaterialTheme.typography.titleMedium) }
                     }
                     Spacer(Modifier.height(8.dp))
                 }
