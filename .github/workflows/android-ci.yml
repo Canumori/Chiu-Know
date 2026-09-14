@@ -30,10 +30,25 @@ jobs:
           gradle-version: "8.9"
 
       - name: Restore stable debug signing key
+        id: debug-signing-cache
         uses: actions/cache@v4
         with:
-          path: ~/.android/debug.keystore
-          key: chiu-know-debug-keystore-v1
+          path: .ci-signing/debug.keystore
+          key: chiu-know-debug-keystore-v2
+
+      - name: Create stable debug signing key if missing
+        if: steps.debug-signing-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .ci-signing
+          keytool -genkeypair \
+            -keystore .ci-signing/debug.keystore \
+            -storepass android \
+            -alias androiddebugkey \
+            -keypass android \
+            -dname "CN=Chiu Know Debug,O=Chiu Know,C=BR" \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000
 
       - name: Run unit tests
         run: gradle :app:testDebugUnitTest --stacktrace
