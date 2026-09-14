@@ -1,5 +1,23 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-14 — QUALIDADE DO PLACEMENT E LEGIBILIDADE DAS ALTERNATIVAS
+
+### Regra pedagógica permanente do nivelamento
+- qualidade e confiabilidade da estimativa prevalecem sobre duração, rapidez ou quantidade fixa de questões;
+- o teste deve continuar até reunir evidência suficiente para localizar e confirmar o nível e suas fronteiras, mesmo que isso exija mais tempo;
+- números como 8 ou 14 são parâmetros provisórios da fundação atual, não limites que possam encerrar o teste sacrificando confiabilidade;
+- duração só pode ser otimizada depois, sem reduzir variedade, confirmação ou qualidade da evidência;
+- o banco atual de 12 itens por idioma (2 por A1–C2) continua reconhecido como fundação insuficiente para uma avaliação final confiável e deve ser ampliado e validado antes de ativar o contrato futuro de confirmação.
+
+### Regra visual permanente das respostas
+- alternativas de todos os testes devem usar fonte maior e legível em todos os idiomas, inclusive coreano;
+- a regra cobre nivelamento, múltipla escolha e tokens selecionáveis de ordenação;
+- respostas livres e botões gerais da interface não foram alterados nesta fatia.
+
+### Implementação verificada
+- `7ba6bfc211175ae74e28ea884b3db6347eae37f3` — alternativas passam a usar `MaterialTheme.typography.titleMedium` no nivelamento e nas atividades de aprendizagem;
+- Android CI #547, run `34856794465`: **COMPLETED / SUCCESS**.
+
 ## AUTORITATIVO — 2026-09-14 — ATUALIZAÇÃO POR CIMA VALIDADA FISICAMENTE
 
 A usuária executou o teste controlado de assinatura:
