@@ -531,8 +531,7 @@ fun ChiuKnowApp() {
                 )
                 AppStep.NARRATIVE_RETRIEVAL -> {
                     val unit = requireNotNull(stationLearningUnit)
-                    val stationActivities =
-                        unit.retrievals + unit.reducedCueRetrievals
+                    val stationActivities = unit.practiceSequence
                     val activity = stationActivities[stationRetrievalIndex].activity
                     LearningActivityScreen(
                         activity = activity,
