@@ -1,5 +1,27 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
+## AUTORITATIVO — 2026-09-14 — ASSINATURA DEBUG: CAUSA REAL E CORREÇÃO VERIFICÁVEL
+
+O APK CI #537 não instalou por cima do CI #531. A comparação binária confirmou certificados diferentes:
+- CI #531: SHA-256 do certificado `aaf56639b88ee104f4f0aa526048cbd09f8f660c542305bbadd08fb0d6c630f6`;
+- CI #537: SHA-256 do certificado `9401eded2dccfd510d88b701137368a3cb2e2836878bb27bafb156a685e4f3e1`.
+
+### Erro anterior
+A tentativa com cache de `~/.android/debug.keystore` não funcionou. Os logs mostraram `Path Validation Error` e declararam que nenhum cache foi salvo. O status verde da etapa não provava persistência da chave.
+
+### Correção
+- `84a824dde6f77a7b3bd0e33f444580a4d861813d` — gera chave debug explícita em `.ci-signing/debug.keystore` e usa cache v2 — Android CI #538 SUCCESS; log: `Cache saved with key: chiu-know-debug-keystore-v2`;
+- `d5fe819569f98966dcc63e14db227c4e61a4ce2b` — Gradle passa a usar a chave explícita quando presente — Android CI #539 SUCCESS; log: `Cache hit` e `Cache restored`;
+- `3a130c6cfb0e0bf5810fef0ee47da6012f865c76` — `versionCode` e `versionName` passam a derivar do número crescente do CI — Android CI #540 SUCCESS;
+- APK CI #540 gerado como primeira amostra de assinatura estável; SHA-256 do APK `63677fcb9ebb83e549a7eda80b4d688db89a60bfb00a80b61e5a1c02afb3333e`.
+
+### Gate antes de novo teste
+Gerar um segundo APK consecutivo, extrair ambos e comparar diretamente seus certificados. Só entregar se forem idênticos e o segundo possuir número de versão superior.
+
+O APK atualmente instalado, anterior à chave v2, exigirá uma última desinstalação. Depois dela, a instalação por cima só será considerada resolvida quando um APK posterior instalar sobre o primeiro APK assinado pela chave v2.
+
+Nenhum componente do ChiuPlayer foi acessado ou alterado.
+
 ## AUTORITATIVO — 2026-09-14 — RECUPERAÇÃO ATIVA APÓS A ESTAÇÃO INTEGRADA
 
 A aprovação física do CI #531 foi registrada e a história da estação agora conduz a duas reconstruções ativas coerentes com o diálogo.
