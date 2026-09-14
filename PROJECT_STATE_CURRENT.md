@@ -1,3 +1,40 @@
+# AUTORITATIVO — 2026-09-14 — HEALTH CHECK DIÁRIO DO SUPABASE CRIADO E VALIDADO
+
+## Escopo e separação
+- alteração exclusiva do Chiu Know?;
+- Supabase correto: `uskxabsodcnzlovuaurp`;
+- nenhum recurso do Chiu Player foi acessado ou alterado;
+- nenhum código, APK, voz, imagem ou lógica pedagógica do aplicativo foi alterado.
+
+## Banco
+- migration Supabase aplicada: `20260914175033_add_read_only_health_probe`;
+- tabela `public.health_probe`, com uma única linha imutável: `id=1`, `label=chiu-know`;
+- RLS ativo;
+- `anon` e `authenticated` possuem somente `SELECT`;
+- `INSERT`, `UPDATE` e `DELETE` estão revogados para ambos;
+- policy única `health_probe_public_read`, limitada a `id = 1`;
+- nenhuma Edge Function, `pg_cron`, `pg_net` ou `service_role` foi usada.
+
+## GitHub Actions
+- workflow novo: `.github/workflows/supabase-health.yml`;
+- frequência: uma vez ao dia às 10:17 UTC / 07:17 de Brasília;
+- operação: um único SELECT via REST na linha `health_probe`;
+- usa somente a chave publicável do projeto, apropriada para cliente público; nunca `service_role`;
+- três tentativas para erro transitório, timeout de cinco minutos, issue automática em falha e fechamento após recuperação;
+- alteração do próprio workflow também dispara uma validação imediata.
+
+## Validação
+- commit: `0acff03b22d6cdc20c18abfc140495a65effabad` — `ci: add daily Supabase health check`;
+- health run #1, ID `34877328445`: COMPLETED / SUCCESS;
+- Android CI #565, run `34877328438`: COMPLETED / SUCCESS;
+- estado do projeto Supabase confirmado como `ACTIVE_HEALTHY`.
+
+## Regra futura
+- manter uma única execução diária enquanto o uso real do aplicativo ainda não gerar atividade regular no Supabase;
+- quando login/uso real do backend estiver ativo diariamente, reavaliar e eventualmente reduzir/remover o keep-alive;
+- não aumentar frequência sem necessidade comprovada;
+- não misturar com o health check do Chiu Player.
+
 # CHIU KNOW? — CURRENT PROJECT STATE
 
 ## AUTORITATIVO — 2026-09-14 — ESTAÇÃO COM RECUPERAÇÃO PROGRESSIVA INTEGRADA
