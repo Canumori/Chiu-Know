@@ -45,6 +45,16 @@ class A1FamilyIdentificationActivitiesTest {
     }
 
     @Test
+    fun starterBankIncludesFamilyIdentificationForEverySupportedLanguage() {
+        supportedLanguages.forEach { languageCode ->
+            val expectedId = a1FamilyIdentificationActivitiesFor(languageCode).single().id
+            val starterIds = starterLearningActivitiesFor(languageCode).map { it.id }
+
+            assertTrue(starterIds.contains(expectedId))
+        }
+    }
+
+    @Test
     fun unsupportedLanguageDoesNotExposeFamilyContent() {
         assertTrue(a1FamilyIdentificationActivitiesFor("de").isEmpty())
     }
