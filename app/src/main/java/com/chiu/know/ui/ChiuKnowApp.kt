@@ -140,57 +140,32 @@ fun ChiuKnowApp() {
             var correctAnswers by remember { mutableIntStateOf(0) }
             var trailOpenedFromResult by remember { mutableStateOf(false) }
             val placementRuntime = remember(targetLanguage.code) { placementRuntimeSelection(targetLanguage.code) }
-            val starterNarrative = remember(targetLanguage.code, estimatedLevel) {
-                starterNarrativeMicroUnitFor(targetLanguage.code, estimatedLevel)
+            // A1 stories remain available as optional foundation review at every
+            // estimated level. They do not lower the learner's CEFR estimate or
+            // create mastery merely by being viewed.
+            val starterNarrative = remember(targetLanguage.code) {
+                starterNarrativeMicroUnitFor(targetLanguage.code, CefrLevel.A1)
             }
-            val starterNarrativeComprehension = remember(targetLanguage.code, estimatedLevel) {
-                if (estimatedLevel == CefrLevel.A1) {
-                    a1FirstNarrativeComprehensionActivitiesFor(targetLanguage.code)
-                } else {
-                    emptyList()
-                }
+            val starterNarrativeComprehension = remember(targetLanguage.code) {
+                a1FirstNarrativeComprehensionActivitiesFor(targetLanguage.code)
             }
-            val transferNarrative = remember(targetLanguage.code, estimatedLevel) {
-                if (estimatedLevel == CefrLevel.A1) {
-                    a1TransferNarrativeMicroUnitFor(targetLanguage.code)
-                } else {
-                    null
-                }
+            val transferNarrative = remember(targetLanguage.code) {
+                a1TransferNarrativeMicroUnitFor(targetLanguage.code)
             }
-            val transferNarrativeComprehension = remember(targetLanguage.code, estimatedLevel) {
-                if (estimatedLevel == CefrLevel.A1) {
-                    a1TransferNarrativeComprehensionActivitiesFor(targetLanguage.code)
-                } else {
-                    emptyList()
-                }
+            val transferNarrativeComprehension = remember(targetLanguage.code) {
+                a1TransferNarrativeComprehensionActivitiesFor(targetLanguage.code)
             }
-            val secondTransferNarrative = remember(targetLanguage.code, estimatedLevel) {
-                if (estimatedLevel == CefrLevel.A1) {
-                    a1SecondTransferNarrativeMicroUnitFor(targetLanguage.code)
-                } else {
-                    null
-                }
+            val secondTransferNarrative = remember(targetLanguage.code) {
+                a1SecondTransferNarrativeMicroUnitFor(targetLanguage.code)
             }
-            val secondTransferNarrativeComprehension = remember(targetLanguage.code, estimatedLevel) {
-                if (estimatedLevel == CefrLevel.A1) {
-                    a1SecondTransferNarrativeComprehensionActivitiesFor(targetLanguage.code)
-                } else {
-                    emptyList()
-                }
+            val secondTransferNarrativeComprehension = remember(targetLanguage.code) {
+                a1SecondTransferNarrativeComprehensionActivitiesFor(targetLanguage.code)
             }
-            val stationNarrative = remember(targetLanguage.code, estimatedLevel) {
-                if (estimatedLevel == CefrLevel.A1) {
-                    a1StationNarrativeMicroUnitFor(targetLanguage.code)
-                } else {
-                    null
-                }
+            val stationNarrative = remember(targetLanguage.code) {
+                a1StationNarrativeMicroUnitFor(targetLanguage.code)
             }
-            val stationNarrativeComprehension = remember(targetLanguage.code, estimatedLevel) {
-                if (estimatedLevel == CefrLevel.A1) {
-                    a1StationNarrativeComprehensionActivitiesFor(targetLanguage.code)
-                } else {
-                    emptyList()
-                }
+            val stationNarrativeComprehension = remember(targetLanguage.code) {
+                a1StationNarrativeComprehensionActivitiesFor(targetLanguage.code)
             }
             var activeNarrativeIndex by remember(targetLanguage.code, estimatedLevel) {
                 mutableIntStateOf(0)
