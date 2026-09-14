@@ -1,6 +1,26 @@
 # CHIU KNOW? — CURRENT PROJECT STATE
 
 
+## AUTORITATIVO — 2026-09-14 — GITHUB ACTIONS ARTIFACT CLEANUP COMPLETE, CI #504 GREEN
+
+Storage maintenance completed without changing application code or release history:
+- workflow commit `761b18d37454cfbdd4ae867e6b4d4ba8fd12cd81` — `ci: limit debug artifact storage`;
+- Android CI #504, run `34794769607`: `COMPLETED / SUCCESS` on that exact SHA;
+- unit tests and the debug APK compilation both passed;
+- the normal push build deliberately skipped artifact upload;
+- the cleanup step found 471 active `chiu-know-debug` artifacts, preserved the 10 newest and successfully deleted 461 older artifacts;
+- no commit, source file, Release, Supabase resource, Chiu Player resource or APK development behavior was deleted or changed.
+
+Permanent workflow policy:
+- every push to `main` continues to run unit tests and compile the debug APK, but does not upload the APK as an artifact;
+- an installable debug APK is uploaded only when Android CI is started manually through `workflow_dispatch`;
+- manually requested APK artifacts use `retention-days: 3`;
+- the cleanup step keeps at most the 10 newest active artifacts named `chiu-know-debug`;
+- workflow permissions are limited to `contents: read` and `actions: write`, the latter only to list/delete Actions artifacts;
+- repository visibility remains public and no Releases were created or removed.
+
+This documentation write creates a newer HEAD and triggers another Android CI. The next chat must fetch real `main` and verify the CI for that exact SHA before any later write.
+
 ## AUTORITATIVO — 2026-09-12 — USER-DEFINED VOICE REFERENCES FOR REMAINING CAST
 
 The user supplied the following artistic references. They define character direction, not permission to clone or impersonate a specific actor or dub performance:
