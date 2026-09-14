@@ -45,6 +45,16 @@ class A1BasicLocationActivitiesTest {
     }
 
     @Test
+    fun starterBankIncludesBasicLocationQuestionForEverySupportedLanguage() {
+        supportedLanguages.forEach { languageCode ->
+            val expectedId = a1BasicLocationActivitiesFor(languageCode).single().id
+            val starterIds = starterLearningActivitiesFor(languageCode).map { it.id }
+
+            assertTrue(starterIds.contains(expectedId))
+        }
+    }
+
+    @Test
     fun unsupportedLanguageDoesNotExposeLocationContent() {
         assertTrue(a1BasicLocationActivitiesFor("de").isEmpty())
     }
